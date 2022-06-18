@@ -1,0 +1,150 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!--PlaylistBanner-->
+
+    <Style x:Key="PlaylistBanner" TargetType="StackPanel">
+        <Setter Property="Margin" Value="0 50 25 0"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Width" Value="200"/>
+    </Style>
+    
+    <Style x:Key="PlaylistTitle" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="FontSize" Value="22"/>
+    </Style>
+
+    <Style x:Key="BrowserImage_dark" TargetType="Image" BasedOn="{StaticResource HighlightHoverImage}">
+        <Setter Property="Source" Value="{StaticResource BrowserImage}"/>
+    </Style>
+
+    <Style x:Key="PlaylistBrowser" TargetType="Image" BasedOn="{StaticResource BrowserImage_dark}">
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Height" Value="27"/>
+        <Setter Property="Margin" Value="0 7 0 0"/>
+    </Style>
+
+    <Style x:Key="Text_PlaylistInfo" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource Text_secondary}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="PlaylistPrivacyStatus" TargetType="StackPanel">
+        <Setter Property="Margin" Value="0 2"/>
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="Height" Value="18"/>
+    </Style>
+    
+    <Style x:Key="PlaylistPrivacyStatus_image" TargetType="Image">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Height" Value="13"/>
+    </Style>
+
+    <Style x:Key="PlaylistPrivacyStatus_status" TargetType="TextBlock" BasedOn="{StaticResource Text_PlaylistInfo}">
+        <Setter Property="Height" Value="17"/>
+        <Setter Property="Margin" Value="5 0 0 2"/>
+    </Style>
+
+    <Style x:Key="PlaylistCreator" TargetType="StackPanel">
+        <Setter Property="Margin" Value="0 2"/>
+        <Setter Property="Orientation" Value="Horizontal"/>
+    </Style>
+
+    <Style x:Key="PlaylistCreatorImage" TargetType="Image">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+    </Style>
+
+    <Style x:Key="PlaylistCreatorTitle" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Margin" Value="10 3 0 0"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Width" Value="160"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!--PlaylistItem-->
+
+    <Style x:Key="PlaylistItem_title" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+
+    <Style x:Key="PlaylistItem_title_expanded" TargetType="TextBlock" BasedOn="{StaticResource PlaylistItem_title}">
+        <Setter Property="FontSize" Value="18"/>
+    </Style>
+
+    <Style x:Key="PlaylistItem_publishDate" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Foreground" Value="{StaticResource Text_dimmed}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Margin" Value="0 0 0 4"/>
+    </Style>
+
+    <Style x:Key="PlaylistItem_channelTitle" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Margin" Value="0 0 0 8"/>
+        <Setter Property="Foreground" Value="{StaticResource Text_dimmed}"/>
+    </Style>
+
+    <Style x:Key="PlaylistItem_channelTitle_expanded" TargetType="TextBlock" BasedOn="{StaticResource PlaylistItem_channelTitle}">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="Margin" Value="8 4 0 0"/>
+    </Style>
+
+    <Style x:Key="PlaylistItem_description" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Margin" Value="0 10 0 0"/>
+    </Style>
+
+    <Style x:Key="PlaylistItem_separator" TargetType="Border" BasedOn="{StaticResource SeparatorBorder_dark}">
+        <Setter Property="Margin" Value="0 10 0 0"/>
+    </Style>
+
+    <Style x:Key="PlaylistItem_browser" TargetType="Image" BasedOn="{StaticResource BrowserImage_dark}">
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Width" Value="22"/>
+        <Setter Property="Margin" Value="0 5 0 0"/>
+    </Style>
+
+    <BitmapImage x:Key="ExpandArrow" UriSource="/Resources/Images/White/expand_arrow_white.png" />
+
+    <Style x:Key="PlaylistItem_expandArrow" TargetType="Image">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Opacity" Value="0.2"/>
+        <Setter Property="Source" Value="{StaticResource ExpandArrow}"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Height" Value="8"/>
+        <Setter Property="Margin" Value="50 14 50 0"/>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Image.MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.8" Duration="0:0:0.20" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Image.MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.2" Duration="0:0:0.20" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <Style x:Key="PlaylistItem_expandArrow_hide" TargetType="Image" BasedOn="{StaticResource PlaylistItem_expandArrow}">
+        <Setter Property="Visibility" Value="Hidden"/>
+    </Style>
+    
+
+</ResourceDictionary>

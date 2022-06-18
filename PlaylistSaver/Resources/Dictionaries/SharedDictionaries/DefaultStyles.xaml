@@ -1,0 +1,48 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="DefaultTextblock" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontFamily" Value="{StaticResource Inter}"/>
+        <Setter Property="Foreground" Value="{StaticResource Text_primary}"/>
+    </Style>
+
+    <Style x:Key="DefaultTooltip" TargetType="{x:Type ToolTip}">
+        <Setter Property="Foreground" Value="#D4D4D4"/>
+        <Setter Property="Background" Value="#282828"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Border Name="Border" CornerRadius="3"
+                BorderThickness="1.5"
+                Width="{TemplateBinding Width}"
+                Height="{TemplateBinding Height}"
+                            BorderBrush="#424242"
+                            Background="#282828">
+                        <ContentPresenter Margin="9 7" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ToolTip}" BasedOn="{StaticResource DefaultTooltip}"/>
+
+    <Style TargetType="{x:Type Hyperlink}">
+        <Setter Property="TextDecorations" Value="None"/>
+    </Style>
+
+    <Style x:Key="DefaultTextbox" TargetType="{x:Type TextBox}">
+        <Setter Property="Background" Value="{StaticResource Background_default_light}"/>
+        <Setter Property="Foreground" Value="{StaticResource Text_primary}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Border_light}"/>
+        <Setter Property="FontFamily" Value="{StaticResource Inter}"/>
+    </Style>
+
+    <Style x:Key="DefaultCheckbox" TargetType="{x:Type CheckBox}">
+        <Setter Property="Background" Value="{StaticResource Background_default_light}"/>
+        <Setter Property="Foreground" Value="{StaticResource Text_primary}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Border_light}"/>
+        <Setter Property="FontFamily" Value="{StaticResource Inter}"/>
+    </Style>
+
+</ResourceDictionary>

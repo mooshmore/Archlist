@@ -1,0 +1,59 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <BitmapImage x:Key="BrowserImage" UriSource="/Resources/Images/White/web_white_64px.png"/>
+
+    <Style x:Key="HighlightHoverImage" TargetType="Image">
+        <Setter Property="Opacity" Value="0.7"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Image.MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.20" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Image.MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.7" Duration="0:0:0.20" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+
+    </Style>
+
+    <Style x:Key="HighlightHoverText" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Opacity" Value="0.5"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="TextBlock.MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.20" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="TextBlock.MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.5" Duration="0:0:0.20" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SeparatorBorder_light" TargetType="Border">
+        <Setter Property="BorderThickness" Value="0 2 0 0"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Border_light}"/>
+    </Style>
+
+    <Style x:Key="SeparatorBorder_dark" TargetType="Border">
+        <Setter Property="BorderThickness" Value="0 1 0 0"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Border_dark}"/>
+    </Style>
+
+</ResourceDictionary>

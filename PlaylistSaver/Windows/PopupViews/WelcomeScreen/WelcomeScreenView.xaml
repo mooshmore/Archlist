@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="PlaylistSaver.Windows.Views.WelcomeScreenView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PlaylistSaver.Windows.Views" xmlns:wpfloadinganimation="clr-namespace:WpfLoadingAnimation;assembly=WpfLoadingAnimation"
+             mc:Ignorable="d" 
+             Height="500" Width="830"
+             d:DesignHeight="500" d:DesignWidth="830">
+    <UserControl.Resources>
+        <!--<ResourceDictionary Source="/PlaylistSaver;component/Resources/Dictionaries/ViewsDictionaries/WelcomeScreen.xaml"/>-->
+        <ResourceDictionary Source="/Resources/Dictionaries/ViewsDictionaries/WelcomeScreen.xaml"/>
+    </UserControl.Resources>
+    
+    <StackPanel Orientation="Horizontal">
+        <Border Height="500" Width="555" Background="{StaticResource Background_default_dark}"  BorderThickness="0" CornerRadius="16 0 0 16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="200"/>
+                </Grid.RowDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                    <Image Source="/Resources/Images/Logos/AppLogo/appLogo_128px.png" Width="70"/>
+                    <TextBlock Style="{StaticResource AppName}">
+                        Playlist Saver
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource AppVersion}">
+                        Version 2.6.7
+                    </TextBlock>
+                </StackPanel>
+                <TextBlock Style="{StaticResource Welcome}" Grid.Row="1">
+                    Welcome!
+                </TextBlock>
+                <StackPanel Style="{StaticResource Footer}" Grid.Row="3">
+                    <TextBlock Style="{StaticResource MadeBy}">
+                        Made by
+                    </TextBlock>
+                    <TextBlock HorizontalAlignment="Center" Margin="0,5,0,17">
+                        <Hyperlink NavigateUri="https://github.com/mooshmore">
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Height="35" Width="35">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="/Resources/Images/Logos/AppCreator/mooshmore_thumbnail_64px.png"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Style="{StaticResource Mooshmore}" >
+                                    Mooshmore
+                                </TextBlock>
+                            </StackPanel>
+                        </Hyperlink>
+                    </TextBlock>
+                    
+                    <StackPanel Margin="0 0 0 20" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource HighlightHoverText}">
+                            <Hyperlink NavigateUri="https://github.com/mooshmore/YTPlaylistSaver">
+                                <StackPanel Style="{StaticResource BottomLink}">
+                                    <Ellipse Height="20" Width="20">
+                                        <Ellipse.Fill>
+                                            <ImageBrush ImageSource="/Resources/Images/Logos/Github/github_logo_32px.png"/>
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+                                    <TextBlock Style="{StaticResource BottomLinkText}">
+                                        Project repository
+                                    </TextBlock>
+                                </StackPanel>
+                            </Hyperlink>
+                        </TextBlock>
+                        <TextBlock Style="{StaticResource HighlightHoverText}" Margin="10 0 0 0">
+                            <Hyperlink NavigateUri="https://www.youtube.com/channel/UCoiOhzEdXVQCQ3conWHE3aQ">
+                                <StackPanel Style="{StaticResource BottomLink}">
+                                    <Image Width="20" Source="/Resources/Images/Logos/Youtube/youtube_logo_32px.png"/>
+                                    <TextBlock Style="{StaticResource BottomLinkText}">
+                                        Youtube channel
+                                    </TextBlock>
+                                </StackPanel>
+                            </Hyperlink>
+                        </TextBlock>
+
+
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border Height="500" Width="275" Background="{StaticResource Background_topbar_light}"  BorderThickness="0" CornerRadius="0 16 16 0">
+            <StackPanel Style="{StaticResource LoginPanel}">
+                <Image Source="/Resources/Images/Thumbnails/btn_google_signin_light_normal_web@2x.png" Width="200">
+                    <Image.InputBindings>
+                        <!--<MouseBinding Gesture="LeftClick" Command="{Binding ApplyFilter, Mode=OneTime}" />-->
+                        <MouseBinding Gesture="LeftClick" Command="{Binding ApplyFilter}" />
+                    </Image.InputBindings>
+                </Image>
+                <wpfloadinganimation:CircularAnimation Width="30" Margin="0 5 0 0" Fill="#CD3A3F"></wpfloadinganimation:CircularAnimation>
+                <TextBlock Style="{StaticResource LoginDisclaimer}">
+                            Information about your account and its data won’t be stored, everything is saved locally on your computer.
+                </TextBlock>
+                <TextBlock Style="{StaticResource LoginDisclaimer}">
+                            Login is required to read your playlists and make API requests.
+                </TextBlock>
+            </StackPanel>
+
+        </Border>
+    </StackPanel>
+</UserControl>

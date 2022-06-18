@@ -1,0 +1,80 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="AppName" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0 10 0 5"/>
+        <Setter Property="FontSize" Value="24"/>
+    </Style>
+
+    <Style x:Key="AppVersion" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Foreground" Value="{StaticResource Text_dimmed}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="Welcome" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="FontSize" Value="40"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <!--<Setter Property="" Value=""/>
+        <Setter Property="" Value=""/>
+        <Setter Property="" Value=""/>-->
+    </Style>
+
+    <Style x:Key="Footer" TargetType="StackPanel">
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+    
+    <Style x:Key="MadeBy" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Foreground" Value="{StaticResource Text_dimmed}"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="Mooshmore" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Margin" Value="7 0 0 0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="18"/>
+    </Style>
+    
+    <Style x:Key="BottomLinkText" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Margin" Value="7 0 0 0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+    
+    <Style x:Key="BottomLink" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="Height" Value="20"/>
+    </Style>
+
+    <Style x:Key="LoginPanel" TargetType="StackPanel">
+        <Setter Property="Margin" Value="0 60 0 0"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="LoginDisclaimer" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Width" Value="190"/>
+        <Setter Property="Foreground" Value="{StaticResource Text_dimmed}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0 10"/>
+    </Style>
+
+    <Style x:Key="LoginButton" TargetType="Image">
+        <Setter Property="Width" Value="200"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+
+
+
+
+    <!--<Style x:Key="" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="" Value=""/>
+    </Style>-->
+
+</ResourceDictionary>

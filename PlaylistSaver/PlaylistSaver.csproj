@@ -1,0 +1,191 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Fonts\Caveat-VariableFont_wght.ttf" />
+    <None Remove="Resources\Images\btn_google_signin_light_normal_web%402x.png" />
+    <None Remove="Resources\Images\github_logo_120px.png" />
+    <None Remove="Resources\Images\Gray\europe_gray_64px.png" />
+    <None Remove="Resources\Images\Gray\link_gray_64px.png" />
+    <None Remove="Resources\Images\Gray\lock_gray_64px.png" />
+    <None Remove="Resources\Images\Gray\web_gray_64px.png" />
+    <None Remove="Resources\Images\Logos\AppLogo\appLogo_128px.png" />
+    <None Remove="Resources\Images\Logos\AppLogo\appLogo_256px.png" />
+    <None Remove="Resources\Images\Logos\AppLogo\appLogo_32px.png" />
+    <None Remove="Resources\Images\Logos\AppLogo\appLogo_48px.png" />
+    <None Remove="Resources\Images\Logos\AppLogo\appLogo_64px.png" />
+    <None Remove="Resources\Images\Logos\AppLogo\logo_32px.png" />
+    <None Remove="Resources\Images\Logos\AppLogo\logo_48px.png" />
+    <None Remove="Resources\Images\Logos\AppLogo\logo_64px.png" />
+    <None Remove="Resources\Images\Logos\Github\github_logo_32px.png" />
+    <None Remove="Resources\Images\logo_256px.png" />
+    <None Remove="Resources\Images\mooshmore_thumbnail.png" />
+    <None Remove="Resources\Images\mooshmore_thumbnail_1000px.png" />
+    <None Remove="Resources\Images\mooshmore_thumbnail_128px.png" />
+    <None Remove="Resources\Images\mooshmore_thumbnail_64px.png" />
+    <None Remove="Resources\Images\no_thumbnail.jpg" />
+    <None Remove="Resources\Images\White\add_32px.png" />
+    <None Remove="Resources\Images\White\add_64px.png" />
+    <None Remove="Resources\Images\White\cancel_white_32px.png" />
+    <None Remove="Resources\Images\White\cancel_white_64px.png" />
+    <None Remove="Resources\Images\White\close_24px.png" />
+    <None Remove="Resources\Images\White\close_32px.png" />
+    <None Remove="Resources\Images\White\close_48px.png" />
+    <None Remove="Resources\Images\White\close_64px.png" />
+    <None Remove="Resources\Images\White\earth_white_64px.png" />
+    <None Remove="Resources\Images\White\expand_arrow_white.png" />
+    <None Remove="Resources\Images\White\info_24px.png" />
+    <None Remove="Resources\Images\White\info_64px.png" />
+    <None Remove="Resources\Images\White\link_white_64px.png" />
+    <None Remove="Resources\Images\White\lock_white_64px.png" />
+    <None Remove="Resources\Images\White\maximize_button_24px.png" />
+    <None Remove="Resources\Images\White\maximize_button_64px.png" />
+    <None Remove="Resources\Images\White\restore_down_24px.png" />
+    <None Remove="Resources\Images\White\restore_down_64px.png" />
+    <None Remove="Resources\Images\White\settings_64px.png" />
+    <None Remove="Resources\Images\White\subtract_24px.png" />
+    <None Remove="Resources\Images\White\subtract_64px.png" />
+    <None Remove="Resources\Images\White\video_dots_24px.png" />
+    <None Remove="Resources\Images\White\video_playlist_24px.png" />
+    <None Remove="Resources\Images\White\web_white_64px.png" />
+    <None Remove="Resources\Fonts\Inter-VariableFont_slnt,wght.ttf" />
+    <None Remove="Resources\Fonts\Roboto-Black.ttf" />
+    <None Remove="Resources\Fonts\Roboto-BlackItalic.ttf" />
+    <None Remove="Resources\Fonts\Roboto-Bold.ttf" />
+    <None Remove="Resources\Fonts\Roboto-BoldItalic.ttf" />
+    <None Remove="Resources\Fonts\Roboto-Italic.ttf" />
+    <None Remove="Resources\Fonts\Roboto-Light.ttf" />
+    <None Remove="Resources\Fonts\Roboto-LightItalic.ttf" />
+    <None Remove="Resources\Fonts\Roboto-Medium.ttf" />
+    <None Remove="Resources\Fonts\Roboto-MediumItalic.ttf" />
+    <None Remove="Resources\Fonts\Roboto-Regular.ttf" />
+    <None Remove="Resources\Fonts\Roboto-Thin.ttf" />
+    <None Remove="Resources\Fonts\Roboto-ThinItalic.ttf" />
+    <None Remove="Resources\Images\youtube_logo_256px.png" />
+    <None Remove="Resources\Images\youtube_logo_32px.png" />
+    <None Remove="Resources\Images\youtube_logo_64px.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Inne\Helpers\ExtensionMethods\Converters.cs" Link="Helpers\Converters.cs" />
+    <Compile Include="..\..\Inne\Helpers\ExtensionMethods\DirectoryExtensions.cs" Link="Helpers\DirectoryExtensions.cs" />
+    <Compile Include="..\..\Inne\Helpers\ExtensionMethods\ListExtensions.cs" Link="Helpers\ListExtensions.cs" />
+    <Compile Include="..\..\Inne\Helpers\ExtensionMethods\MethodsCluster.cs" Link="Helpers\MethodsCluster.cs" />
+    <Compile Include="..\..\Inne\Helpers\ExtensionMethods\StringFunctionsExtensions.cs" Link="Helpers\StringFunctionsExtensions.cs" />
+    <Compile Include="..\..\Inne\Helpers\ExtensionMethods\TimeAndDate.cs" Link="Helpers\TimeAndDate.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" Version="1.57.0" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.57.0.2665" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Unnoficial.Microsoft.Expression.Drawing" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Fonts\Caveat-VariableFont_wght.ttf" />
+    <Resource Include="Resources\Images\Logos\AppLogo\appLogo_128px.png" />
+    <Resource Include="Resources\Images\Logos\AppLogo\appLogo_256px.png" />
+    <Resource Include="Resources\Images\Logos\AppLogo\appLogo_32px.png" />
+    <Resource Include="Resources\Images\Logos\AppLogo\appLogo_48px.png" />
+    <Resource Include="Resources\Images\Logos\AppLogo\appLogo_64px.png" />
+    <Resource Include="Resources\Images\Thumbnails\btn_google_signin_light_normal_web%402x.png" />
+    <Resource Include="Resources\Images\Logos\Github\github_logo_120px.png" />
+    <Resource Include="Resources\Images\Gray\europe_gray_64px.png" />
+    <Resource Include="Resources\Images\Gray\link_gray_64px.png" />
+    <Resource Include="Resources\Images\Gray\lock_gray_64px.png" />
+    <Resource Include="Resources\Images\Gray\web_gray_64px.png" />
+    <Resource Include="Resources\Images\Logos\Github\github_logo_32px.png" />
+    <Resource Include="Resources\Images\Logos\AppCreator\mooshmore_thumbnail_1000px.png" />
+    <Resource Include="Resources\Images\Logos\AppCreator\mooshmore_thumbnail_128px.png" />
+    <Resource Include="Resources\Images\Logos\AppCreator\mooshmore_thumbnail_64px.png" />
+    <Resource Include="Resources\Images\Thumbnails\no_thumbnail.jpg" />
+    <Resource Include="Resources\Images\White\add_32px.png" />
+    <Resource Include="Resources\Images\White\add_64px.png" />
+    <Resource Include="Resources\Images\White\cancel_white_32px.png" />
+    <Resource Include="Resources\Images\White\cancel_white_64px.png" />
+    <Resource Include="Resources\Images\White\close_24px.png" />
+    <Resource Include="Resources\Images\White\close_32px.png" />
+    <Resource Include="Resources\Images\White\close_48px.png" />
+    <Resource Include="Resources\Images\White\close_64px.png" />
+    <Resource Include="Resources\Images\White\earth_white_64px.png" />
+    <Resource Include="Resources\Images\White\expand_arrow_white.png" />
+    <Resource Include="Resources\Images\White\info_24px.png" />
+    <Resource Include="Resources\Images\White\info_64px.png" />
+    <Resource Include="Resources\Images\White\link_white_64px.png" />
+    <Resource Include="Resources\Images\White\lock_white_64px.png" />
+    <Resource Include="Resources\Images\White\maximize_button_24px.png" />
+    <Resource Include="Resources\Images\White\maximize_button_64px.png" />
+    <Resource Include="Resources\Images\White\settings_64px.png" />
+    <Resource Include="Resources\Images\White\subtract_64px.png" />
+    <Resource Include="Resources\Images\White\restore_down_24px.png" />
+    <Resource Include="Resources\Images\White\restore_down_64px.png" />
+    <Resource Include="Resources\Images\White\subtract_24px.png" />
+    <Resource Include="Resources\Images\White\video_dots_24px.png" />
+    <Resource Include="Resources\Images\White\web_white_64px.png" />
+    <Resource Include="Resources\Fonts\Inter-VariableFont_slnt,wght.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Temp\ChannelThumbnail.png" />
+    <Resource Include="Resources\Images\Temp\PlaylistCreator_thumbnail.png" />
+    <Resource Include="Resources\Images\Temp\PlaylistThumbnail.png" />
+    <Resource Include="Resources\Images\Temp\VideoThumbnail.png" />
+    <Resource Include="Resources\Fonts\Roboto-Black.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Roboto-BlackItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Roboto-Bold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Roboto-BoldItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Roboto-Italic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Roboto-Light.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Roboto-LightItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Roboto-Medium.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Roboto-MediumItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Roboto-Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Roboto-Thin.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Roboto-ThinItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Logos\Youtube\youtube_logo_256px.png" />
+    <Resource Include="Resources\Images\Logos\Youtube\youtube_logo_32px.png" />
+    <Resource Include="Resources\Images\Logos\Youtube\youtube_logo_64px.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Windows\MainWindowViews\AppInfo\" />
+    <Folder Include="Windows\MainWindowViews\Settings\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="WpfLoadingAnimation">
+      <HintPath>..\..\WPF\WpfLoadingAnimation\WpfLoadingAnimation\bin\Debug\WpfLoadingAnimation.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

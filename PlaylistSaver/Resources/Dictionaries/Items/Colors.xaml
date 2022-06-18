@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <SolidColorBrush x:Key="Text_primary">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="Text_secondary">#AAAAAA</SolidColorBrush>
+    <SolidColorBrush x:Key="Text_dimmed">#8D8D8D</SolidColorBrush>
+
+    <SolidColorBrush x:Key="Background_default_dark">#181818</SolidColorBrush>
+    <SolidColorBrush x:Key="Background_default_light">#303030</SolidColorBrush>
+
+    <SolidColorBrush x:Key="Background_topbar">#282828</SolidColorBrush>
+    <SolidColorBrush x:Key="Background_topbar_light">#343434</SolidColorBrush>
+    <SolidColorBrush x:Key="Background_navbar">#212121</SolidColorBrush>
+
+    <SolidColorBrush x:Key="Border_light">#5F5F5F</SolidColorBrush>
+    <SolidColorBrush x:Key="Border_dark">#303030</SolidColorBrush>
+
+    <SolidColorBrush x:Key="Accent_red">#CC0000</SolidColorBrush>
+    <SolidColorBrush x:Key="Accent_blue">#3EA6FF</SolidColorBrush>
+
+    
+    <sys:Double x:Key="calendar_columnHeader_rowHeight">60</sys:Double>
+    <sys:Double x:Key="calendar_versions_width">160</sys:Double>
+    
+    
+</ResourceDictionary>
