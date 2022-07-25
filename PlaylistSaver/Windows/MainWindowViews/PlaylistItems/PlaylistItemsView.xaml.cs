@@ -1,12 +1,21 @@
-﻿using PlaylistSaver.PlaylistMethods;
-using PlaylistSaver.Windows.ViewModels;
+﻿using Helpers;
+using PlaylistSaver.PlaylistMethods;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Helpers;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace PlaylistSaver.Windows.Views
+namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
 {
     /// <summary>
     /// Interaction logic for PlaylistItemsView.xaml

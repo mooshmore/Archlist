@@ -13,9 +13,9 @@ using System.Linq;
 
 namespace PlaylistSaver.PlaylistMethods
 {
-    internal class PlaylistData
+    public class PlaylistData
     {
-        internal static async Task<List<Playlist>> RetrieveOwnedPlaylistsData()
+        public static async Task<List<Playlist>> RetrieveOwnedPlaylistsData()
         {
             PlaylistListResponse playlists = null;
             string nextPageToken = null;
@@ -44,7 +44,7 @@ namespace PlaylistSaver.PlaylistMethods
             // Convert the default google plyalist class to a one used in the program
             return ParsePlaylists(playlists.Items).Result;
         }
-        internal static async Task<List<Playlist>> RetrievePlaylistsData(List<string> playlistIds)
+        public static async Task<List<Playlist>> RetrievePlaylistsData(List<string> playlistIds)
         {
             // Just in case make so that the playlist ids won't repeat
             playlistIds = playlistIds.Distinct().ToList();
@@ -114,7 +114,7 @@ namespace PlaylistSaver.PlaylistMethods
         /// <summary>
         /// Converts the default youtube api playlists object to the one used in the program.
         /// </summary>
-        internal static async Task<List<Playlist>> ParsePlaylists(IList<Google.Apis.YouTube.v3.Data.Playlist> youtubePlaylists)
+        public static async Task<List<Playlist>> ParsePlaylists(IList<Google.Apis.YouTube.v3.Data.Playlist> youtubePlaylists)
         {
             List<Playlist> playlistsList = new();
             foreach (var item in youtubePlaylists)
@@ -129,7 +129,7 @@ namespace PlaylistSaver.PlaylistMethods
         /// downloading and saving the playlist thumbnail.
         /// </summary>
         /// <param name="playlistsList">The list of playlists to save information about.</param>
-        internal static async void SavePlaylistData(List<Playlist> playlistsList)
+        public static async void SavePlaylistData(List<Playlist> playlistsList)
         {
             // Save data for every playlist
             foreach (Playlist playlist in playlistsList)

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="clientSecret.json" />
     <None Remove="Resources\Fonts\Caveat-VariableFont_wght.ttf" />
     <None Remove="Resources\Images\btn_google_signin_light_normal_web%402x.png" />
     <None Remove="Resources\Images\github_logo_120px.png" />
@@ -81,8 +82,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="clientSecret.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Google.Apis.Auth" Version="1.57.0" />
-    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.57.0.2665" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.57.0.2750" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Unnoficial.Microsoft.Expression.Drawing" Version="1.0.0" />

@@ -1,4 +1,9 @@
-﻿using System;
+﻿using PlaylistSaver.PlaylistMethods;
+using PlaylistSaver.ProgramData;
+using PlaylistSaver.ProgramData.Stores;
+using PlaylistSaver.Windows;
+using PlaylistSaver.Windows.PopupViews.WelcomeScreenWindow;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -6,6 +11,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace PlaylistSaver
 {
@@ -19,16 +25,26 @@ namespace PlaylistSaver
         /// </summary>
         protected override void OnStartup(StartupEventArgs e)
         {
-            EventManager.RegisterClassHandler(
-                typeof(System.Windows.Documents.Hyperlink),
-                System.Windows.Documents.Hyperlink.RequestNavigateEvent,
-                new System.Windows.Navigation.RequestNavigateEventHandler(
-                    (sender, en) => Process.Start(new ProcessStartInfo(
-                        en.Uri.ToString()
-                    )
-                    { UseShellExecute = true })
-                )
-            );
+            // Configure and create data, files etc required by the program
+            AppConfiguration.Configure();
+
+            MainWindow = new MainWindow()
+            {
+                DataContext = new MainWindowViewModel()
+            };
+
+            MainWindow.Show();
+
+            //MainWindow = new WelcomeScreenView()
+            //{
+            //    DataContext = new WelcomeScreenViewModel()
+            //};
+
+            //ViewModels.WelcomeScreenView = main
+
+            //MainWindow.Show();
+
+
             base.OnStartup(e);
         }
     }

@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PlaylistSaver.Windows.Views
+namespace PlaylistSaver.Windows.MainWindowViews.Homepage
 {
     /// <summary>
-    /// Interaction logic for WelcomeScreenView.xaml
+    /// Interaction logic for HomepageView.xaml
     /// </summary>
-    public partial class WelcomeScreenView : UserControl
+    public partial class HomepageView : UserControl
     {
-        public WelcomeScreenView()
+        public HomepageView()
         {
             InitializeComponent();
         }

@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace PlaylistSaver.PlaylistMethods
 {
-    internal static class ChannelsData
+    public static class ChannelsData
     {
         /// <summary>
         /// Returns the channel with the given Id by reading it from locally saved data.
@@ -34,7 +34,7 @@ namespace PlaylistSaver.PlaylistMethods
             }
         }
 
-        internal static async Task<List<Channel>> RetrieveAndSaveChannelsData(List<PlaylistItem> playlistItems)
+        public static async Task<List<Channel>> RetrieveAndSaveChannelsData(List<PlaylistItem> playlistItems)
         {
             // Distinct by the channels to don't download the same channel twice
             List<string> channelsIdsList = playlistItems.Select(o => o.ItemInfo.OwnerChannelId).Distinct().ToList();
@@ -45,7 +45,7 @@ namespace PlaylistSaver.PlaylistMethods
         /// <summary>
         /// Saves the data about channels that are in the videos in the playlist.
         /// </summary>
-        internal static async Task<List<Channel>> RetrieveAndSaveChannelsData(List<string> channelsIdsList)
+        public static async Task<List<Channel>> RetrieveAndSaveChannelsData(List<string> channelsIdsList)
         {
             // Contains a total list of channels in a form of a request list that are currently being retrieved
             string currentChannelsList = "";

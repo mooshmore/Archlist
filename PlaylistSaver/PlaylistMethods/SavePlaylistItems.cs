@@ -11,7 +11,7 @@ namespace PlaylistSaver.PlaylistMethods
     {
         private static DirectoryInfo playlistMainDirectory;
 
-        internal static void Save(List<PlaylistItem> playlistItems, string playlistId)
+        public static void Save(List<PlaylistItem> playlistItems, string playlistId)
         {
             // Create directory for the playlist
             playlistMainDirectory = GlobalItems.playlistsDirectory.CreateSubdirectory(playlistId);

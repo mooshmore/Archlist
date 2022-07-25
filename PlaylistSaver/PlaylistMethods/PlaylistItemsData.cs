@@ -7,14 +7,14 @@ using Google.Apis.YouTube.v3.Data;
 
 namespace PlaylistSaver.PlaylistMethods
 {
-    internal static class PlaylistItemsData
+    public static class PlaylistItemsData
     {
         /// <summary>
         /// Retrieves information about items in the playlist from youtube with the given Id.
         /// </summary>
         /// <param name="playlistId">The Id of the playlist to retrieve.</param>
         /// <returns>The playlist in </returns>
-        internal static async Task<List<PlaylistItem>> Retrieve(string playlistId)
+        public static async Task<List<PlaylistItem>> Retrieve(string playlistId)
         {
             var result = GetPlaylist(playlistId).Result;
             if (!result.Succes)
@@ -49,7 +49,7 @@ namespace PlaylistSaver.PlaylistMethods
         /// </summary>
         /// <param name="playlist">The playlist to convert.</param>
         /// <returns>A list of playlistItems converted from the given ojbect.</returns>
-        internal static List<PlaylistItem> Parse(PlaylistItemListResponse playlist)
+        public static List<PlaylistItem> Parse(PlaylistItemListResponse playlist)
         {
             // Convert api playlistItem to a one that is used in the program
             List<PlaylistItem> playlistItems = new();

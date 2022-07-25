@@ -3,13 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PlaylistSaver" xmlns:views="clr-namespace:PlaylistSaver.Windows.Views" xmlns:views1="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link" xmlns:views2="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned"
+        xmlns:local="clr-namespace:PlaylistSaver" 
+        xmlns:playlistItems="clr-namespace:PlaylistSaver.Windows.MainWindowViews.PlaylistItems" 
+        xmlns:homepage="clr-namespace:PlaylistSaver.Windows.MainWindowViews.Homepage" 
+        xmlns:AddPlaylists_link="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link" 
+        xmlns:AddPlaylists_userOwned="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned" 
+        
+        
+        xmlns:mainWindowModel="clr-namespace:PlaylistSaver.Windows" 
+        d:DataContext="{d:DesignInstance Type=mainWindowModel:MainWindowViewModel}"
         mc:Ignorable="d"
         Background="{StaticResource Background_default_dark}"
         WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="900" Width="1500">
 
-    <!--Add the WindowChrome object-->
+    <!--WindowChrome caption, height defines window draggable border height-->
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="25" />
     </WindowChrome.WindowChrome>
@@ -24,47 +32,80 @@
     
     <Border x:Name="MainWindowBorder" BorderThickness="0">
         <Grid>
-            <!--<views:WelcomeScreenView/>-->
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="65"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Column="1" Background="{StaticResource Background_topbar_light}">
-                <!--Caption buttons-->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
-                    <Button Style="{StaticResource MinimizeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Minimize"
-                            Command="{x:Static SystemCommands.MinimizeWindowCommand}"/>
-                    <Button x:Name="RestoreButton" Visibility="Collapsed" Style="{StaticResource RestoreButtonStyle}" 
-                            Command="{x:Static SystemCommands.RestoreWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Restore"/>
-                    <Button x:Name="MaximizeButton" Visibility="Visible" Style="{StaticResource MaximizeButtonStyle}" 
-                            Command="{x:Static SystemCommands.MaximizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Maximize" />
-                    <Button Style="{StaticResource CloseButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Close"
-                            Command="{x:Static SystemCommands.CloseWindowCommand}"/>
-                </StackPanel>
-            </Grid>
-            <Grid Grid.RowSpan="3" Background="{StaticResource Background_topbar_light}">
+            <Grid Grid.ColumnSpan="3" Grid.RowSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="65"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="25"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <StackPanel Margin="0 35">
-                    <Image Cursor="Hand" Source="/Resources/Images/Logos/AppLogo/appLogo_64px.png" Width="40" ToolTip="Home page"/>
-                </StackPanel>
-                <StackPanel Grid.Row="2" Margin="0 10" Width="35">
-                    <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/Temp/PlaylistCreator_thumbnail.png" ToolTip="Your account"/>
-                    <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/White/info_64px.png" ToolTip="App info"/>
-                    <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/White/settings_64px.png" ToolTip="Settings"/>
-                </StackPanel>
+                <Grid Grid.Column="1" Background="{StaticResource Background_topbar_light}">
+                    <!--Caption buttons-->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                        <Button Style="{StaticResource MinimizeButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Minimize"
+                            Command="{x:Static SystemCommands.MinimizeWindowCommand}"/>
+                        <Button x:Name="RestoreButton" Visibility="Collapsed" Style="{StaticResource RestoreButtonStyle}" 
+                            Command="{x:Static SystemCommands.RestoreWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Restore"/>
+                        <Button x:Name="MaximizeButton" Visibility="Visible" Style="{StaticResource MaximizeButtonStyle}" 
+                            Command="{x:Static SystemCommands.MaximizeWindowCommand}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Maximize" />
+                        <Button Style="{StaticResource CloseButtonStyle}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Close"
+                            Command="{x:Static SystemCommands.CloseWindowCommand}"/>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.RowSpan="3" Background="{StaticResource Background_topbar_light}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Margin="0 35">
+                        <Image Cursor="Hand" Source="/Resources/Images/Logos/AppLogo/appLogo_64px.png" Width="40" ToolTip="Home page"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Margin="0 10" Width="35">
+                        <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/Temp/PlaylistCreator_thumbnail.png" ToolTip="Your account"/>
+                        <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/White/info_64px.png" ToolTip="App info"/>
+                        <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/White/settings_64px.png" ToolTip="Settings"/>
+                    </StackPanel>
+
+                </Grid>
+
+                <ContentControl Content="{Binding CurrentViewModel}" Grid.Column="1" Grid.Row="1">
+                    <ContentControl.Resources>
+                        <DataTemplate DataType="{x:Type playlistItems:PlaylistItemsViewModel}">
+                            <playlistItems:PlaylistItemsView/>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type homepage:HomepageViewModel}">
+                            <homepage:HomepageView/>
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
 
             </Grid>
-            <views1:AddPlaylists_linkView Grid.Column="1" Grid.Row="1" Width="950" Height="650">
-                
-            </views1:AddPlaylists_linkView>
+            
+            <!--Popup Views-->
+            <ContentControl Content="{Binding CurrentPopupViewModel}" Grid.Column="1" Grid.Row="1">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type AddPlaylists_link:AddPlaylists_linkViewModel}">
+                        <AddPlaylists_link:AddPlaylists_linkView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type AddPlaylists_userOwned:AddPlaylists_userOwnedViewModel}">
+                        <AddPlaylists_userOwned:AddPlaylists_userOwnedView/>
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
         </Grid>
+        
     </Border>
 </Window>

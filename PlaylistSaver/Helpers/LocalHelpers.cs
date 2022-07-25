@@ -10,14 +10,14 @@ using static PlaylistSaver.PlaylistMethods.SharedClasses;
 
 namespace PlaylistSaver.Helpers
 {
-    internal static class LocalHelpers
+    public static class LocalHelpers
     {
         /// <summary>
         /// Translates a string privacy status to a PrivacyStatus enum.
         /// </summary>
         /// <remarks>Will throw an exception if the given privacy status doesn't match to any filters.</remarks>
         /// <returns>The translated privacy status.</returns>
-        internal static PrivacyStatus PrivacyStatusTranslator(string privacyStatus)
+        public static PrivacyStatus PrivacyStatusTranslator(string privacyStatus)
         {
             return privacyStatus.ToLower() switch
             {
@@ -31,7 +31,7 @@ namespace PlaylistSaver.Helpers
         /// <summary>
         /// Translates the <paramref name="imageQuality"/> to their corresponding url string names.
         /// </summary>
-        internal static string ImageQualityTranslator(ImageQuality? imageQuality)
+        public static string ImageQualityTranslator(ImageQuality? imageQuality)
         {
             return imageQuality switch
             {
@@ -49,7 +49,7 @@ namespace PlaylistSaver.Helpers
         /// </summary>
         /// <param name="apiThumbnails"></param>
         /// <param name="thumbnail"></param>
-        internal static void SaveThumbnailResolutionData(ThumbnailDetails apiThumbnails, ThumbnailInfo thumbnail)
+        public static void SaveThumbnailResolutionData(ThumbnailDetails apiThumbnails, ThumbnailInfo thumbnail)
         {
             // Save maximum available quality
             if (apiThumbnails.Maxres != null)
@@ -71,7 +71,7 @@ namespace PlaylistSaver.Helpers
                 thumbnail.SavedImageQuality = thumbnail.MaximumAvailableQuality;
         }
 
-        internal static string ExtractThumbnailId(string videoURL)
+        public static string ExtractThumbnailId(string videoURL)
         {
             return videoURL.TrimFromFirst("vi/", false).TrimToFirst("/");
         }

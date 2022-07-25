@@ -6,34 +6,43 @@ using Helpers;
 namespace PlaylistSaver
 {
     /// <summary>
-    /// The internal settings of the program.
+    /// The public settings of the program.
     /// </summary>
     /// <remarks>
     /// This class ins't static so it can be serialized.
     /// </remarks>
-    internal static class Settings
+    public static class Settings
     {
 
-        internal static SettingsClass settingsInstance = new();
+        public static SettingsClass settingsInstance = new();
 
         /// <summary>
         /// Defines a quality at which thumbnails will be downloaded.
         /// </summary>
-        internal static ImageQuality? ImageQuality
+        public static ImageQuality? ImageQuality
         {
-            get => settingsInstance.ImageQuality;
-            set => settingsInstance.ImageQuality = value;
+            get => settingsInstance.imageQuality;
+            set => settingsInstance.imageQuality = value;
+        }
+
+        /// <summary>
+        /// Defines a quality at which thumbnails will be downloaded.
+        /// </summary>
+        public static bool FirstAppRun
+        {
+            get => settingsInstance.firstAppRun;
+            set => settingsInstance.firstAppRun = value;
         }
     }
 
 
-    internal class SettingsClass
+    public class SettingsClass
     {
         /// <summary>
         /// Reads saved settings from settings.json file. <br/>
         /// If file / settings don't exist then it creates them with default values.
         /// </summary>
-        internal void Read()
+        public void Read()
         {
             FileInfo settingsFile = GlobalItems.mainDirectory.SubFile("settings.json");
 
@@ -44,20 +53,21 @@ namespace PlaylistSaver
                 SettingsClass savedSettings = JsonConvert.DeserializeObject<SettingsClass>(settingsFile.ReadAllText());
             
                 // If a property doesn't exist set it to a default one
-                ImageQuality = savedSettings.ImageQuality == null ? Enums.ImageQuality.Medium : savedSettings.ImageQuality;
+                imageQuality = savedSettings.imageQuality == null ? Enums.ImageQuality.Medium : savedSettings.imageQuality;
             }
             // If file doesn't exist create it and set the default settings
             else
             {
                 GlobalItems.mainDirectory.CreateSubfile("settings.json");
-                ImageQuality = Enums.ImageQuality.Medium;
+                imageQuality = Enums.ImageQuality.Medium;
+                firstAppRun = true;
             }
 
             // Save the settings in case that the file was missing some properties
             Save();
         }
 
-        internal void Save()
+        public void Save()
         {
             // Serialize the settings data into a json
             string jsonString = JsonConvert.SerializeObject(this);
@@ -65,6 +75,7 @@ namespace PlaylistSaver
             File.WriteAllText(GlobalItems.mainDirectory.SubFile("settings.json").FullName, jsonString);
         }
 
-        public ImageQuality? ImageQuality;
+        public ImageQuality? imageQuality;
+        public bool firstAppRun;
     }
 }

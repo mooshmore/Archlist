@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace PlaylistSaver
 {
-    internal static class GlobalItems
+    public static class GlobalItems
     {
-        internal static HttpClient HttpClient = new();
+        public static HttpClient HttpClient = new();
         /// <remarks>
         /// This creates a new instance every time it is called to allow downloading multiple files at once.
         /// </remarks>
-        internal static WebClient WebClient => new();
-        internal static readonly string userApiKey = "AIzaSyDS3X0t5HnL0kTvQuiWkQJ9Yxq_PvXBkvE";
+        public static WebClient WebClient => new();
+        public static readonly string userApiKey = "AIzaSyDS3X0t5HnL0kTvQuiWkQJ9Yxq_PvXBkvE";
 
-        internal static DirectoryInfo channelsDirectory;
-        internal static DirectoryInfo playlistsDirectory;
-        internal static DirectoryInfo mainDirectory;
-        internal static string imagesPath = "Resources/Assets/Images/";
+        public static DirectoryInfo channelsDirectory;
+        public static DirectoryInfo playlistsDirectory;
+        public static DirectoryInfo mainDirectory;
+        public static string imagesPath = "Resources/Assets/Images/";
     }
 }
