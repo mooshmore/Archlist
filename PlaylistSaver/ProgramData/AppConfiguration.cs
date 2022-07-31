@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using PlaylistSaver.PlaylistMethods;
+using PlaylistSaver.ProgramData.Stores;
+using PlaylistSaver.UserData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,6 +19,8 @@ namespace PlaylistSaver.ProgramData
         {
             // Retrieve clientID and clientSecret from Json file
             OAuthLogin.LoadSecretData();
+
+            OAuthLogin.LogInAsync();
 
             SetDefaultJsonSettings();
             CreateFileStructure();
@@ -53,9 +57,10 @@ namespace PlaylistSaver.ProgramData
         public static void CreateFileStructure()
         {
             string roamingPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            GlobalItems.mainDirectory = Directory.CreateDirectory(Path.Combine(roamingPath, "MooshsPlaylistSaver"));
-            GlobalItems.channelsDirectory = GlobalItems.mainDirectory.CreateSubdirectory("channels");
-            GlobalItems.playlistsDirectory = GlobalItems.mainDirectory.CreateSubdirectory("playlists");
+            Directories.MainDirectory = Directory.CreateDirectory(Path.Combine(roamingPath, "MooshsPlaylistSaver"));
+            Directories.ChannelsDirectory = Directories.MainDirectory.CreateSubdirectory("channels");
+            Directories.PlaylistsDirectory = Directories.MainDirectory.CreateSubdirectory("playlists");
+            Directories.UserDataDirectory = Directories.MainDirectory.CreateSubdirectory("userData");
         }
 
     }

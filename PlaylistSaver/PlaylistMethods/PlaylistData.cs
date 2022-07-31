@@ -10,11 +10,56 @@ using PlaylistSaver.PlaylistMethods;
 using Google.Apis.YouTube.v3.Data;
 using Helpers;
 using System.Linq;
+using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
+using PlaylistSaver.UserData;
+using PlaylistSaver.ProgramData.Stores;
 
 namespace PlaylistSaver.PlaylistMethods
 {
-    public class PlaylistData
+    public class DisplayPlaylist
     {
+        public DisplayPlaylist(string playlistTitle, string playlistID, string itemCount, string creatorChannelTitle)
+        {
+            PlaylistTitle = playlistTitle;
+            PlaylistID = playlistID;
+            ItemCount = itemCount;
+            CreatorChannelTitle = creatorChannelTitle;
+        }
+
+        public string PlaylistTitle { get; set; }
+        public string PlaylistID { get; set; }
+        public string ItemCount { get; set; }
+        public string CreatorChannelTitle { get; set; }
+        public string PlaylistThumbnailPath => Path.Combine(Directories.PlaylistsDirectory.FullName, PlaylistID, "playlistThumbnail.jpg");
+    }
+
+
+    public static class PlaylistData
+    {
+        public static ObservableCollection<DisplayPlaylist> ReadSavedPlaylists()
+        {
+            ObservableCollection<DisplayPlaylist> playlistList = new();
+            foreach (DirectoryInfo playlistDirectory in Directories.PlaylistsDirectory.GetDirectories())
+            {
+                string playlistID = playlistDirectory.Name;
+                string playlistInfoPath = Path.Combine(Directories.PlaylistsDirectory.FullName, playlistID, "playlistInfo.json");
+
+                JObject clientSecretFile = JObject.Parse(File.ReadAllText(playlistInfoPath));
+
+                string playlistName = clientSecretFile.SelectToken("snippet.title").ToString();
+                string itemCount = clientSecretFile.SelectToken("contentDetails.itemCount").ToString();
+                string creatorChannelTitle = clientSecretFile.SelectToken("snippet.channelTitle").ToString();
+                playlistList.Add(new DisplayPlaylist(playlistName, playlistID, itemCount, creatorChannelTitle));
+            }
+            return playlistList;
+        }
+
+        public static string GetPlaylistDirectoryPath(string playlistID)
+        {
+            return Path.Combine(Directories.PlaylistsDirectory.FullName, playlistID);
+        }
+
         public static async Task<List<Playlist>> RetrieveOwnedPlaylistsData()
         {
             PlaylistListResponse playlists = null;
@@ -44,6 +89,7 @@ namespace PlaylistSaver.PlaylistMethods
             // Convert the default google plyalist class to a one used in the program
             return ParsePlaylists(playlists.Items).Result;
         }
+
         public static async Task<List<Playlist>> RetrievePlaylistsData(List<string> playlistIds)
         {
             // Just in case make so that the playlist ids won't repeat
@@ -134,7 +180,7 @@ namespace PlaylistSaver.PlaylistMethods
             // Save data for every playlist
             foreach (Playlist playlist in playlistsList)
             {
-                DirectoryInfo playlistDirectory = GlobalItems.playlistsDirectory.CreateSubdirectory(playlist.PlaylistInfo.Id);
+                DirectoryInfo playlistDirectory = Directories.PlaylistsDirectory.CreateSubdirectory(playlist.PlaylistInfo.Id);
 
                 // Youtube playlist thumbnails have different url when they are changed, so only redownload
                 // the thumbnail if the url(id to be precise) doesn't match or the thumbnail doesn't exist

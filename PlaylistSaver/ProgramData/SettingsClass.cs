@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.IO;
 using Helpers;
+using PlaylistSaver.ProgramData.Stores;
 
 namespace PlaylistSaver
 {
@@ -44,7 +45,7 @@ namespace PlaylistSaver
         /// </summary>
         public void Read()
         {
-            FileInfo settingsFile = GlobalItems.mainDirectory.SubFile("settings.json");
+            FileInfo settingsFile = Directories.MainDirectory.SubFile("settings.json");
 
             // If file exists and has something in it read the saved settings
             if (settingsFile.Exists && !settingsFile.IsEmpty())
@@ -58,7 +59,7 @@ namespace PlaylistSaver
             // If file doesn't exist create it and set the default settings
             else
             {
-                GlobalItems.mainDirectory.CreateSubfile("settings.json");
+                Directories.MainDirectory.CreateSubfile("settings.json");
                 imageQuality = Enums.ImageQuality.Medium;
                 firstAppRun = true;
             }
@@ -72,7 +73,7 @@ namespace PlaylistSaver
             // Serialize the settings data into a json
             string jsonString = JsonConvert.SerializeObject(this);
             // Create a new channelInfo.json file and write the channel data to it
-            File.WriteAllText(GlobalItems.mainDirectory.SubFile("settings.json").FullName, jsonString);
+            File.WriteAllText(Directories.MainDirectory.SubFile("settings.json").FullName, jsonString);
         }
 
         public ImageQuality? imageQuality;

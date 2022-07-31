@@ -1,4 +1,6 @@
 ﻿using PlaylistSaver.PlaylistMethods;
+using PlaylistSaver.ProgramData.Stores;
+using PlaylistSaver.Windows.MainWindowViews.Homepage;
 using PlaylistSaver.Windows.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -12,20 +14,8 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
     public class PlaylistItemsViewModel : ViewModelBase
     {
         private Playlist _displayedPlaylist;
-        public Playlist DisplayedPlaylist
-        {
-            get
-            {
-                return _displayedPlaylist;
-            }
-            set
-            {
-                _displayedPlaylist = value;
-                OnPropertyChanged(nameof(Playlist));
-            }
-        }
 
-        public PlaylistItemsViewModel()
+        public PlaylistItemsViewModel(NavigationStore navigationStore)
         {
 
         }

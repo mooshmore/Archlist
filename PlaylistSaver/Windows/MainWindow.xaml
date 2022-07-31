@@ -3,15 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PlaylistSaver" 
+        xmlns:local="clr-namespace:PlaylistSaver.Windows" 
         xmlns:playlistItems="clr-namespace:PlaylistSaver.Windows.MainWindowViews.PlaylistItems" 
         xmlns:homepage="clr-namespace:PlaylistSaver.Windows.MainWindowViews.Homepage" 
         xmlns:AddPlaylists_link="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link" 
         xmlns:AddPlaylists_userOwned="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned" 
-        
-        
-        xmlns:mainWindowModel="clr-namespace:PlaylistSaver.Windows" 
-        d:DataContext="{d:DesignInstance Type=mainWindowModel:MainWindowViewModel}"
+        d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
         Background="{StaticResource Background_default_dark}"
         WindowStartupLocation="CenterScreen"
@@ -71,7 +68,11 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel Margin="0 35">
-                        <Image Cursor="Hand" Source="/Resources/Images/Logos/AppLogo/appLogo_64px.png" Width="40" ToolTip="Home page"/>
+                        <Image Cursor="Hand" Source="/Resources/Images/Logos/AppLogo/appLogo_64px.png" Width="40" ToolTip="Home page">
+                            <Image.InputBindings>
+                                <MouseBinding Gesture="LeftClick" Command="{Binding GoToHomePageCommand}"/>
+                            </Image.InputBindings>
+                        </Image>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Margin="0 10" Width="35">
                         <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/Temp/PlaylistCreator_thumbnail.png" ToolTip="Your account"/>
@@ -81,7 +82,7 @@
 
                 </Grid>
 
-                <ContentControl Content="{Binding CurrentViewModel}" Grid.Column="1" Grid.Row="1">
+                <ContentControl Content="{Binding CurrentMainViewModel}" Grid.Column="1" Grid.Row="1">
                     <ContentControl.Resources>
                         <DataTemplate DataType="{x:Type playlistItems:PlaylistItemsViewModel}">
                             <playlistItems:PlaylistItemsView/>

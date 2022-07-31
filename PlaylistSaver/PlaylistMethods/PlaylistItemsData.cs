@@ -4,6 +4,7 @@ using PlaylistSaver.Windows.ViewModels;
 using Google.Apis.YouTube.v3;
 using Google;
 using Google.Apis.YouTube.v3.Data;
+using PlaylistSaver.UserData;
 
 namespace PlaylistSaver.PlaylistMethods
 {

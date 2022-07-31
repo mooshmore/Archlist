@@ -26,7 +26,11 @@
                         Add new playlists
                     </TextBlock>
                 </StackPanel>
-                <Image Style="{StaticResource CloseWindow}"/>
+                <Image Style="{StaticResource CloseWindow}">
+                    <Image.InputBindings>
+                        <MouseBinding Gesture="LeftClick" Command="{Binding CloseViewCommand}"/>
+                    </Image.InputBindings>
+                </Image>
             </Grid>
             <Grid Grid.Row="1" Style="{StaticResource InfoGrid}">
                 <StackPanel Orientation="Horizontal">

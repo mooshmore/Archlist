@@ -9,6 +9,7 @@
         Title="WelcomeScreenView"
         Height="500" Width="830"
         d:DesignHeight="500" d:DesignWidth="830"
+        d:DataContext="{d:DesignInstance Type=local:WelcomeScreenViewModel}"
         ResizeMode="NoResize"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -109,7 +110,7 @@
 
                         <Image Source="/Resources/Images/Thumbnails/btn_google_signin_light_normal_web@2x.png" Width="200" Cursor="Hand">
                             <Image.InputBindings>
-                                <MouseBinding Gesture="LeftClick" Command="{Binding LogInCommand}" />
+                                <MouseBinding Gesture="LeftClick" Command="{Binding LogInCommand}" CommandParameter="ok"/>
                             </Image.InputBindings>
                         </Image>
                         <!--<wpfloadinganimation:CircularAnimation Width="30" Margin="0 5 0 0" Fill="#CD3A3F"/>-->

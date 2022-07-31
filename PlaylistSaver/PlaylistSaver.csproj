@@ -4,12 +4,15 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <UserSecretsId>b13a02bc-8649-4350-9ee8-f8c91439acc5</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="clientSecret.json" />
     <None Remove="Resources\Fonts\Caveat-VariableFont_wght.ttf" />
     <None Remove="Resources\Images\btn_google_signin_light_normal_web%402x.png" />
+    <None Remove="Resources\Images\Color\box_important_24px.png" />
+    <None Remove="Resources\Images\Color\box_important_48px.png" />
     <None Remove="Resources\Images\github_logo_120px.png" />
     <None Remove="Resources\Images\Gray\europe_gray_64px.png" />
     <None Remove="Resources\Images\Gray\link_gray_64px.png" />
@@ -30,6 +33,7 @@
     <None Remove="Resources\Images\mooshmore_thumbnail_128px.png" />
     <None Remove="Resources\Images\mooshmore_thumbnail_64px.png" />
     <None Remove="Resources\Images\no_thumbnail.jpg" />
+    <None Remove="Resources\Images\Temp\PlaylistCreator_thumbnail_large.png" />
     <None Remove="Resources\Images\White\add_32px.png" />
     <None Remove="Resources\Images\White\add_64px.png" />
     <None Remove="Resources\Images\White\cancel_white_32px.png" />
@@ -83,13 +87,14 @@
 
   <ItemGroup>
     <Content Include="clientSecret.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Google.Apis.Auth" Version="1.57.0" />
-    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.57.0.2750" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.57.0.2756" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Unnoficial.Microsoft.Expression.Drawing" Version="1.0.0" />
@@ -97,11 +102,14 @@
 
   <ItemGroup>
     <Resource Include="Resources\Fonts\Caveat-VariableFont_wght.ttf" />
+    <Resource Include="Resources\Images\Color\box_important_24px.png" />
+    <Resource Include="Resources\Images\Color\box_important_48px.png" />
     <Resource Include="Resources\Images\Logos\AppLogo\appLogo_128px.png" />
     <Resource Include="Resources\Images\Logos\AppLogo\appLogo_256px.png" />
     <Resource Include="Resources\Images\Logos\AppLogo\appLogo_32px.png" />
     <Resource Include="Resources\Images\Logos\AppLogo\appLogo_48px.png" />
     <Resource Include="Resources\Images\Logos\AppLogo\appLogo_64px.png" />
+    <Resource Include="Resources\Images\Temp\PlaylistCreator_thumbnail_large.png" />
     <Resource Include="Resources\Images\Thumbnails\btn_google_signin_light_normal_web%402x.png" />
     <Resource Include="Resources\Images\Logos\Github\github_logo_120px.png" />
     <Resource Include="Resources\Images\Gray\europe_gray_64px.png" />

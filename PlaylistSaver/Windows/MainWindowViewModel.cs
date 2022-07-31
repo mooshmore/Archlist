@@ -1,4 +1,9 @@
 ﻿using PlaylistSaver.PlaylistMethods;
+using PlaylistSaver.ProgramData;
+using PlaylistSaver.ProgramData.Bases;
+using PlaylistSaver.ProgramData.Commands;
+using PlaylistSaver.ProgramData.Stores;
+using PlaylistSaver.UserData;
 using PlaylistSaver.Windows.MainWindowViews;
 using PlaylistSaver.Windows.MainWindowViews.Homepage;
 using PlaylistSaver.Windows.MainWindowViews.PlaylistItems;
@@ -10,25 +15,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace PlaylistSaver.Windows
 {
-    public class MainWindowViewModel : ViewModelBase
+    public partial class MainWindowViewModel : ViewModelBase
     {
-        public ViewModelBase CurrentViewModel { get; }
-        public ViewModelBase CurrentPopupViewModel { get; }
+        private readonly NavigationStore _mainNavigationStore;
+        private readonly NavigationStore _popupNavigationStore;
+        public ViewModelBase CurrentMainViewModel => _mainNavigationStore.CurrentViewModel;
+        public ViewModelBase CurrentPopupViewModel => _popupNavigationStore.CurrentViewModel;
 
-        public MainWindowViewModel()
+        public UserProfile UserProfile => GlobalItems.UserProfile;
+
+        public MainWindowViewModel(NavigationStore navigationStore, NavigationStore popupNavigationStore)
         {
-            CurrentViewModel = new HomepageViewModel();
-            CurrentPopupViewModel = new AddPlaylists_linkViewModel();
+            _mainNavigationStore = navigationStore;
+            _popupNavigationStore = popupNavigationStore;
+
+            _mainNavigationStore.CurrentVievModelChanged += OnCurrentMainWindowViewModelChanged;
+            _popupNavigationStore.CurrentVievModelChanged += OnCurrentPopupViewModelChanged;
+            GlobalItems.userProfileChanged += OnUserProfileChanged;
+
+            //CurrentPopupViewModel = new AddPlaylists_linkViewModel();
 
             // Check if the application is run for the first time or the user has logged out of the app
             // if it is display welcome screen with login info
-            if (Settings.FirstAppRun)
-            {
-                CurrentViewModel = new WelcomeScreenViewModel();
-            }
+            //if (Settings.FirstAppRun)
+            //{
+            //    CurrentViewModel = new WelcomeScreenViewModel();
+            //}
 
             //OAuthLogin.LogIn();
 
@@ -50,7 +66,26 @@ namespace PlaylistSaver.Windows
             // YTTestMoosh
             //DownloadPlaylist("PLUZK4y109BtAbkKhS3hY6rX-MS6CAsMSI");
 
+            GoToHomePageCommand = new NavigateCommand(_mainNavigationStore, () => new HomepageViewModel(navigationStore, popupNavigationStore));
+            //GoToHomePageCommand = new CallbackCommand(Ok);
         }
+
+        private void OnCurrentMainWindowViewModelChanged()
+        {
+            OnPropertyChanged(nameof(CurrentMainViewModel));
+        }
+
+        private void OnCurrentPopupViewModelChanged()
+        {
+            OnPropertyChanged(nameof(CurrentPopupViewModel));
+        }
+
+        private void OnUserProfileChanged()
+        {
+            OnPropertyChanged(nameof(UserProfile));
+        }
+
+        public CommandBase GoToHomePageCommand { get; }
 
 
         /// <summary>
@@ -69,7 +104,7 @@ namespace PlaylistSaver.Windows
             // Save the playlist data locally
             SavePlaylistItems.Save(playlistItems, playlistId);
 
-            PlaylistItemsView.playlistItemsList = playlistItems;
+            //PlaylistItemsView.playlistItemsList = playlistItems;
         }
     }
 }

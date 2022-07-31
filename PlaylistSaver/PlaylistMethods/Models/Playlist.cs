@@ -1,5 +1,6 @@
 ﻿using Helpers;
 using PlaylistSaver.Helpers;
+using PlaylistSaver.ProgramData.Stores;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
@@ -37,7 +38,7 @@ namespace PlaylistSaver.PlaylistMethods
             }
 
             PlaylistCreator = ChannelsData.GetChannel(PlaylistInfo.OwnerChannelId);
-            PlaylistDirectory = GlobalItems.playlistsDirectory.SubDirectory(this.PlaylistInfo.Id);
+            PlaylistDirectory = Directories.PlaylistsDirectory.SubDirectory(this.PlaylistInfo.Id);
         }
 
         public PlaylistInfo PlaylistInfo { get; set; } = new();

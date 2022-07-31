@@ -1,4 +1,5 @@
-﻿using PlaylistSaver.Windows.ViewModels;
+﻿using PlaylistSaver.Windows;
+using PlaylistSaver.Windows.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,5 @@ namespace PlaylistSaver.ProgramData.Stores
 {
     public static class ViewModels
     {
-        public static ViewModelBase WelcomeScreenView;
-        public static ViewModelBase MainWindowView;
-
     }
 }

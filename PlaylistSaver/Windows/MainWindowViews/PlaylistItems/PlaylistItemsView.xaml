@@ -46,7 +46,7 @@
             <ScrollViewer x:Name="ItemsScroll" CanContentScroll="False" Margin="30 30 30 0">
                 <StackPanel>
                     <Border Style="{StaticResource SeparatorBorder_dark}"/>
-                    <ItemsControl x:Name="PlaylistItemListBox" ItemsSource="{Binding PlaylistItemsList}" ItemTemplate="{DynamicResource PlaylistItemTemplate}">
+                    <ItemsControl x:Name="PlaylistItemListBox" ItemTemplate="{DynamicResource PlaylistItemTemplate}">
                         <ItemsControl.Resources>
                             <DataTemplate x:Key="PlaylistItemTemplate">
                                 <Grid Margin="0 10 0 0">

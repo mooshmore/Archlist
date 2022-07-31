@@ -10,6 +10,8 @@ using PlaylistSaver.PlaylistMethods;
 using Google.Apis.YouTube.v3.Data;
 using Helpers;
 using System.Linq;
+using PlaylistSaver.UserData;
+using PlaylistSaver.ProgramData.Stores;
 
 namespace PlaylistSaver.PlaylistMethods
 {
@@ -21,15 +23,15 @@ namespace PlaylistSaver.PlaylistMethods
         /// </summary>
         public static Channel GetChannel(string channeld)
         {
-            if (GlobalItems.channelsDirectory.SubdirectoryExists(channeld))
+            if (Directories.ChannelsDirectory.SubdirectoryExists(channeld))
             {
-                DirectoryInfo channelDirectory = GlobalItems.channelsDirectory.SubDirectory(channeld);
+                DirectoryInfo channelDirectory = Directories.ChannelsDirectory.SubDirectory(channeld);
                 FileInfo channelInfo = channelDirectory.SubFile("channelInfo.json");
                 return JsonConvert.DeserializeObject<Channel>(channelInfo.ReadAllText());
             }
             else
             {
-                List<string> channelsIdsList = new List<string>() { channeld };
+                List<string> channelsIdsList = new() { channeld };
                 return Task.Run(async () => RetrieveAndSaveChannelsData(channelsIdsList).Result).Result[0];
             }
         }
@@ -40,6 +42,9 @@ namespace PlaylistSaver.PlaylistMethods
             List<string> channelsIdsList = playlistItems.Select(o => o.ItemInfo.OwnerChannelId).Distinct().ToList();
 
             return Task.Run(async () => RetrieveAndSaveChannelsData(channelsIdsList).Result).Result;
+            // check if this works
+            //return await Task.Run(() => RetrieveAndSaveChannelsData(channelsIdsList));
+
         }
 
         /// <summary>
@@ -128,7 +133,7 @@ namespace PlaylistSaver.PlaylistMethods
         /// <param name="channel">The channel to save information about.</param>
         private static void SaveChannelData(Channel channel)
         {
-            DirectoryInfo channelDirectory = GlobalItems.channelsDirectory.CreateSubdirectory(channel.ChannelId);
+            DirectoryInfo channelDirectory = Directories.ChannelsDirectory.CreateSubdirectory(channel.ChannelId);
 
             // Youtube profile thumbnails have different url when they are changed, so only redownload
             // the thumbnail if the url(id to be precise) doesn't match or the thumbnail doesn't exist

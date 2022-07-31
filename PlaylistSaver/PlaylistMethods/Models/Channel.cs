@@ -1,4 +1,5 @@
 ﻿using Helpers;
+using PlaylistSaver.ProgramData.Stores;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
@@ -35,7 +36,7 @@ namespace PlaylistSaver.PlaylistMethods
             }
 
             if (this.ChannelId != null)
-                ChannelDirectory = GlobalItems.playlistsDirectory.SubDirectory(this.ChannelId);
+                ChannelDirectory = Directories.PlaylistsDirectory.SubDirectory(this.ChannelId);
         }
 
         public string ChannelId { get; set; }
@@ -48,7 +49,7 @@ namespace PlaylistSaver.PlaylistMethods
         [IgnoreDataMember]
         public string ThumbnailId => ThumbnailURL.TrimFromLast("/", false).TrimToFirst("=");
         [IgnoreDataMember]
-        public string ThumbnailPath => Path.Combine(GlobalItems.channelsDirectory.FullName, $"{ChannelId}\\{ThumbnailFileName}.jpg");
+        public string ThumbnailPath => Path.Combine(Directories.ChannelsDirectory.FullName, $"{ChannelId}\\{ThumbnailFileName}.jpg");
         [IgnoreDataMember]
         public string ThumbnailFileName => ThumbnailURL.TrimFromLast("/", false);
 

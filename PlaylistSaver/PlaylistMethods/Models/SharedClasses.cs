@@ -1,5 +1,6 @@
 ﻿using Helpers;
 using PlaylistSaver.Helpers;
+using PlaylistSaver.ProgramData.Stores;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,9 +47,9 @@ namespace PlaylistSaver.PlaylistMethods
             [IgnoreDataMember]
             public BitmapImage PrivacyStatusImage => PrivacyStatus switch
             {
-                Enums.PrivacyStatus.Private => DirectoryExtensions.GetImage(GlobalItems.imagesPath + @"White\lock_white_64px.png"),
-                Enums.PrivacyStatus.Unlisted => DirectoryExtensions.GetImage(GlobalItems.imagesPath + @"White\link_white_64px.png"),
-                Enums.PrivacyStatus.Public => DirectoryExtensions.GetImage(GlobalItems.imagesPath + @"White\earth_white_64px.png"),
+                Enums.PrivacyStatus.Private => DirectoryExtensions.GetImage(Directories.ImagesPath + @"White\lock_white_64px.png"),
+                Enums.PrivacyStatus.Unlisted => DirectoryExtensions.GetImage(Directories.ImagesPath + @"White\link_white_64px.png"),
+                Enums.PrivacyStatus.Public => DirectoryExtensions.GetImage(Directories.ImagesPath + @"White\earth_white_64px.png"),
                 _ => throw new NotImplementedException("No privacy status"),
             };
 

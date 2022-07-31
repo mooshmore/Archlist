@@ -3,6 +3,7 @@
                     xmlns:sys="clr-namespace:System;assembly=System.Runtime">
 
     <SolidColorBrush x:Key="Text_primary">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="Text_shaded">#D9D9D9</SolidColorBrush>
     <SolidColorBrush x:Key="Text_secondary">#AAAAAA</SolidColorBrush>
     <SolidColorBrush x:Key="Text_dimmed">#8D8D8D</SolidColorBrush>
 

@@ -4,10 +4,101 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PlaylistSaver.Windows.MainWindowViews.Homepage"
+             d:DataContext="{d:DesignInstance Type=local:HomepageViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Foreground="White">Main screen view</TextBlock>
-        <Button Width="100" Margin="0 10 0 0">PlaylistView</Button>
+             d:DesignHeight="800" d:DesignWidth="1200"
+             x:Name="HomePageViewControl">
+    
+    <StackPanel>
+        
+        <!--Playlist control-->
+        <Grid Background="{StaticResource Background_topbar}" Height="45">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal" Margin="3 6 10 6">
+                <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/White/add_64px.png" Margin="3 0" ToolTip="Add your playlists">
+                    <Image.InputBindings>
+                        <MouseBinding Gesture="LeftClick" Command="{Binding OpenAddPlaylist_userOwnedViewCommand}"/>
+                    </Image.InputBindings>
+                </Image>
+                <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/White/add_64px.png" Margin="3 0" ToolTip="Add playlist by link">
+                    <Image.InputBindings>
+                        <MouseBinding Gesture="LeftClick" Command="{Binding OpenAddPlaylist_linkCommand}" />
+                    </Image.InputBindings>
+                </Image>
+                <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/White/cancel_white_64px.png" Margin="3 0" ToolTip="Remove tracked playlists">
+                    <Image.InputBindings>
+                        <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />
+                    </Image.InputBindings>
+                </Image>
+            </StackPanel>
+        </Grid>
+        
+        <!--Welcome grid-->
+        <Grid Height="190" Background="{StaticResource Background_default_light}">
+            <StackPanel Margin="60 30 0 0" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Height="70" Width="70">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="{Binding UserProfile.PicturePath}"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <TextBlock Foreground="White" Margin="15 0 0 0" FontSize="45" Text="{Binding UserProfile.WelcomeGreeting}" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
+                    <Image Margin="10 0 10 0" Source="/Resources/Images/Color/box_important_24px.png" Height="24" VerticalAlignment="Center"/>
+                    <TextBlock Text="37 videos have been removed from 15 of your playlists." FontSize="14" Foreground="{StaticResource Text_shaded}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+        
+        <!--All playlists-->
+        <ItemsControl  ItemsSource="{Binding playlistsList}" Padding="40 10 10 10">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Vertical" Height="230" Width="231" HorizontalAlignment="Left" Margin="20">
+                        <!--<StackPanel Orientation="Vertical" Height="200" Width="231" HorizontalAlignment="Left" Margin="20">-->
+                        <Grid Background="Black" Height="130" Width="231">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="80"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.ColumnSpan="2" Source="{Binding PlaylistThumbnailPath}"/>
+                            <Grid Grid.Column="1" Background="#C0393939">
+                                <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <!--<StackPanel Orientation="Horizontal">
+                                        <TextBlock/>
+                                        <Image/>
+                                    </StackPanel>-->
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontSize="14" FontFamily="{StaticResource Inter}" Foreground="White" Text="{Binding ItemCount}"/>
+                                        <Image Source="/Resources/Images/White/video_dots_24px.png" VerticalAlignment="Center" Margin="2 0 0 0" Height="17" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+
+                        </Grid>
+                        <TextBlock FontSize="22" Margin="0 10 0 2" Foreground="White" FontFamily="{StaticResource Inter}"  Text="{Binding PlaylistTitle}"></TextBlock>
+                        <TextBlock FontSize="16" Margin="0 0 0 0" Foreground="{StaticResource Text_dimmed}" Text="{Binding CreatorChannelTitle}"></TextBlock>
+                        <!--<Button Command="{Binding OpenPlaylistCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}">Open playlist</Button>-->
+                        <Button Command="{Binding DataContext.OpenPlaylistCommand, 
+                                        RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel,AncestorLevel=2}}"
+                                CommandParameter="{Binding PlaylistID}">
+                            Open playlist
+                        </Button>
+
+                        <!--<StackPanel.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding OpenPlaylistCommand}"/>
+                        </StackPanel.InputBindings>-->
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+
+
+
     </StackPanel>
 </UserControl>

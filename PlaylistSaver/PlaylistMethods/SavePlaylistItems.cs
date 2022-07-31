@@ -1,5 +1,6 @@
 ﻿using Helpers;
 using Newtonsoft.Json;
+using PlaylistSaver.ProgramData.Stores;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +15,7 @@ namespace PlaylistSaver.PlaylistMethods
         public static void Save(List<PlaylistItem> playlistItems, string playlistId)
         {
             // Create directory for the playlist
-            playlistMainDirectory = GlobalItems.playlistsDirectory.CreateSubdirectory(playlistId);
+            playlistMainDirectory = Directories.PlaylistsDirectory.CreateSubdirectory(playlistId);
             DirectoryInfo dataDirectory = playlistMainDirectory.CreateSubdirectory("data");
 
             DirectoryInfo lastSavedDay = dataDirectory.LastCreatedDirectory();

@@ -22,17 +22,9 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
     /// </summary>
     public partial class PlaylistItemsView : UserControl
     {
-        public PlaylistItemsViewModel playlistItemsViewModel;
-
-        public static List<PlaylistItem> playlistItemsList;
-
         public PlaylistItemsView()
         {
             InitializeComponent();
-
-            PlaylistItemListBox.ItemsSource = playlistItemsList;
-
-            PlaylistThumbnail.Source = DirectoryExtensions.GetImage(GlobalItems.imagesPath + "no_thumbnail.jpg");
         }
     }
 }

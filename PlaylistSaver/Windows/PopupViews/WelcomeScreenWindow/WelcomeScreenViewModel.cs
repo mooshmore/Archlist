@@ -1,5 +1,8 @@
 ﻿using PlaylistSaver.PlaylistMethods;
 using PlaylistSaver.ProgramData;
+using PlaylistSaver.ProgramData.Bases;
+using PlaylistSaver.ProgramData.Stores;
+using PlaylistSaver.UserData;
 using PlaylistSaver.Windows.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -14,27 +17,22 @@ namespace PlaylistSaver.Windows.PopupViews.WelcomeScreenWindow
     {
         public WelcomeScreenViewModel()
         {
-            LogInCommand = new WelcomeScreenCommand();
+            LogInCommand = new RelayCommand(OpenOAuthLoginPage);
         }
 
-        public ICommand LogInCommand { get; }
+        public RelayCommand LogInCommand { get; }
 
-    }
-
-    public class WelcomeScreenCommand : CommandBase
-    {
-        public override void Execute(object parameter)
+        public void OpenOAuthLoginPage()
         {
-            OAuthLogin.LogIn();
+            OAuthLogin.LogInAsync();
             //OAuthLogin.LogOut();
 
-            var mainWindow = new MainWindow()
-            {
-                DataContext = new MainWindowViewModel()
-            };
+            //var mainWindow = new MainWindow()
+            //{
+            //    DataContext = new MainWindowViewModel(new NavigationStore())
+            //};
 
-            mainWindow.Show();
-            
+            //mainWindow.Show();
         }
     }
 }
