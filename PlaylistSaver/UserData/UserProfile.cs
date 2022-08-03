@@ -35,7 +35,6 @@ namespace PlaylistSaver.UserData
                 "What’s cookin’, good lookin’?",
                 "Hey there, hot stuff",
                 $"So… we meet at last, {Name}",
-                "Good day, young chap.",
                 $"Greetings, {Name}.",
                 $"What does a horse eat? Hayyyyyyy.",
                 $"Ello, matey.",

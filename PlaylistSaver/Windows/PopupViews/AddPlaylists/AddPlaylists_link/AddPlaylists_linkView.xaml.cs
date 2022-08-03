@@ -21,13 +21,9 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
     /// </summary>
     public partial class AddPlaylists_linkView : UserControl
     {
-        public static List<PlaylistItem> playlistsList;
-
         public AddPlaylists_linkView()
         {
             InitializeComponent();
-
-            PlaylistsListBox.ItemsSource = playlistsList;
         }
     }
 }

@@ -113,7 +113,7 @@
         <Setter Property="Margin" Value="0 5 0 0"/>
     </Style>
 
-    <BitmapImage x:Key="ExpandArrow" UriSource="/Resources/Images/White/expand_arrow_white.png" />
+    <BitmapImage x:Key="ExpandArrow" UriSource="/Resources/Images/Symbols/White/expand_arrow_white.png" />
 
     <Style x:Key="PlaylistItem_expandArrow" TargetType="Image">
         <Setter Property="HorizontalAlignment" Value="Center"/>

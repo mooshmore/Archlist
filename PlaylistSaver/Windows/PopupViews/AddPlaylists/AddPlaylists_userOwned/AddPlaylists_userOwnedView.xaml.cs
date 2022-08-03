@@ -23,7 +23,6 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
         public AddPlaylists_userOwnedView()
         {
             InitializeComponent();
-            this.DataContext = new AddPlaylists_userOwnedViewModel();
         }
     }
 }

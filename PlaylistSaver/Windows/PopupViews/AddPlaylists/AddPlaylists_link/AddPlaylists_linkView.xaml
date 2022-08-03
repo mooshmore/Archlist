@@ -5,11 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=local:AddPlaylists_linkViewModel}"
              d:DesignHeight="650" d:DesignWidth="900">
     <UserControl.Resources>
-        <!--<ResourceDictionary Source="/PlaylistSaver;component/Resources/Dictionaries/ViewsDictionaries/WelcomeScreen.xaml"/>-->
         <ResourceDictionary Source="AddPlaylists_linkDictionary.xaml"/>
     </UserControl.Resources>
+    
     <Border Style="{StaticResource WindowBorder}">
         <Grid>
             <Grid.RowDefinitions>
@@ -19,6 +20,8 @@
                 <RowDefinition Height="200"/>
                 <RowDefinition Height="55"/>
             </Grid.RowDefinitions>
+            
+            <!--Title grid-->
             <Grid>
                 <StackPanel Orientation="Horizontal">
                     <Image Style="{StaticResource WindowIcon}"/>
@@ -32,6 +35,8 @@
                     </Image.InputBindings>
                 </Image>
             </Grid>
+
+            <!--Additional info grid-->
             <Grid Grid.Row="1" Style="{StaticResource InfoGrid}">
                 <StackPanel Orientation="Horizontal">
                     <Image Style="{StaticResource InfoIcon}"/>
@@ -40,160 +45,85 @@
                     </TextBlock>
                 </StackPanel>
             </Grid>
+            
+            <!--Add playlist input grid-->
             <Grid Grid.Row="2" Style="{StaticResource PlaylistsList}">
-                <StackPanel VerticalAlignment="Center" Margin="0 0 0 40">
+                <StackPanel VerticalAlignment="Center" Margin="0 0 0 10">
                     <TextBlock Style="{StaticResource DefaultTextblock}" HorizontalAlignment="Center" Margin="0 0 0 15" FontSize="20">
                         Enter playlist ID or link
                     </TextBlock>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBox Width="500" Style="{StaticResource DefaultTextbox}" FontSize="16" VerticalContentAlignment="Center" Padding="3" Foreground="#DDDDDD">
+                        <TextBox Width="500" Style="{StaticResource DefaultTextbox}" Text="{Binding Path=LinkTextBoxValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  FontSize="16" VerticalContentAlignment="Center" Padding="3" Foreground="#DDDDDD">
 
                         </TextBox>
-                        <Image Style="{StaticResource AddPlaylistButton}"/>
+                        <Image Style="{StaticResource AddPlaylistButton}" Cursor="Hand">
+                            <Image.InputBindings>
+                                <MouseBinding Gesture="LeftClick" Command="{Binding AddPlaylistToListCommand}"/>
+                            </Image.InputBindings>
+                        </Image>
                     </StackPanel>
-
+                    <TextBlock Height="35" TextAlignment="Center" Style="{StaticResource DefaultTextblock}" Text="{Binding Path=AddingInfoText, Mode=OneWay}" HorizontalAlignment="Center" FontSize="14" Margin="0 10 0 0"/>
                 </StackPanel>
             </Grid>
-            <ScrollViewer Background="{StaticResource Background_topbar}" Grid.Row="3" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Visible">
+            
+            <!--Playlists list grid-->
+            <ScrollViewer Background="{StaticResource Background_topbar}" Grid.Row="3" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
                 <StackPanel Orientation="Horizontal">
-                    <ItemsControl x:Name="PlaylistsListBox" ItemsSource="{Binding playlistsList}" ItemTemplate="{DynamicResource PlaylistTemplate}">
-
+                    <ItemsControl x:Name="PlaylistsListBox" ItemsSource="{Binding PlaylistsList}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="15" Width="170">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="63"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="95"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Border Background="Black" Grid.ColumnSpan="2">
+                                        <Image Grid.ColumnSpan="2" Source="{Binding Snippet.Thumbnails.Medium.Url}"/>
+                                    </Border>
+                                    <Grid Grid.Column="1" Background="#E0141414" Cursor="Hand">
+                                        <StackPanel VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock VerticalAlignment="Center" FontSize="14" Text="{Binding ContentDetails.ItemCount}" HorizontalAlignment="Center" Style="{StaticResource DefaultTextblock}"/>
+                                                <Image VerticalAlignment="Center" Margin="2 0 0 0" Height="17" Source="/Resources/Images/Symbols/White/video_dots_24px.png"/>
+                                            </StackPanel>
+                                            <Grid>
+                                                <Image Height="20" Source="/Resources/Images/Symbols/White/cancel_32px.png"/>
+                                                <Image Style="{StaticResource AddImage}" Height="20" Source="/Resources/Images/Symbols/PastelRed/cancel_32px.png"/>
+                                            </Grid>
+                                        </StackPanel>
+                                        <Grid.InputBindings>
+                                            <MouseBinding Gesture="LeftClick" 
+                                                      Command="{Binding DataContext.RemovePlaylistFromListCommand,
+                                                                RelativeSource={RelativeSource Mode=FindAncestor, 
+                                                                AncestorType=Border, AncestorLevel=1}}" 
+                                                      CommandParameter="{Binding}"/>
+                                        </Grid.InputBindings>
+                                    </Grid>
+                                    <TextBlock x:Name="Title" Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="5 7 0 0" FontSize="19" Grid.Row="1" Text="{Binding Snippet.Title}" Style="{StaticResource DefaultTextblock}"/>
+                                    <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="5 3 0 0" FontSize="13" Grid.Row="2" Text="{Binding Snippet.ChannelTitle}" Style="{StaticResource DefaultTextblock}" Foreground="{StaticResource Text_secondary}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
                     </ItemsControl>
-                    <Grid Margin="15" Height="190" Width="200" Cursor="Hand">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="63"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="130"/>
-                            <RowDefinition Height="60"/>
-                        </Grid.RowDefinitions>
-                        <Image Grid.ColumnSpan="2" Source="/Resources/Images/Temp/PlaylistThumbnail.png"/>
-                        <Grid Grid.Column="1" Background="#C0393939">
-                            <StackPanel VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock VerticalAlignment="Center" FontSize="14" Text="189" HorizontalAlignment="Center" Style="{StaticResource DefaultTextblock}"/>
-                                    <Image VerticalAlignment="Center" Margin="2 0 0 0" Height="17" Source="/Resources/Images/White/video_dots_24px.png"/>
-                                </StackPanel>
-                                <Image Style="{StaticResource AddImage}" Height="20" Source="/Resources/Images/White/add_32px.png"/>
-                            </StackPanel>
-                        </Grid>
-                        <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="5" FontSize="19" Grid.Row="1" Text="Muzyka" Style="{StaticResource DefaultTextblock}"/>
-                    </Grid>
-                    <Grid Margin="15" Height="190" Width="200" Cursor="Hand">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="63"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="130"/>
-                            <RowDefinition Height="60"/>
-                        </Grid.RowDefinitions>
-                        <Image Grid.ColumnSpan="2" Source="/Resources/Images/Temp/PlaylistThumbnail.png"/>
-                        <Grid Grid.Column="1" Background="#C0393939">
-                            <StackPanel VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock VerticalAlignment="Center" FontSize="14" Text="189" HorizontalAlignment="Center" Style="{StaticResource DefaultTextblock}"/>
-                                    <Image VerticalAlignment="Center" Margin="2 0 0 0" Height="17" Source="/Resources/Images/White/video_dots_24px.png"/>
-                                </StackPanel>
-                                <Image Style="{StaticResource AddImage}" Height="20" Source="/Resources/Images/White/add_32px.png"/>
-                            </StackPanel>
-                        </Grid>
-                        <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="5" FontSize="19" Grid.Row="1" Text="Muzyka" Style="{StaticResource DefaultTextblock}"/>
-                    </Grid>
-                    <Grid Margin="15" Height="190" Width="200" Cursor="Hand">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="63"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="130"/>
-                            <RowDefinition Height="60"/>
-                        </Grid.RowDefinitions>
-                        <Image Grid.ColumnSpan="2" Source="/Resources/Images/Temp/PlaylistThumbnail.png"/>
-                        <Grid Grid.Column="1" Background="#C0393939">
-                            <StackPanel VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock VerticalAlignment="Center" FontSize="14" Text="189" HorizontalAlignment="Center" Style="{StaticResource DefaultTextblock}"/>
-                                    <Image VerticalAlignment="Center" Margin="2 0 0 0" Height="17" Source="/Resources/Images/White/video_dots_24px.png"/>
-                                </StackPanel>
-                                <Image Style="{StaticResource AddImage}" Height="20" Source="/Resources/Images/White/add_32px.png"/>
-                            </StackPanel>
-                        </Grid>
-                        <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="5" FontSize="19" Grid.Row="1" Text="Muzyka" Style="{StaticResource DefaultTextblock}"/>
-                    </Grid>
-                    <Grid Margin="15" Height="190" Width="200" Cursor="Hand">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="63"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="130"/>
-                            <RowDefinition Height="60"/>
-                        </Grid.RowDefinitions>
-                        <Image Grid.ColumnSpan="2" Source="/Resources/Images/Temp/PlaylistThumbnail.png"/>
-                        <Grid Grid.Column="1" Background="#C0393939">
-                            <StackPanel VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock VerticalAlignment="Center" FontSize="14" Text="189" HorizontalAlignment="Center" Style="{StaticResource DefaultTextblock}"/>
-                                    <Image VerticalAlignment="Center" Margin="2 0 0 0" Height="17" Source="/Resources/Images/White/video_dots_24px.png"/>
-                                </StackPanel>
-                                <Image Style="{StaticResource AddImage}" Height="20" Source="/Resources/Images/White/add_32px.png"/>
-                            </StackPanel>
-                        </Grid>
-                        <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="5" FontSize="19" Grid.Row="1" Text="Muzyka" Style="{StaticResource DefaultTextblock}"/>
-                    </Grid>
-                    <Grid Margin="15" Height="190" Width="200" Cursor="Hand">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="63"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="130"/>
-                            <RowDefinition Height="60"/>
-                        </Grid.RowDefinitions>
-                        <Image Grid.ColumnSpan="2" Source="/Resources/Images/Temp/PlaylistThumbnail.png"/>
-                        <Grid Grid.Column="1" Background="#C0393939">
-                            <StackPanel VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock VerticalAlignment="Center" FontSize="14" Text="189" HorizontalAlignment="Center" Style="{StaticResource DefaultTextblock}"/>
-                                    <Image VerticalAlignment="Center" Margin="2 0 0 0" Height="17" Source="/Resources/Images/White/video_dots_24px.png"/>
-                                </StackPanel>
-                                <Image Style="{StaticResource AddImage}" Height="20" Source="/Resources/Images/White/add_32px.png"/>
-                            </StackPanel>
-                        </Grid>
-                        <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="5" FontSize="19" Grid.Row="1" Text="Muzyka" Style="{StaticResource DefaultTextblock}"/>
-                    </Grid>
-                    <Grid Margin="15" Height="190" Width="200" Cursor="Hand">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="63"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="130"/>
-                            <RowDefinition Height="60"/>
-                        </Grid.RowDefinitions>
-                        <Image Grid.ColumnSpan="2" Source="/Resources/Images/Temp/PlaylistThumbnail.png"/>
-                        <Grid Grid.Column="1" Background="#C0393939">
-                            <StackPanel VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <TextBlock VerticalAlignment="Center" FontSize="14" Text="189" HorizontalAlignment="Center" Style="{StaticResource DefaultTextblock}"/>
-                                    <Image VerticalAlignment="Center" Margin="2 0 0 0" Height="17" Source="/Resources/Images/White/video_dots_24px.png"/>
-                                </StackPanel>
-                                <Image Style="{StaticResource AddImage}" Height="20" Source="/Resources/Images/White/add_32px.png"/>
-                            </StackPanel>
-                        </Grid>
-                        <TextBlock Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="5" FontSize="19" Grid.Row="1" Text="Muzyka" Style="{StaticResource DefaultTextblock}"/>
-                    </Grid>
-
                 </StackPanel>
             </ScrollViewer>
+
+            <!--Bottom panel grid-->
             <Grid Grid.Row="4">
                 <StackPanel Margin="0 0 0 2" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <TextBlock Style="{StaticResource PlaylistCount}">
-                    7 playlists
-                    </TextBlock>
-                    <Button Style="{StaticResource AddButton}">
+                    <TextBlock Style="{StaticResource PlaylistCount}" Text="{Binding PlaylistListCount}"/>
+
+                    <Button Style="{StaticResource AddButton}" Command="{Binding AddPlaylistsCommand}">
                     Add
                     </Button>
                 </StackPanel>

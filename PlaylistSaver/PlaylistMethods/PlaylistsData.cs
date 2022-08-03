@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using PlaylistSaver.UserData;
 using PlaylistSaver.ProgramData.Stores;
+using System.Net;
 
 namespace PlaylistSaver.PlaylistMethods
 {
@@ -35,22 +36,19 @@ namespace PlaylistSaver.PlaylistMethods
     }
 
 
-    public static class PlaylistData
+    public static class PlaylistsData
     {
-        public static ObservableCollection<DisplayPlaylist> ReadSavedPlaylists()
+        public static List<Google.Apis.YouTube.v3.Data.Playlist> ReadSavedPlaylists()
         {
-            ObservableCollection<DisplayPlaylist> playlistList = new();
+            List<Google.Apis.YouTube.v3.Data.Playlist> playlistList = new();
             foreach (DirectoryInfo playlistDirectory in Directories.PlaylistsDirectory.GetDirectories())
             {
                 string playlistID = playlistDirectory.Name;
                 string playlistInfoPath = Path.Combine(Directories.PlaylistsDirectory.FullName, playlistID, "playlistInfo.json");
+                string playlistText = File.ReadAllText(playlistInfoPath);
 
-                JObject clientSecretFile = JObject.Parse(File.ReadAllText(playlistInfoPath));
-
-                string playlistName = clientSecretFile.SelectToken("snippet.title").ToString();
-                string itemCount = clientSecretFile.SelectToken("contentDetails.itemCount").ToString();
-                string creatorChannelTitle = clientSecretFile.SelectToken("snippet.channelTitle").ToString();
-                playlistList.Add(new DisplayPlaylist(playlistName, playlistID, itemCount, creatorChannelTitle));
+                Google.Apis.YouTube.v3.Data.Playlist account = JsonConvert.DeserializeObject<Google.Apis.YouTube.v3.Data.Playlist>(playlistText);
+                playlistList.Add(account);
             }
             return playlistList;
         }
@@ -60,7 +58,17 @@ namespace PlaylistSaver.PlaylistMethods
             return Path.Combine(Directories.PlaylistsDirectory.FullName, playlistID);
         }
 
-        public static async Task<List<Playlist>> RetrieveOwnedPlaylistsData()
+        public static List<Google.Apis.YouTube.v3.Data.Playlist> ConvertItemsToList(PlaylistListResponse playlistListResponse)
+        {
+            List<Google.Apis.YouTube.v3.Data.Playlist> playlistsList = new();
+            foreach (var item in playlistListResponse.Items)
+            {
+                playlistsList.Add(item);
+            }
+            return playlistsList;
+        }
+
+        public static async Task<PlaylistListResponse> RetrieveUserOwnedPlaylistsData()
         {
             PlaylistListResponse playlists = null;
             string nextPageToken = null;
@@ -69,6 +77,8 @@ namespace PlaylistSaver.PlaylistMethods
             {
                 PlaylistsResource.ListRequest playlistListRequest = OAuthLogin.youtubeService.Playlists.List(part: "contentDetails,id,snippet,status");
                 playlistListRequest.Mine = true;
+                if (nextPageToken != null)
+                    playlistListRequest.PageToken = nextPageToken;
 
                 PlaylistListResponse currentPlaylistListResponse = await playlistListRequest.ExecuteAsync();
                 nextPageToken = currentPlaylistListResponse.NextPageToken;
@@ -86,11 +96,10 @@ namespace PlaylistSaver.PlaylistMethods
                 }
             } while (nextPageToken != null);
 
-            // Convert the default google plyalist class to a one used in the program
-            return ParsePlaylists(playlists.Items).Result;
+            return playlists;
         }
 
-        public static async Task<List<Playlist>> RetrievePlaylistsData(List<string> playlistIds)
+        public static async Task<PlaylistListResponse> RetrievePlaylistsData(List<string> playlistIds)
         {
             // Just in case make so that the playlist ids won't repeat
             playlistIds = playlistIds.Distinct().ToList();
@@ -110,13 +119,13 @@ namespace PlaylistSaver.PlaylistMethods
                 if (playlistCount == 50 || playlistIds.IsLastItem(playlistId))
                 {
                     playlistCount = 0;
-                    GetPlaylistsData(currentPlaylistsList.TrimToLast(",")).Wait();
+                    await GetPlaylistsData(currentPlaylistsList.TrimToLast(","));
                     currentPlaylistsList = "";
                 }
             }
 
             // Convert the default google plyalist class to a one used in the program
-            return ParsePlaylists(playlists.Items).Result;
+            return playlists;
 
             // Retrieves data for the given playlists
             async Task GetPlaylistsData(string currentPlaylistsList)
@@ -175,7 +184,7 @@ namespace PlaylistSaver.PlaylistMethods
         /// downloading and saving the playlist thumbnail.
         /// </summary>
         /// <param name="playlistsList">The list of playlists to save information about.</param>
-        public static async void SavePlaylistData(List<Playlist> playlistsList)
+        public static async Task SavePlaylistData(List<Playlist> playlistsList)
         {
             // Save data for every playlist
             foreach (Playlist playlist in playlistsList)
@@ -197,6 +206,50 @@ namespace PlaylistSaver.PlaylistMethods
                 // Create a new playlistInfo.json file and write the playlist data to it
                 File.WriteAllText(playlistDirectory.CreateSubfile("plyalistInfo.json").FullName, jsonString);
             }
+        }
+
+        public static async Task CreatePlaylistsData(List<Google.Apis.YouTube.v3.Data.Playlist> playlistsList)
+        {
+            var existingPlaylists = ReadSavedPlaylists();
+
+            // Remove playlists from the list to not overwrite already existing playlists data
+            var distinctedPlaylists = playlistsList.Where(x => !existingPlaylists.Any(y => y.Id == x.Id)).ToList();
+
+            List<Task> thumbnailDownloads = new();
+
+            foreach (var playlist in distinctedPlaylists)
+            {
+                var playlistDirectory = Directories.PlaylistsDirectory.CreateSubdirectory(playlist.Id);
+                playlistDirectory.CreateSubdirectory("data");
+                playlistDirectory.CreateSubdirectory("thumbnails");
+
+                // Serialize the playlist data into a json
+                string jsonString = JsonConvert.SerializeObject(playlist);
+                // Create a new playlistInfo.json file and write the playlist data to it
+                File.WriteAllText(playlistDirectory.CreateSubfile("playlistInfo.json").FullName, jsonString);
+
+                // Playlists thumbnails have all resolutions, no matter the video (they are upscaled)
+                // so any quality can be downloaded.
+
+                // Important note:
+                // For reasons unknown to me thumbnails of resolutions: default, high and medium
+                // are in proportions of 16:12 instead of 16:9 (which only medium and maxres have).
+                // So, medium quality is chosen since it actualy fits required resolution and maxres 
+                // would've been taking (unnecessarily) too much space.
+                string thumbnailUrl = playlist.Snippet.Thumbnails.Medium.Url;
+                string thumbnailDirectory = Path.Combine(playlistDirectory.FullName, "playlistThumbnail.jpg");
+
+                thumbnailDownloads.Add(DownloadImage(thumbnailUrl, thumbnailDirectory));
+            }
+
+            //FileSystemWatcher();
+            await Task.WhenAll(thumbnailDownloads);
+        }
+
+        public static async Task DownloadImage(string thumbnailUrl, string thumbnailDirectory)
+        {
+            WebClient downloadWebClient = new();
+            await downloadWebClient.DownloadFileTaskAsync(new Uri(thumbnailUrl), thumbnailDirectory);
         }
     }
 }
