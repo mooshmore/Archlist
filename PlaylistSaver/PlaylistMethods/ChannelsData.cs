@@ -89,7 +89,7 @@ namespace PlaylistSaver.PlaylistMethods
             // Retrieves data for the given channels
             async Task GetChannelsData(string currentChannelsList)
             {
-                ChannelsResource.ListRequest channelListRequest = OAuthLogin.youtubeService.Channels.List(part: "statistics,snippet");
+                ChannelsResource.ListRequest channelListRequest = OAuthSystem.YoutubeService.Channels.List(part: "statistics,snippet");
                 channelListRequest.Id = currentChannelsList;
 
                 ChannelListResponse currentChannelListResponse;

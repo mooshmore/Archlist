@@ -2,161 +2,68 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace PlaylistSaver.ProgramData.Bases
 {
-    public static class TaskUtilities
+    public class AsyncRelayCommand : ICommand
     {
-#pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
-        public static async void FireAndForgetSafeAsync(this Task task, IErrorHandler handler = null)
-#pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
+        private readonly Func<object, Task> _parameterExecute;
+        private readonly Func<Task> _execute;
+        private readonly Func<object, bool> _canExecute;
+
+        private long isExecuting;
+
+        public AsyncRelayCommand(Func<object, Task> parameterExecute, Func<object, bool> canExecute = null)
         {
+            this._parameterExecute = parameterExecute;
+            this._canExecute = canExecute ?? (o => true);
+        }
+
+        public AsyncRelayCommand(Func<Task> execute, Func<object, bool> canExecute = null)
+        {
+            this._execute = execute;
+            this._canExecute = canExecute ?? (o => true);
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public static void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            if (Interlocked.Read(ref isExecuting) != 0)
+                return false;
+
+            return _canExecute(parameter);
+        }
+
+        public async void Execute(object parameter)
+        {
+            Interlocked.Exchange(ref isExecuting, 1);
+            RaiseCanExecuteChanged();
+
             try
             {
-                await task;
-            }
-            catch (Exception ex)
-            {
-                handler?.HandleError(ex);
-            }
-        }
-    }
-
-    public interface IErrorHandler
-    {
-        void HandleError(Exception ex);
-    }
-
-    public interface IAsyncCommand : ICommand
-    {
-        Task ExecuteAsync();
-        bool CanExecute();
-    }
-
-    public interface IAsyncCommand<T> : ICommand
-    {
-        Task ExecuteAsync(T parameter);
-        bool CanExecute(T parameter);
-    }
-
-
-    public class AsyncRelayCommand : IAsyncCommand
-    {
-        public event EventHandler CanExecuteChanged;
-
-        private bool _isExecuting;
-        private readonly Func<Task> _execute;
-        private readonly Func<bool> _canExecute;
-        private readonly IErrorHandler _errorHandler;
-
-        public AsyncRelayCommand(
-            Func<Task> execute,
-            Func<bool> canExecute = null,
-            IErrorHandler errorHandler = null)
-        {
-            _execute = execute;
-            _canExecute = canExecute;
-            _errorHandler = errorHandler;
-        }
-
-        public bool CanExecute()
-        {
-            return !_isExecuting && (_canExecute?.Invoke() ?? true);
-        }
-
-        public async Task ExecuteAsync()
-        {
-            if (CanExecute())
-            {
-                try
-                {
-                    _isExecuting = true;
+                if (_execute != null)
                     await _execute();
-                }
-                finally
-                {
-                    _isExecuting = false;
-                }
+                if (_parameterExecute != null)
+                    await _parameterExecute(parameter);
             }
-
-            RaiseCanExecuteChanged();
-        }
-
-        public void RaiseCanExecuteChanged()
-        {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        #region Explicit implementations
-        bool ICommand.CanExecute(object parameter)
-        {
-            return CanExecute();
-        }
-
-        void ICommand.Execute(object parameter)
-        {
-            ExecuteAsync().FireAndForgetSafeAsync(_errorHandler);
-        }
-        #endregion
-    }
-
-    public class AsyncCommand<T> : IAsyncCommand<T>
-    {
-        public event EventHandler CanExecuteChanged;
-
-        private bool _isExecuting;
-        private readonly Func<T, Task> _execute;
-        private readonly Func<T, bool> _canExecute;
-        private readonly IErrorHandler _errorHandler;
-
-        public AsyncCommand(Func<T, Task> execute, Func<T, bool> canExecute = null, IErrorHandler errorHandler = null)
-        {
-            _execute = execute;
-            _canExecute = canExecute;
-            _errorHandler = errorHandler;
-        }
-
-        public bool CanExecute(T parameter)
-        {
-            return !_isExecuting && (_canExecute?.Invoke(parameter) ?? true);
-        }
-
-        public async Task ExecuteAsync(T parameter)
-        {
-            if (CanExecute(parameter))
+            finally
             {
-                try
-                {
-                    _isExecuting = true;
-                    await _execute(parameter);
-                }
-                finally
-                {
-                    _isExecuting = false;
-                }
+                Interlocked.Exchange(ref isExecuting, 0);
+                RaiseCanExecuteChanged();
             }
-
-            RaiseCanExecuteChanged();
         }
-
-        public void RaiseCanExecuteChanged()
-        {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        #region Explicit implementations
-        bool ICommand.CanExecute(object parameter)
-        {
-            return CanExecute((T)parameter);
-        }
-
-        void ICommand.Execute(object parameter)
-        {
-            ExecuteAsync((T)parameter).FireAndForgetSafeAsync(_errorHandler);
-        }
-        #endregion
     }
-
 }

@@ -73,7 +73,7 @@ namespace PlaylistSaver.Helpers
 
         public static string ExtractThumbnailId(string videoURL)
         {
-            return videoURL.TrimFromFirst("vi/", false).TrimToFirst("/");
+            return videoURL.TrimFromFirst("vi/").TrimToFirst("/");
         }
     }
 }

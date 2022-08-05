@@ -21,9 +21,9 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
 {
     public partial class HomepageViewModel : ViewModelBase
     {
-        public ObservableCollection<DisplayPlaylist> playlistsList { get; set; }
+        public ObservableCollection<DisplayPlaylist> PlaylistsList { get; set; }
 
-        public UserProfile UserProfile => GlobalItems.UserProfile;
+        public static UserProfile UserProfile => GlobalItems.UserProfile;
 
         public HomepageViewModel(NavigationStore navigationStore, NavigationStore popupNavigationStore)
         {
@@ -33,11 +33,16 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
             OpenAddPlaylist_linkCommand = new NavigateCommand(popupNavigationStore, () => new AddPlaylists_linkViewModel(popupNavigationStore, this));
 
             //DeletePlaylistsCommand = new NavigateCommand(popupNavigationStore)
-            GlobalItems.userProfileChanged += OnUserProfileChanged;
+            GlobalItems.UserProfileChanged += OnUserProfileChanged;
 
+            DownloadPlaylistDataCommand = new AsyncRelayCommand(PullPlaylistData);
             OpenPlaylistCommand = new NavigateCommand(navigationStore, () => new PlaylistItemsViewModel(navigationStore));
         }
 
+        private async Task PullPlaylistData(object playlistId)
+        {
+            await PlaylistItemsData.PullPlaylistsItemsData(((string)playlistId).CreateNewList());
+        }
 
         private void OnUserProfileChanged()
         {
@@ -46,22 +51,21 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
 
         public ICommand OpenAddPlaylist_userOwnedViewCommand { get; }
         public ICommand OpenAddPlaylist_linkCommand { get; }
-        public ICommand DeletePlaylistsCommand { get; }
-
+        public AsyncRelayCommand DownloadPlaylistDataCommand { get; }
 
         public CommandBase OpenPlaylistCommand { get; }
 
         public void LoadPlaylists()
         {
-            playlistsList = new();
+            PlaylistsList = new();
             var youtubePlaylistsList = PlaylistsData.ReadSavedPlaylists();
             List<DisplayPlaylist> tempList = new();
             foreach (var playlistItem in youtubePlaylistsList)
             {
                 tempList.Add(new DisplayPlaylist(playlistItem.Snippet.Title, playlistItem.Id, playlistItem.ContentDetails.ItemCount.ToString(), playlistItem.Snippet.ChannelTitle));
             }
-            playlistsList = new ObservableCollection<DisplayPlaylist>(tempList);
-            OnPropertyChanged(nameof(playlistsList));
+            PlaylistsList = new ObservableCollection<DisplayPlaylist>(tempList);
+            OnPropertyChanged(nameof(PlaylistsList));
         }
     }
 }

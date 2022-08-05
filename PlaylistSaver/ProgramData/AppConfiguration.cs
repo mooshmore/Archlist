@@ -18,9 +18,9 @@ namespace PlaylistSaver.ProgramData
         public static void Configure()
         {
             // Retrieve clientID and clientSecret from Json file
-            OAuthLogin.LoadSecretData();
+            OAuthSystem.LoadSecretData();
 
-            OAuthLogin.LogInAsync();
+            OAuthSystem.LogInAsync();
 
             SetDefaultJsonSettings();
             CreateFileStructure();

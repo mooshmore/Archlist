@@ -18,12 +18,12 @@
         <!--Playlist control-->
         <Grid Background="{StaticResource Background_topbar}" Height="45">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal" Margin="3 6 10 6">
-                <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/Symbols/White/add_64px.png" Margin="3 0" ToolTip="Add your playlists">
+                <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/Symbols/White/add_user_64px.png" Margin="3 0" ToolTip="Add your playlists">
                     <Image.InputBindings>
                         <MouseBinding Gesture="LeftClick" Command="{Binding OpenAddPlaylist_userOwnedViewCommand}"/>
                     </Image.InputBindings>
                 </Image>
-                <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/Symbols/White/add_64px.png" Margin="3 0" ToolTip="Add playlist by link">
+                <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/Symbols/White/add_link_64px.png" Margin="3 0" ToolTip="Add playlist by link">
                     <Image.InputBindings>
                         <MouseBinding Gesture="LeftClick" Command="{Binding OpenAddPlaylist_linkCommand}" />
                     </Image.InputBindings>
@@ -65,15 +65,21 @@
                 </Grid>
 
                 <!--All playlists-->
-                <ItemsControl ItemsSource="{Binding playlistsList}" Padding="40 10 10 10">
+                <ItemsControl ItemsSource="{Binding PlaylistsList}" Padding="40 10 10 10">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Vertical" Height="230" Width="231" HorizontalAlignment="Left" Margin="20">
-                                <Grid Background="Black" Height="130" Width="231">
+                                <Grid Background="Black" Height="130" Width="231" Cursor="Hand">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="80"/>
                                     </Grid.ColumnDefinitions>
+                                    <Grid.InputBindings>
+                                        <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.OpenPlaylistCommand, 
+                                        RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel,AncestorLevel=2}}"
+                                        CommandParameter="{Binding PlaylistId}" />
+                                    </Grid.InputBindings>
+
                                     <Image Grid.ColumnSpan="2" Source="{Binding PlaylistThumbnailPath}"/>
                                     <Grid Grid.Column="1" Background="#C0393939">
                                         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -85,12 +91,18 @@
                                     </Grid>
 
                                 </Grid>
-                                <TextBlock FontSize="22" Margin="0 10 0 2" Foreground="White" FontFamily="{StaticResource Inter}"  Text="{Binding PlaylistTitle}"></TextBlock>
-                                <TextBlock FontSize="16" Margin="0 0 0 0" Foreground="{StaticResource Text_dimmed}" Text="{Binding CreatorChannelTitle}"></TextBlock>
-                                <Button Command="{Binding DataContext.OpenPlaylistCommand, 
+                                <TextBlock Cursor="Hand" FontSize="22" Margin="0 10 0 2" Foreground="White" FontFamily="{StaticResource Inter}"  Text="{Binding PlaylistTitle}">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.OpenPlaylistCommand, 
                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel,AncestorLevel=2}}"
-                                        CommandParameter="{Binding PlaylistID}">
-                                    Open playlist
+                                        CommandParameter="{Binding PlaylistId}" />
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+                                <TextBlock FontSize="16" Margin="0 0 0 0" Foreground="{StaticResource Text_dimmed}" Text="{Binding CreatorChannelTitle}"></TextBlock>
+                                <Button Command="{Binding DataContext.DownloadPlaylistDataCommand, 
+                                        RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel,AncestorLevel=2}}"
+                                        CommandParameter="{Binding PlaylistId}">
+                                    Download playlist data
                                 </Button>
 
                             </StackPanel>

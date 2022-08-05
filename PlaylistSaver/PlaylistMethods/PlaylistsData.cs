@@ -23,18 +23,17 @@ namespace PlaylistSaver.PlaylistMethods
         public DisplayPlaylist(string playlistTitle, string playlistID, string itemCount, string creatorChannelTitle)
         {
             PlaylistTitle = playlistTitle;
-            PlaylistID = playlistID;
+            PlaylistId = playlistID;
             ItemCount = itemCount;
             CreatorChannelTitle = creatorChannelTitle;
         }
 
         public string PlaylistTitle { get; set; }
-        public string PlaylistID { get; set; }
+        public string PlaylistId { get; set; }
         public string ItemCount { get; set; }
         public string CreatorChannelTitle { get; set; }
-        public string PlaylistThumbnailPath => Path.Combine(Directories.PlaylistsDirectory.FullName, PlaylistID, "playlistThumbnail.jpg");
+        public string PlaylistThumbnailPath => Path.Combine(Directories.PlaylistsDirectory.FullName, PlaylistId, "playlistThumbnail.jpg");
     }
-
 
     public static class PlaylistsData
     {
@@ -53,21 +52,6 @@ namespace PlaylistSaver.PlaylistMethods
             return playlistList;
         }
 
-        public static string GetPlaylistDirectoryPath(string playlistID)
-        {
-            return Path.Combine(Directories.PlaylistsDirectory.FullName, playlistID);
-        }
-
-        public static List<Google.Apis.YouTube.v3.Data.Playlist> ConvertItemsToList(PlaylistListResponse playlistListResponse)
-        {
-            List<Google.Apis.YouTube.v3.Data.Playlist> playlistsList = new();
-            foreach (var item in playlistListResponse.Items)
-            {
-                playlistsList.Add(item);
-            }
-            return playlistsList;
-        }
-
         public static async Task<PlaylistListResponse> RetrieveUserOwnedPlaylistsData()
         {
             PlaylistListResponse playlists = null;
@@ -75,7 +59,7 @@ namespace PlaylistSaver.PlaylistMethods
 
             do
             {
-                PlaylistsResource.ListRequest playlistListRequest = OAuthLogin.youtubeService.Playlists.List(part: "contentDetails,id,snippet,status");
+                PlaylistsResource.ListRequest playlistListRequest = OAuthSystem.YoutubeService.Playlists.List(part: "contentDetails,id,snippet,status");
                 playlistListRequest.Mine = true;
                 if (nextPageToken != null)
                     playlistListRequest.PageToken = nextPageToken;
@@ -130,7 +114,7 @@ namespace PlaylistSaver.PlaylistMethods
             // Retrieves data for the given playlists
             async Task GetPlaylistsData(string currentPlaylistsList)
             {
-                PlaylistsResource.ListRequest playlistListRequest = OAuthLogin.youtubeService.Playlists.List(part: "contentDetails,id,snippet,status");
+                PlaylistsResource.ListRequest playlistListRequest = OAuthSystem.YoutubeService.Playlists.List(part: "contentDetails,id,snippet,status");
                 playlistListRequest.Id = currentPlaylistsList;
 
 

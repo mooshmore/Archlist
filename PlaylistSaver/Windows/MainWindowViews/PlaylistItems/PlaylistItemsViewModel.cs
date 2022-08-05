@@ -13,8 +13,6 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
 {
     public class PlaylistItemsViewModel : ViewModelBase
     {
-        private Playlist _displayedPlaylist;
-
         public PlaylistItemsViewModel(NavigationStore navigationStore)
         {
 

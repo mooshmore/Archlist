@@ -40,6 +40,8 @@
     <None Remove="Resources\Images\Symbols\PastelRed\cancel_64px.png" />
     <None Remove="Resources\Images\Symbols\White\add_32px.png" />
     <None Remove="Resources\Images\Symbols\White\add_64px.png" />
+    <None Remove="Resources\Images\Symbols\White\add_link_64px.png" />
+    <None Remove="Resources\Images\Symbols\White\add_user_64px.png" />
     <None Remove="Resources\Images\Symbols\White\cancel_32px.png" />
     <None Remove="Resources\Images\Symbols\White\cancel_64px.png" />
     <None Remove="Resources\Images\Symbols\White\close_24px.png" />
@@ -55,6 +57,7 @@
     <None Remove="Resources\Images\Symbols\White\info_64px.png" />
     <None Remove="Resources\Images\Symbols\White\link_white_64px.png" />
     <None Remove="Resources\Images\Symbols\White\lock_white_64px.png" />
+    <None Remove="Resources\Images\Symbols\White\logout_64px.png" />
     <None Remove="Resources\Images\Symbols\White\maximize_button_24px.png" />
     <None Remove="Resources\Images\Symbols\White\maximize_button_64px.png" />
     <None Remove="Resources\Images\Symbols\White\restore_down_24px.png" />
@@ -85,12 +88,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\Inne\Helpers\ExtensionMethods\Converters.cs" Link="Helpers\Converters.cs" />
-    <Compile Include="..\..\Inne\Helpers\ExtensionMethods\DirectoryExtensions.cs" Link="Helpers\DirectoryExtensions.cs" />
-    <Compile Include="..\..\Inne\Helpers\ExtensionMethods\ListExtensions.cs" Link="Helpers\ListExtensions.cs" />
-    <Compile Include="..\..\Inne\Helpers\ExtensionMethods\MethodsCluster.cs" Link="Helpers\MethodsCluster.cs" />
-    <Compile Include="..\..\Inne\Helpers\ExtensionMethods\StringFunctionsExtensions.cs" Link="Helpers\StringFunctionsExtensions.cs" />
-    <Compile Include="..\..\Inne\Helpers\ExtensionMethods\TimeAndDate.cs" Link="Helpers\TimeAndDate.cs" />
     <Resource Include="Resources\Images\Symbols\PastelRed\cancel_24px.png" />
     <Resource Include="Resources\Images\Symbols\PastelRed\cancel_32px.png" />
     <Resource Include="Resources\Images\Symbols\PastelRed\cancel_48px.png" />
@@ -123,6 +120,8 @@
     <Resource Include="Resources\Images\Logos\AppLogo\appLogo_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\add_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\add_64px.png" />
+    <Resource Include="Resources\Images\Symbols\White\add_link_64px.png" />
+    <Resource Include="Resources\Images\Symbols\White\add_user_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\cancel_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\cancel_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\close_24px.png" />
@@ -138,6 +137,7 @@
     <Resource Include="Resources\Images\Symbols\White\info_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\link_white_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\lock_white_64px.png" />
+    <Resource Include="Resources\Images\Symbols\White\logout_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\maximize_button_24px.png" />
     <Resource Include="Resources\Images\Symbols\White\maximize_button_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\restore_down_24px.png" />

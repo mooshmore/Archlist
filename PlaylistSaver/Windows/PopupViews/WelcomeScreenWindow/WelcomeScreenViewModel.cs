@@ -24,7 +24,7 @@ namespace PlaylistSaver.Windows.PopupViews.WelcomeScreenWindow
 
         public void OpenOAuthLoginPage()
         {
-            OAuthLogin.LogInAsync();
+            OAuthSystem.LogInAsync();
             //OAuthLogin.LogOut();
 
             //var mainWindow = new MainWindow()

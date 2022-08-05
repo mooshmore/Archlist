@@ -47,11 +47,11 @@ namespace PlaylistSaver.PlaylistMethods
         public string ThumbnailURL { get; set; }
 
         [IgnoreDataMember]
-        public string ThumbnailId => ThumbnailURL.TrimFromLast("/", false).TrimToFirst("=");
+        public string ThumbnailId => ThumbnailURL.TrimFromLast("/").TrimToFirst("=");
         [IgnoreDataMember]
         public string ThumbnailPath => Path.Combine(Directories.ChannelsDirectory.FullName, $"{ChannelId}\\{ThumbnailFileName}.jpg");
         [IgnoreDataMember]
-        public string ThumbnailFileName => ThumbnailURL.TrimFromLast("/", false);
+        public string ThumbnailFileName => ThumbnailURL.TrimFromLast("/");
 
         [IgnoreDataMember]
         public BitmapImage ThumbnailImage => DirectoryExtensions.GetImage(ChannelDirectory + ThumbnailFileName);

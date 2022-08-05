@@ -23,7 +23,7 @@ namespace PlaylistSaver.UserData
             PictureURL = userProfileObject.SelectToken("picture").ToString();
 
 
-            List<string> greetings = new List<string>
+            List<string> greetings = new()
             {
                 $"Hiya, {Name}",
                 $"Hey there, {Name}",

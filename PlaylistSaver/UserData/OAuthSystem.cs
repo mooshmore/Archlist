@@ -3,27 +3,16 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Util;
 using Google.Apis.YouTube.v3;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PlaylistSaver.ProgramData.Stores;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static PlaylistSaver.Enums;
 
 namespace PlaylistSaver.UserData
 {
-    public static class OAuthLogin
+    public static class OAuthSystem
     {
         private static string clientID;
         private static string clientSecret;
@@ -31,7 +20,7 @@ namespace PlaylistSaver.UserData
         private static readonly string[] scopes = { YouTubeService.Scope.YoutubeReadonly, "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile" };
 
         private static UserCredential credentials;
-        public static YouTubeService youtubeService;
+        public static YouTubeService YoutubeService { get; set; }
 
         public static async void LogInAsync()
         {
@@ -49,7 +38,7 @@ namespace PlaylistSaver.UserData
                 credentials.RefreshTokenAsync(CancellationToken.None).Wait();
 
             // Create youtube service instance with retrieved user cridentials & data
-            youtubeService = new Google.Apis.YouTube.v3.YouTubeService(new BaseClientService.Initializer()
+            YoutubeService = new Google.Apis.YouTube.v3.YouTubeService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credentials
             });
@@ -84,21 +73,18 @@ namespace PlaylistSaver.UserData
 
         private static async Task<string> GetUserProfileDataAsync()
         {
-            // builds the  request
+            // Build the request
             string userinfoRequestURI = "https://www.googleapis.com/oauth2/v3/userinfo";
-
-            // sends the request
             HttpWebRequest userinfoRequest = (HttpWebRequest)WebRequest.Create(userinfoRequestURI);
             userinfoRequest.Method = "GET";
             userinfoRequest.Headers.Add($"Authorization: Bearer {credentials.Token.AccessToken}");
 
-            // gets the response
+            // Get the response
             WebResponse userinfoResponse = await userinfoRequest.GetResponseAsync();
-            using (StreamReader userinfoResponseReader = new StreamReader(userinfoResponse.GetResponseStream()))
-            {
-                // reads response body
+
+            // Read the response
+            using StreamReader userinfoResponseReader = new(userinfoResponse.GetResponseStream());
                 return await userinfoResponseReader.ReadToEndAsync();
-            }
         }
 
         private static string ReadSavedUserProfileDataAsync()

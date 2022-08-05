@@ -20,7 +20,7 @@ namespace PlaylistSaver.ProgramData.Stores
 
 
 
-        public static event Action userProfileChanged;
+        public static event Action UserProfileChanged;
 
         private static UserProfile _userProfile;
 
@@ -36,7 +36,7 @@ namespace PlaylistSaver.ProgramData.Stores
 
         private static void OnUserProfileChanged()
         {
-            userProfileChanged?.Invoke();
+            UserProfileChanged?.Invoke();
         }
     }
 }

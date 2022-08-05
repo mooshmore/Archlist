@@ -100,7 +100,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
 
             // If the value is a full link trim it so that only Id is left
             if (playlistId.IndexOf("=") != -1)
-                playlistId = playlistId.TrimFromFirst("=", false);
+                playlistId = playlistId.TrimFromFirst("=");
 
             // Check if the playlist isn't already added to the list
             if (PlaylistsList.Where(p => p.Id == playlistId).ToList().Count != 0)
