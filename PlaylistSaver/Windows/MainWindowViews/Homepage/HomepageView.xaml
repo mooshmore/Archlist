@@ -30,7 +30,7 @@
                 </Image>
                 <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/Symbols/White/cancel_64px.png" Margin="3 0" ToolTip="Remove tracked playlists">
                     <Image.InputBindings>
-                        <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />
+                        <!--<MouseBinding Gesture="LeftClick" Command="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />-->
                     </Image.InputBindings>
                 </Image>
             </StackPanel>
@@ -77,10 +77,10 @@
                                     <Grid.InputBindings>
                                         <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.OpenPlaylistCommand, 
                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel,AncestorLevel=2}}"
-                                        CommandParameter="{Binding PlaylistId}" />
+                                        CommandParameter="{Binding}" />
                                     </Grid.InputBindings>
 
-                                    <Image Grid.ColumnSpan="2" Source="{Binding PlaylistThumbnailPath}"/>
+                                    <Image Grid.ColumnSpan="2" Source="{Binding ThumbnailPath}"/>
                                     <Grid Grid.Column="1" Background="#C0393939">
                                         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
                                             <StackPanel Orientation="Horizontal">
@@ -91,17 +91,17 @@
                                     </Grid>
 
                                 </Grid>
-                                <TextBlock Cursor="Hand" FontSize="22" Margin="0 10 0 2" Foreground="White" FontFamily="{StaticResource Inter}"  Text="{Binding PlaylistTitle}">
+                                <TextBlock Cursor="Hand" FontSize="22" Margin="0 10 0 2" Foreground="White" FontFamily="{StaticResource Inter}"  Text="{Binding Title}">
                                     <TextBlock.InputBindings>
                                         <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.OpenPlaylistCommand, 
                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel,AncestorLevel=2}}"
-                                        CommandParameter="{Binding PlaylistId}" />
+                                        CommandParameter="{Binding Id}" />
                                     </TextBlock.InputBindings>
                                 </TextBlock>
                                 <TextBlock FontSize="16" Margin="0 0 0 0" Foreground="{StaticResource Text_dimmed}" Text="{Binding CreatorChannelTitle}"></TextBlock>
                                 <Button Command="{Binding DataContext.DownloadPlaylistDataCommand, 
                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel,AncestorLevel=2}}"
-                                        CommandParameter="{Binding PlaylistId}">
+                                        CommandParameter="{Binding Id}">
                                     Download playlist data
                                 </Button>
 

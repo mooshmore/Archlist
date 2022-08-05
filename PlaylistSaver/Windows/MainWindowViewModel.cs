@@ -26,7 +26,8 @@ namespace PlaylistSaver.Windows
         public ViewModelBase CurrentMainViewModel => _mainNavigationStore.CurrentViewModel;
         public ViewModelBase CurrentPopupViewModel => _popupNavigationStore.CurrentViewModel;
 
-        public static UserProfile UserProfile => GlobalItems.UserProfile;
+        // ! Don't change it to static or the binding won't work
+        public UserProfile UserProfile => GlobalItems.UserProfile;
 
         public MainWindowViewModel(NavigationStore navigationStore, NavigationStore popupNavigationStore)
         {

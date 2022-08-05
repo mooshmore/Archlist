@@ -50,6 +50,7 @@ namespace PlaylistSaver.UserData
         public string Name { get; set; }
         public string Email { get; set; }
         public string PictureURL { get; set; }
+        // ! Don't set it to static or the binding won't work
         public string PicturePath => Path.Combine(Directories.UserDataDirectory.FullName, "userPicture.jpg");
         public string WelcomeGreeting { get; set; }
     }

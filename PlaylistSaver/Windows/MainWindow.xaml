@@ -80,7 +80,11 @@
                                 <MouseBinding Gesture="LeftClick" Command="{Binding LogOutCommand}"/>
                             </Image.InputBindings>
                         </Image>
-                        <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/Temp/PlaylistCreator_thumbnail.png" ToolTip="Your account"/>
+                        <Ellipse Margin="0 8" Cursor="Hand" Height="35" Width="35" ToolTip="Your account">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding UserProfile.PicturePath}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
                         <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/Symbols/White/info_64px.png" ToolTip="App info"/>
                         <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/Symbols/White/settings_64px.png" ToolTip="Settings"/>
                     </StackPanel>

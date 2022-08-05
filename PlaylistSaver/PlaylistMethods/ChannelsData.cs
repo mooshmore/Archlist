@@ -39,11 +39,13 @@ namespace PlaylistSaver.PlaylistMethods
         public static async Task<List<Channel>> RetrieveAndSaveChannelsData(List<PlaylistItem> playlistItems)
         {
             // Distinct by the channels to don't download the same channel twice
-            List<string> channelsIdsList = playlistItems.Select(o => o.ItemInfo.OwnerChannelId).Distinct().ToList();
+            //List<string> channelsIdsList = playlistItems.Select(o => o.ItemInfo.OwnerChannelId).Distinct().ToList();
 
-            return Task.Run(async () => RetrieveAndSaveChannelsData(channelsIdsList).Result).Result;
+            //return Task.Run(async () => RetrieveAndSaveChannelsData(channelsIdsList).Result).Result;
             // check if this works
             //return await Task.Run(() => RetrieveAndSaveChannelsData(channelsIdsList));
+
+            return null;
 
         }
 

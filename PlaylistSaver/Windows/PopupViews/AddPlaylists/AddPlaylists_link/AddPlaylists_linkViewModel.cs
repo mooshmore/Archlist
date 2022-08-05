@@ -1,4 +1,5 @@
-﻿using Helpers;
+﻿using Google.Apis.YouTube.v3.Data;
+using Helpers;
 using PlaylistSaver.PlaylistMethods;
 using PlaylistSaver.ProgramData.Bases;
 using PlaylistSaver.ProgramData.Commands;
@@ -18,7 +19,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
 {
     class AddPlaylists_linkViewModel : ViewModelBase
     {
-        public ObservableCollection<Google.Apis.YouTube.v3.Data.Playlist> PlaylistsList { get; set; } = new();
+        public ObservableCollection<Playlist> PlaylistsList { get; set; } = new();
 
         public string PlaylistListCount
         {
@@ -47,7 +48,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
 
         private async Task AddPlaylists()
         {
-            await PlaylistsData.CreatePlaylistsData(new List<Google.Apis.YouTube.v3.Data.Playlist>(PlaylistsList));
+            await PlaylistsData.CreatePlaylistsData(new List<Playlist>(PlaylistsList));
 
             // Refresh the homepage to display newly added playlists
             homepageViewModel.LoadPlaylists();
@@ -58,7 +59,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
 
         private void RemovePlaylistFromList(object parameter)
         {
-            var checkedPlaylist = (Google.Apis.YouTube.v3.Data.Playlist)parameter;
+            var checkedPlaylist = (Playlist)parameter;
             foreach (var playlist in PlaylistsList)
             {
                 if (playlist.Id == checkedPlaylist.Id)

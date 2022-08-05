@@ -29,9 +29,9 @@ namespace PlaylistSaver.PlaylistMethods
                 throw new NotImplementedException();
 
             // Save playlist items for each playlist
-            foreach (var playlist in playlistResponses)
+            foreach (var (playlistId, response) in playlistResponses)
             {
-                var playlistDataDirectoryPath = Path.Combine(Directories.PlaylistsDirectory.FullName, playlist.playlistId, "data");
+                var playlistDataDirectoryPath = Path.Combine(Directories.PlaylistsDirectory.FullName, playlistId, "data");
 
                 string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
                 string currentTime = DateTime.Now.ToString("HH-mm");
@@ -41,7 +41,7 @@ namespace PlaylistSaver.PlaylistMethods
                 var dataFile = dir.CreateSubfile($"{currentTime}.json");
 
                 // Serialize the playlist data into a json
-                string jsonString = JsonConvert.SerializeObject(playlist.response);
+                string jsonString = JsonConvert.SerializeObject(response);
 
                 // Create a new playlistInfo.json file and write the playlist data to it
                 File.WriteAllText(dataFile.FullName, jsonString);
@@ -55,20 +55,14 @@ namespace PlaylistSaver.PlaylistMethods
 
             // Download the thumbnail for each playlist item in each playlist
             // Download images pararelly as it can take a long time
-            foreach (var playlist in playlistResponses)
+            foreach (var (playlistId, response) in playlistResponses)
             {
-                DirectoryInfo playlistThumbnailDirectory = new DirectoryInfo(Path.Combine(Directories.PlaylistsDirectory.FullName, playlist.playlistId, "thumbnails"));
-                foreach (var playlistItem in playlist.response.Items)
+                DirectoryInfo playlistThumbnailDirectory = new(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistId, "thumbnails"));
+                foreach (var playlistItem in response.Items)
                 {
-                    string thumbnailUrl = playlistItem.Snippet.Thumbnails.Medium.Url;
-
-                    // https://i.ytimg.com/vi/UI-GDOq8000/mqdefault.jpg => UI-GDOq8000/mqdefault.jpg
-                    string imageName = thumbnailUrl.TrimFromFirst("vi/");
-
-                    // UI-GDOq8000/mqdefault.jpg => UI-GDOq8000.jpg
-                    imageName = imageName.TrimToFirst("/") + ".jpg";
-
-                    string imagePath = Path.Combine(playlistThumbnailDirectory.FullName, imageName);
+                    // Image name is its unique id in the url,
+                    // https://i.ytimg.com/vi/UI-GDOq8000/mqdefault.jpg => UI-GDOq8000.jpg
+                    string imagePath = GetPlaylistItemThumbnailPath(playlistId, playlistItem.Snippet.Thumbnails.Medium.Url);
 
                     // ! Thumbnail url will have the same url even if the thumbnail has changed, so something
                     // ! like a etag should be checked if it is needed to redownload the image
@@ -117,30 +111,13 @@ namespace PlaylistSaver.PlaylistMethods
                 nextPageToken = nextPage.NextPageToken;
 
                 // Add the items from the new page to the main object
-                foreach (Google.Apis.YouTube.v3.Data.PlaylistItem item in nextPage.Items)
+                foreach (PlaylistItem item in nextPage.Items)
                 {
                     playlist.Items.Add(item);
                 }
             }
 
             return playlist;
-        }
-
-        /// <summary>
-        /// Converts default api's object structure to the one used in the program.
-        /// </summary>
-        /// <param name="playlist">The playlist to convert.</param>
-        /// <returns>A list of playlistItems converted from the given ojbect.</returns>
-        public static List<PlaylistItem> Parse(PlaylistItemListResponse playlist)
-        {
-            // Convert api playlistItem to a one that is used in the program
-            List<PlaylistItem> playlistItems = new();
-
-            foreach (Google.Apis.YouTube.v3.Data.PlaylistItem item in playlist.Items)
-            {
-                playlistItems.Add(new PlaylistItem(item));
-            }
-            return playlistItems;
         }
 
         /// <summary>
@@ -178,6 +155,22 @@ namespace PlaylistSaver.PlaylistMethods
             }
 
             return (true, response);
+        }
+
+        public static string GetPlaylistItemThumbnailPath(string playlistId, string thumbnailUrl)
+        {
+            DirectoryInfo playlistThumbnailDirectory = new(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistId, "thumbnails"));
+            string imageName = GetPlaylistItemThumbnailName(thumbnailUrl);
+            return Path.Combine(playlistThumbnailDirectory.FullName, imageName);
+        }
+
+        public static string GetPlaylistItemThumbnailName(string thumbnailUrl)
+        {
+            // https://i.ytimg.com/vi/UI-GDOq8000/mqdefault.jpg => UI-GDOq8000/mqdefault.jpg
+            string imageName = thumbnailUrl.TrimFromFirst("vi/");
+
+            // UI-GDOq8000/mqdefault.jpg => UI-GDOq8000.jpg
+            return imageName.TrimToFirst("/") + ".jpg";
         }
     }
 }

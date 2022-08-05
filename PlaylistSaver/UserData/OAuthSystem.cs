@@ -22,7 +22,7 @@ namespace PlaylistSaver.UserData
         private static UserCredential credentials;
         public static YouTubeService YoutubeService { get; set; }
 
-        public static async void LogInAsync()
+        public static async Task LogInAsync()
         {
             // Log in the user
             credentials = GoogleWebAuthorizationBroker.AuthorizeAsync(
@@ -97,7 +97,7 @@ namespace PlaylistSaver.UserData
             return File.Exists(Path.Combine(Directories.UserDataDirectory.FullName, "userProfile.json"));
         }
 
-        public static async void SwitchAccount()
+        public static async Task SwitchAccount()
         {
             await GoogleWebAuthorizationBroker.ReauthorizeAsync(credentials, CancellationToken.None);
         }

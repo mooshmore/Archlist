@@ -1,5 +1,6 @@
 ﻿using Helpers;
 using PlaylistSaver.PlaylistMethods;
+using PlaylistSaver.PlaylistMethods.Models;
 using PlaylistSaver.ProgramData;
 using PlaylistSaver.ProgramData.Bases;
 using PlaylistSaver.ProgramData.Commands;
@@ -22,26 +23,21 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
     public partial class HomepageViewModel : ViewModelBase
     {
         public ObservableCollection<DisplayPlaylist> PlaylistsList { get; set; }
-
-        public static UserProfile UserProfile => GlobalItems.UserProfile;
+        public UserProfile UserProfile => GlobalItems.UserProfile;
 
         public HomepageViewModel(NavigationStore navigationStore, NavigationStore popupNavigationStore)
         {
-
             LoadPlaylists();
+
+            OnUserProfileChanged();
+
             OpenAddPlaylist_userOwnedViewCommand = new NavigateCommand(popupNavigationStore, () => new AddPlaylists_userOwnedViewModel(popupNavigationStore, this));
             OpenAddPlaylist_linkCommand = new NavigateCommand(popupNavigationStore, () => new AddPlaylists_linkViewModel(popupNavigationStore, this));
-
-            //DeletePlaylistsCommand = new NavigateCommand(popupNavigationStore)
-            GlobalItems.UserProfileChanged += OnUserProfileChanged;
-
             DownloadPlaylistDataCommand = new AsyncRelayCommand(PullPlaylistData);
-            OpenPlaylistCommand = new NavigateCommand(navigationStore, () => new PlaylistItemsViewModel(navigationStore));
-        }
+            OpenPlaylistCommand = new RelayCommand(OpenPlaylist);
 
-        private async Task PullPlaylistData(object playlistId)
-        {
-            await PlaylistItemsData.PullPlaylistsItemsData(((string)playlistId).CreateNewList());
+            GlobalItems.UserProfileChanged += OnUserProfileChanged;
+            NavigationStore = navigationStore;
         }
 
         private void OnUserProfileChanged()
@@ -49,11 +45,26 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
             OnPropertyChanged(nameof(UserProfile));
         }
 
+        public NavigationStore NavigationStore; 
+        public RelayCommand OpenPlaylistCommand { get; }
+
+        private void OpenPlaylist(object displayPlaylist)
+        {
+            var navigateCommand = new NavigateCommand(NavigationStore, () => new PlaylistItemsViewModel(NavigationStore, (DisplayPlaylist)displayPlaylist));
+            navigateCommand.Execute(displayPlaylist);
+        }
+
+        private async Task PullPlaylistData(object playlistId)
+        {
+            await PlaylistItemsData.PullPlaylistsItemsData(((string)playlistId).CreateNewList());
+        }
+
+
+
         public ICommand OpenAddPlaylist_userOwnedViewCommand { get; }
         public ICommand OpenAddPlaylist_linkCommand { get; }
         public AsyncRelayCommand DownloadPlaylistDataCommand { get; }
 
-        public CommandBase OpenPlaylistCommand { get; }
 
         public void LoadPlaylists()
         {
@@ -62,7 +73,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
             List<DisplayPlaylist> tempList = new();
             foreach (var playlistItem in youtubePlaylistsList)
             {
-                tempList.Add(new DisplayPlaylist(playlistItem.Snippet.Title, playlistItem.Id, playlistItem.ContentDetails.ItemCount.ToString(), playlistItem.Snippet.ChannelTitle));
+                tempList.Add(new DisplayPlaylist(playlistItem));
             }
             PlaylistsList = new ObservableCollection<DisplayPlaylist>(tempList);
             OnPropertyChanged(nameof(PlaylistsList));

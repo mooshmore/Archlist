@@ -1,4 +1,5 @@
-﻿using PlaylistSaver.PlaylistMethods;
+﻿using Google.Apis.YouTube.v3.Data;
+using PlaylistSaver.PlaylistMethods;
 using PlaylistSaver.ProgramData.Bases;
 using PlaylistSaver.ProgramData.Commands;
 using PlaylistSaver.ProgramData.Stores;
@@ -18,7 +19,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
     public class AddPlaylists_userOwnedViewModel : ViewModelBase
     {
         // Using pre .NET 6.0(?) Tuple is mandatory for the binding to work properly
-        public ObservableCollection<Tuple<bool, Google.Apis.YouTube.v3.Data.Playlist>> PlaylistsList { get; set; }
+        public ObservableCollection<Tuple<bool, Playlist>> PlaylistsList { get; set; }
 
         public string CheckedPlaylistsCount 
         { 
@@ -33,9 +34,9 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
             }
         }
 
-        public List<Google.Apis.YouTube.v3.Data.Playlist> ReturnCheckedPlaylists()
+        public List<Playlist> ReturnCheckedPlaylists()
         {
-            List<Google.Apis.YouTube.v3.Data.Playlist> checkedPlaylists = new();
+            List<Playlist> checkedPlaylists = new();
 
             foreach (var item in PlaylistsList)
             {
@@ -77,13 +78,13 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
 
         public void CheckPlaylist(object checkedPlaylistObject)
         {
-            var checkedPlaylist = (Google.Apis.YouTube.v3.Data.Playlist)checkedPlaylistObject;
+            var checkedPlaylist = (Playlist)checkedPlaylistObject;
             var checkedPlaylistTuple = ReturnPlaylistTuple(checkedPlaylist);
             ChangePlaylistItemCheckState(checkedPlaylistTuple, !checkedPlaylistTuple.Item1);
             OnPropertyChanged(nameof(CheckedPlaylistsCount));
         }
 
-        public Tuple<bool, Google.Apis.YouTube.v3.Data.Playlist> ReturnPlaylistTuple(Google.Apis.YouTube.v3.Data.Playlist playlist)
+        public Tuple<bool, Playlist> ReturnPlaylistTuple(Playlist playlist)
         {
             foreach (var item in PlaylistsList)
             {
@@ -102,10 +103,10 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
             OnPropertyChanged(nameof(CheckedPlaylistsCount));
         }
 
-        public void ChangePlaylistItemCheckState(Tuple<bool, Google.Apis.YouTube.v3.Data.Playlist> playlist, bool checkState)
+        public void ChangePlaylistItemCheckState(Tuple<bool, Playlist> playlist, bool checkState)
         {
             var playlistIndex = PlaylistsList.IndexOf(playlist);
-            PlaylistsList[playlistIndex] = new Tuple<bool, Google.Apis.YouTube.v3.Data.Playlist>(checkState, playlist.Item2);
+            PlaylistsList[playlistIndex] = new Tuple<bool, Playlist>(checkState, playlist.Item2);
         }
 
 
@@ -114,12 +115,12 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
             var playlists = await PlaylistsData.RetrieveUserOwnedPlaylistsData();
 
             // Convert the response to a list and sort the list alphabetically by playlist title
-            List<Google.Apis.YouTube.v3.Data.Playlist> playlistsList  = new(playlists.Items);
+            List<Playlist> playlistsList  = new(playlists.Items);
             playlistsList = playlistsList.OrderBy(playlist => playlist.Snippet.Title).ToList();
 
             foreach (var playlist in playlistsList)
             {
-                PlaylistsList.Add(new Tuple<bool, Google.Apis.YouTube.v3.Data.Playlist> (false, playlist));
+                PlaylistsList.Add(new Tuple<bool, Playlist> (false, playlist));
             }
         }
 

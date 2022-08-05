@@ -18,8 +18,6 @@ namespace PlaylistSaver.ProgramData.Stores
         /// </remarks>
         public static WebClient WebClient => new();
 
-
-
         public static event Action UserProfileChanged;
 
         private static UserProfile _userProfile;
