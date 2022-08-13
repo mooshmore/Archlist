@@ -9,12 +9,13 @@ namespace PlaylistSaver.ProgramData.Stores
 {
     public static class Directories
     {
-        public static DirectoryInfo ChannelsDirectory;
-        public static DirectoryInfo PlaylistsDirectory;
-        public static DirectoryInfo UserDataDirectory;
-        public static DirectoryInfo MainDirectory;
+        public static DirectoryInfo ChannelsDirectory { get; set; }
+        public static DirectoryInfo PlaylistsDirectory { get; set; }
+        public static DirectoryInfo UserDataDirectory { get; set; }
+        public static DirectoryInfo MainDirectory { get; set; }
 
-        public static string ImagesPath { get; set; } = "Resources/Assets/Images/";
+        public static DirectoryInfo ProjectDirectory => new(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+        public static string ImagesPath { get; set; } = ProjectDirectory + "\\Resources\\Images\\";
 
     }
 }

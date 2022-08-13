@@ -1,79 +1,64 @@
-﻿using Google.Apis.YouTube.v3.Data;
-using PlaylistSaver.PlaylistMethods;
+﻿using Helpers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using static PlaylistSaver.Enums;
-using static PlaylistSaver.PlaylistMethods.SharedClasses;
+using System.Windows.Media.Imaging;
 
 namespace PlaylistSaver.Helpers
 {
     public static class LocalHelpers
     {
         /// <summary>
-        /// Translates a string privacy status to a PrivacyStatus enum.
+        /// Returns a Bitmap image from the given path inside of the project/Resources/Images.
         /// </summary>
-        /// <remarks>Will throw an exception if the given privacy status doesn't match to any filters.</remarks>
-        /// <returns>The translated privacy status.</returns>
-        public static PrivacyStatus PrivacyStatusTranslator(string privacyStatus)
+        /// <param name="imagePath">The image path, starting from Resources/Images. Ex: "@"Symbols/White/add_64px.png"</param>
+        public static BitmapImage GetResourcesBitmapImage(string imagePath)
         {
-            return privacyStatus.ToLower() switch
-            {
-                "private" => PrivacyStatus.Private,
-                "public" => PrivacyStatus.Public,
-                "unlisted" => PrivacyStatus.Unlisted,
-                _ => throw new Exception("#LH1 No privacy status"),
-            };
+            string path = @"Resources/Images/" + imagePath;
+            return DirectoryExtensions.GetProjectBitmapImage(path);
+        }
+
+        public static T Deserialize<T>(this FileInfo file)
+        {
+            return JsonConvert.DeserializeObject<T>(file.ReadAllText());
         }
 
         /// <summary>
-        /// Translates the <paramref name="imageQuality"/> to their corresponding url string names.
+        /// Serializes the given object and writes it to the given file.
         /// </summary>
-        public static string ImageQualityTranslator(ImageQuality? imageQuality)
+        /// <param name="file">The file to write to.</param>
+        /// <param name="serializedObject">The object to serialize.</param>
+        public static void Serialize<T>(this FileInfo file, T serializedObject)
         {
-            return imageQuality switch
-            {
-                ImageQuality.Minimum => "default",
-                ImageQuality.Low => "mqdefault",
-                ImageQuality.Medium => "hqdefault",
-                ImageQuality.High => "sddefault",
-                ImageQuality.Maximum => "maxresdefault",
-                _ => throw new Exception("No saved image quality"),
-            };
+            string jsonString = JsonConvert.SerializeObject(serializedObject);
+            File.WriteAllText(file.FullName, jsonString);
         }
 
         /// <summary>
-        /// Saves maximum available quality and saved image quality.
+        /// Asynchronously downloads the image to the given directory with the given name.
         /// </summary>
-        /// <param name="apiThumbnails"></param>
-        /// <param name="thumbnail"></param>
-        public static void SaveThumbnailResolutionData(ThumbnailDetails apiThumbnails, ThumbnailInfo thumbnail)
+        /// <param name="thumbnailUrl">The directory where the image will be downloaded to.</param>
+        /// <param name="thumbnailPath">The path where the thumbnail will be saved.</param>
+        public static async Task DownloadImageAsync(string thumbnailUrl, string thumbnailPath)
         {
-            // Save maximum available quality
-            if (apiThumbnails.Maxres != null)
-                thumbnail.MaximumAvailableQuality = ImageQuality.Maximum;
-            else if (apiThumbnails.Standard != null)
-                thumbnail.MaximumAvailableQuality = ImageQuality.High;
-            else if (apiThumbnails.High != null)
-                thumbnail.MaximumAvailableQuality = ImageQuality.Medium;
-            else if (apiThumbnails.Medium != null)
-                thumbnail.MaximumAvailableQuality = ImageQuality.Low;
-            else if (apiThumbnails.Default__ != null)
-                thumbnail.MaximumAvailableQuality = ImageQuality.Minimum;
-
-            // Chosen image quality is available
-            if (thumbnail.MaximumAvailableQuality >= Settings.ImageQuality)
-                thumbnail.SavedImageQuality = (ImageQuality)Settings.ImageQuality;
-            // If it is not available then save the best possible one
-            else
-                thumbnail.SavedImageQuality = thumbnail.MaximumAvailableQuality;
+            WebClient downloadWebClient = new();
+            await downloadWebClient.DownloadFileTaskAsync(new Uri(thumbnailUrl), thumbnailPath);
         }
 
-        public static string ExtractThumbnailId(string videoURL)
+        /// <summary>
+        /// Asynchronously downloads the image to the given directory with the given name.
+        /// </summary>
+        /// <param name="downloadDirectory">The directory where the image will be downloaded to.</param>
+        /// <param name="thumbnailName">The name of the thumbnail to set.</param>
+        public static async Task DownloadImageAsync(string thumbnailUrl, DirectoryInfo downloadDirectory, string thumbnailName)
         {
-            return videoURL.TrimFromFirst("vi/").TrimToFirst("/");
+            WebClient downloadWebClient = new();
+            await downloadWebClient.DownloadFileTaskAsync(new Uri(thumbnailUrl), Path.Combine(downloadDirectory.FullName, thumbnailName));
         }
     }
 }

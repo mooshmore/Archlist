@@ -70,7 +70,7 @@
                                         <ColumnDefinition Width="63"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="95.6"/>
+                                        <RowDefinition Height="96"/>
                                         <RowDefinition Height="60"/>
                                     </Grid.RowDefinitions>
                                     <Border Background="Black" Grid.ColumnSpan="2" Cursor="Hand">

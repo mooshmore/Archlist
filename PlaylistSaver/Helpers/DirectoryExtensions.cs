@@ -235,13 +235,24 @@ namespace Helpers
         /// <summary>
         /// Checks if the given file is empty.
         /// </summary>
-        /// <returns>True if the file is empty; False if not.</returns>
         public static bool IsEmpty(this FileInfo file)
         {
             return file.Length == 0;
         }
 
-        public static BitmapImage GetImage(string imagePath)
+        /// <summary>
+        /// Returns a list of names of all subdirectories of the given directory.
+        /// </summary>
+        public static List<string> GetSubDirectoriesNames(this DirectoryInfo directory)
+        {
+            return Directory.GetDirectories(directory.FullName).Select(Path.GetFileName).ToList();
+        }
+
+        /// <summary>
+        /// Returns a BitmapImage from the given path in the project.
+        /// </summary>
+        /// <param name="imagePath">The path to the image in the project. Only specify the path inside of the project.</param>
+        public static BitmapImage GetProjectBitmapImage(string imagePath)
         {
             string appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
             Uri uriSource = new($@"/{appName};component/{imagePath}", UriKind.Relative);

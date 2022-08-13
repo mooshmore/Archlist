@@ -46,9 +46,14 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
             this.homepageViewModel = homepageViewModel;
         }
 
+        /// <summary>
+        /// Adds the playlist with the given link to the PlaylistsList,
+        /// so that they can be previewed.
+        /// </summary>
+        /// <returns></returns>
         private async Task AddPlaylists()
         {
-            await PlaylistsData.CreatePlaylistsData(new List<Playlist>(PlaylistsList));
+            await PlaylistsData.PullPlaylistsDataAsync(new List<Playlist>(PlaylistsList));
 
             // Refresh the homepage to display newly added playlists
             homepageViewModel.LoadPlaylists();
@@ -65,7 +70,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
                 if (playlist.Id == checkedPlaylist.Id)
                 {
                     PlaylistsList.Remove(playlist);
-                    OnPropertyChanged(nameof(PlaylistListCount));
+                    RaisePropertyChanged(nameof(PlaylistListCount));
 
                     return;
                 }
@@ -80,7 +85,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
             {
                 _linkTextBoxValue = value;
                 AddingInfoText = "";
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -91,7 +96,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
             set
             {
                 _addingInfoText = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -120,7 +125,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
                 }
             }
 
-            var playlistResponse = await PlaylistsData.RetrievePlaylistsData(playlistId.CreateNewList());
+            var playlistResponse = await PlaylistsData.RetrievePlaylistsDataAsync(playlistId.CreateNewList());
 
             // 
             if (playlistResponse.Items.Count == 0)
@@ -136,7 +141,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
 
             LinkTextBoxValue = "";
             AddingInfoText = "";
-            OnPropertyChanged(nameof(PlaylistListCount));
+            RaisePropertyChanged(nameof(PlaylistListCount));
 
         }
 

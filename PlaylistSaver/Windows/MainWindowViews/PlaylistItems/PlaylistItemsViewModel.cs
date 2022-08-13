@@ -1,14 +1,17 @@
 ﻿using Google.Apis.YouTube.v3.Data;
 using Helpers;
 using Newtonsoft.Json;
+using PlaylistSaver.Helpers;
 using PlaylistSaver.PlaylistMethods;
 using PlaylistSaver.PlaylistMethods.Models;
+using PlaylistSaver.ProgramData.Bases;
 using PlaylistSaver.ProgramData.Stores;
 using PlaylistSaver.Windows.MainWindowViews.Homepage;
 using PlaylistSaver.Windows.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,9 +30,23 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
             //PlaylistData = playlistData;
 
             LoadPlaylistItems(displayPlaylist);
+
+
+            ChangeExpandedStateCommannd = new RelayCommand(ChangeExpandedState);
         }
 
+        public RelayCommand ChangeExpandedStateCommannd { get; }
 
+        public void ChangeExpandedState(object parameter)
+        {
+            var displayPlaylist = (DisplayPlaylistItem)parameter;
+
+            displayPlaylist.DescriptionHeight = 200;
+            displayPlaylist.Description = "XD";
+
+            var ok = displayPlaylist.DescriptionHeight;
+            RaisePropertyChanged(nameof(displayPlaylist.DescriptionHeight));
+        }
 
         private void LoadPlaylistItems(DisplayPlaylist displayPlaylist)
         {
@@ -40,14 +57,13 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
             if (playlistDataFile == null)
                 return;
 
-            // Parse the data to a playlist 
-            string playlistText = File.ReadAllText(playlistDataFile.FullName);
-
-            PlaylistItemListResponse playlist = JsonConvert.DeserializeObject<PlaylistItemListResponse>(playlistText);
+            PlaylistItemListResponse playlist = playlistDataFile.Deserialize<PlaylistItemListResponse>();
 
             foreach (var playlistItem in playlist.Items)
             {
-                PlaylistsItemsList.Add(new DisplayPlaylistItem(playlistItem, displayPlaylist.Id));
+                // ! Don't add videos that are unavailable
+                if (PlaylistItemsData.VideoIsAvailable(playlistItem))
+                    PlaylistsItemsList.Add(new DisplayPlaylistItem(playlistItem, displayPlaylist.Id));
             }
         }
     }

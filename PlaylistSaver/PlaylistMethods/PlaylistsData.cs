@@ -15,11 +15,16 @@ using System.Collections.ObjectModel;
 using PlaylistSaver.UserData;
 using PlaylistSaver.ProgramData.Stores;
 using System.Net;
+using PlaylistSaver.Helpers;
 
 namespace PlaylistSaver.PlaylistMethods
 {
     public static class PlaylistsData
     {
+        /// <summary>
+        /// Reads all saved playlists under AppData\Roaming\MooshsPlaylistSaver\playlists, 
+        /// and returns them in form of a Playlist list.
+        /// </summary>
         public static List<Playlist> ReadSavedPlaylists()
         {
             List<Playlist> playlistList = new();
@@ -27,15 +32,18 @@ namespace PlaylistSaver.PlaylistMethods
             {
                 string playlistID = playlistDirectory.Name;
                 string playlistInfoPath = Path.Combine(Directories.PlaylistsDirectory.FullName, playlistID, "playlistInfo.json");
-                string playlistText = File.ReadAllText(playlistInfoPath);
+                FileInfo playlistFile = new(playlistInfoPath);
 
-                Playlist playlist = JsonConvert.DeserializeObject<Playlist>(playlistText);
+                Playlist playlist = playlistFile.Deserialize<Playlist>();
                 playlistList.Add(playlist);
             }
             return playlistList;
         }
 
-        public static async Task<PlaylistListResponse> RetrieveUserOwnedPlaylistsData()
+        /// <summary>
+        /// Retrieves data about all user owned playlists.
+        /// </summary>
+        public static async Task<PlaylistListResponse> RetrieveUserOwnedPlaylistsDataAsync()
         {
             PlaylistListResponse playlists = null;
             string nextPageToken = null;
@@ -66,7 +74,12 @@ namespace PlaylistSaver.PlaylistMethods
             return playlists;
         }
 
-        public static async Task<PlaylistListResponse> RetrievePlaylistsData(List<string> playlistIds)
+        /// <summary>
+        /// Retrieves data about all user owned playlists.
+        /// </summary>
+        /// <param name="playlistIds"></param>
+        /// <returns></returns>
+        public static async Task<PlaylistListResponse> RetrievePlaylistsDataAsync(List<string> playlistIds)
         {
             // Just in case make so that the playlist ids won't repeat
             playlistIds = playlistIds.Distinct().ToList();
@@ -86,7 +99,7 @@ namespace PlaylistSaver.PlaylistMethods
                 if (playlistCount == 50 || playlistIds.IsLastItem(playlistId))
                 {
                     playlistCount = 0;
-                    await GetPlaylistsData(currentPlaylistsList.TrimToLast(","));
+                    await GetPlaylistsDataAsync(currentPlaylistsList.TrimToLast(","));
                     currentPlaylistsList = "";
                 }
             }
@@ -95,29 +108,16 @@ namespace PlaylistSaver.PlaylistMethods
             return playlists;
 
             // Retrieves data for the given playlists
-            async Task GetPlaylistsData(string currentPlaylistsList)
+            async Task GetPlaylistsDataAsync(string currentPlaylistsList)
             {
                 PlaylistsResource.ListRequest playlistListRequest = OAuthSystem.YoutubeService.Playlists.List(part: "contentDetails,id,snippet,status");
                 playlistListRequest.Id = currentPlaylistsList;
 
 
                 PlaylistListResponse currentPlaylistListResponse;
-                try
-                {
-                    currentPlaylistListResponse = await playlistListRequest.ExecuteAsync();
-                }
-                catch (GoogleApiException requestError)
-                {
-                    switch (requestError.Error.Code)
-                    {
-                        case 404:
-                            // playlist not found
-                            // private playlist or incorrect link
-                            //return (false, null);
-                            break;
-                    }
-                    throw;
-                }
+                currentPlaylistListResponse = await playlistListRequest.ExecuteAsync();
+
+                //! Handling errors kinda should be here
 
                 // Assign the object on the first run
                 if (playlists == null)
@@ -133,7 +133,7 @@ namespace PlaylistSaver.PlaylistMethods
             }
         }
 
-        public static async Task CreatePlaylistsData(List<Playlist> playlistsList)
+        public static async Task PullPlaylistsDataAsync(List<Playlist> playlistsList)
         {
             var existingPlaylists = ReadSavedPlaylists();
 
@@ -156,25 +156,20 @@ namespace PlaylistSaver.PlaylistMethods
                 // Playlists thumbnails have all resolutions, no matter the video (they are upscaled)
                 // so any quality can be downloaded.
 
-                // Important note:
+                // Note:
                 // For reasons unknown to me thumbnails of resolutions: default, high and medium
                 // are in proportions of 16:12 instead of 16:9 (which only medium and maxres have).
                 // So, medium quality is chosen since it actualy fits required resolution and maxres 
                 // would've been taking (unnecessarily) too much space.
                 string thumbnailUrl = playlist.Snippet.Thumbnails.Medium.Url;
-                string thumbnailDirectory = Path.Combine(playlistDirectory.FullName, "playlistThumbnail.jpg");
-
-                thumbnailDownloads.Add(DownloadImage(thumbnailUrl, thumbnailDirectory));
+                thumbnailDownloads.Add(LocalHelpers.DownloadImageAsync(thumbnailUrl, playlistDirectory, "playlistThumbnail.jpg"));
             }
 
-            //FileSystemWatcher();
+            // Download all thumbnails pararelly
             await Task.WhenAll(thumbnailDownloads);
-        }
 
-        public static async Task DownloadImage(string thumbnailUrl, string thumbnailDirectory)
-        {
-            WebClient downloadWebClient = new();
-            await downloadWebClient.DownloadFileTaskAsync(new Uri(thumbnailUrl), thumbnailDirectory);
+            // Download creator channels
+            await ChannelsData.PullChannelsDataAsync(distinctedPlaylists.Select(obj => obj.Snippet.ChannelId).ToList());
         }
     }
 }

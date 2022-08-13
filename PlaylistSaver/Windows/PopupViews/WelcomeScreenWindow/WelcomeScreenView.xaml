@@ -17,8 +17,7 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        <!--<ResourceDictionary Source="/PlaylistSaver;component/Resources/Dictionaries/ViewsDictionaries/WelcomeScreen.xaml"/>-->
-        <ResourceDictionary Source="/Resources/Dictionaries/ViewsDictionaries/WelcomeScreen.xaml"/>
+        <ResourceDictionary Source="WelcomeScreenDictionary.xaml"/>
     </Window.Resources>
 
     <!--Add the WindowChrome object-->
@@ -75,18 +74,14 @@
                             <TextBlock Style="{StaticResource HighlightHoverText}">
                             <Hyperlink NavigateUri="https://github.com/mooshmore/YTPlaylistSaver">
                                 <StackPanel Style="{StaticResource BottomLink}">
-                                    <Ellipse Height="20" Width="20">
-                                        <Ellipse.Fill>
-                                            <ImageBrush ImageSource="/Resources/Images/Logos/Github/github_logo_32px.png"/>
-                                        </Ellipse.Fill>
-                                    </Ellipse>
+                                    <Image Source="/Resources/Images/Logos/Github/github_logo_32px.png"/>
                                     <TextBlock Style="{StaticResource BottomLinkText}">
                                         Project repository
                                     </TextBlock>
                                 </StackPanel>
                             </Hyperlink>
                         </TextBlock>
-                            <TextBlock Style="{StaticResource HighlightHoverText}" Margin="10 0 0 0">
+                        <TextBlock Style="{StaticResource HighlightHoverText}" Margin="10 0 0 0">
                             <Hyperlink NavigateUri="https://www.youtube.com/channel/UCoiOhzEdXVQCQ3conWHE3aQ">
                                 <StackPanel Style="{StaticResource BottomLink}">
                                     <Image Width="20" Source="/Resources/Images/Logos/Youtube/youtube_logo_32px.png"/>

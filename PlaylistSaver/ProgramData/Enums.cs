@@ -14,29 +14,5 @@ namespace PlaylistSaver
             Unlisted,
             Private
         }
-
-        public enum ImageQuality
-        {
-            /// <summary>
-            /// default
-            /// </summary>
-            Minimum = 0,
-            /// <summary>
-            /// medium
-            /// </summary>
-            Low = 1,
-            /// <summary>
-            /// high
-            /// </summary>
-            Medium = 2,
-            /// <summary>
-            /// standard
-            /// </summary>
-            High = 3,
-            /// <summary>
-            /// maxres
-            /// </summary>
-            Maximum = 4
-        }
     }
 }

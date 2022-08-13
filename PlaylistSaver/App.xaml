@@ -14,6 +14,7 @@
                 <ResourceDictionary Source="Resources/Dictionaries/Items/Button.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionaries/Items/Scrollbar.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionaries/Items/WindowChrome.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionaries/Items/ContextMenu.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionaries/SharedDictionaries/DefaultStyles.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionaries/SharedDictionaries/GlobalStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>

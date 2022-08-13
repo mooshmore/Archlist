@@ -35,13 +35,15 @@ namespace PlaylistSaver.UserData
 
             // Refresh the token if it has expired
             if (credentials.Token.IsExpired(SystemClock.Default))
-                credentials.RefreshTokenAsync(CancellationToken.None).Wait();
+                await credentials.RefreshTokenAsync(CancellationToken.None);
 
             // Create youtube service instance with retrieved user cridentials & data
             YoutubeService = new Google.Apis.YouTube.v3.YouTubeService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credentials
             });
+
+            // ! Check if the user has given all privelages to read data
 
             await CreateUserProfileAsync();
         }
@@ -97,12 +99,12 @@ namespace PlaylistSaver.UserData
             return File.Exists(Path.Combine(Directories.UserDataDirectory.FullName, "userProfile.json"));
         }
 
-        public static async Task SwitchAccount()
+        public static async Task SwitchAccountAsync()
         {
             await GoogleWebAuthorizationBroker.ReauthorizeAsync(credentials, CancellationToken.None);
         }
 
-        public static async Task<bool> LogOut()
+        public static async Task<bool> LogOutAsync()
         {
             //bool response = Task.Run(async () => LogOut().Result).Result;
             return await credentials.RevokeTokenAsync(CancellationToken.None);

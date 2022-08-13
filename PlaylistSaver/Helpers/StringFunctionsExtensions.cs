@@ -407,5 +407,17 @@ namespace System
         public static string ReplaceIfNullOrEmpty(this object text, string replacement) => text == null || text.ToString() == "" ? replacement : (string)text;
 
         #endregion
+
+        #region Capitalize
+
+        /// <summary>
+        /// Capitalizes the first letter.
+        /// </summary>
+        public static string CapitalizeFirst(this string text)
+        {
+            return char.ToUpper(text[0]) + text[1..];
+        }
+
+        #endregion
     }
 }

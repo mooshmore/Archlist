@@ -24,7 +24,7 @@ namespace PlaylistSaver.ProgramData
 
             SetDefaultJsonSettings();
             CreateFileStructure();
-            Settings.settingsInstance.Read();
+            Settings.SettingsInstance.Read();
             SetAutoLinkOpening();
         }
 

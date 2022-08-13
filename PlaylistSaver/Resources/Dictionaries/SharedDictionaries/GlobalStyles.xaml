@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <BitmapImage x:Key="BrowserImage" UriSource="/Resources/Images/Symbols/White/web_white_64px.png"/>
+    <BitmapImage x:Key="BrowserImage" UriSource="/Resources/Images/Symbols/White/web_32px.png"/>
 
     <Style x:Key="HighlightHoverImage" TargetType="Image">
         <Setter Property="Opacity" Value="0.7"/>

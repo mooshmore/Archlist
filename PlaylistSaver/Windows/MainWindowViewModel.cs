@@ -39,22 +39,22 @@ namespace PlaylistSaver.Windows
             GlobalItems.UserProfileChanged += OnUserProfileChanged;
 
             GoToHomePageCommand = new NavigateCommand(_mainNavigationStore, () => new HomepageViewModel(navigationStore, popupNavigationStore));
-            LogOutCommand = new AsyncRelayCommand(OAuthSystem.LogOut);
+            LogOutCommand = new AsyncRelayCommand(OAuthSystem.LogOutAsync);
         }
 
         private void OnCurrentMainWindowViewModelChanged()
         {
-            OnPropertyChanged(nameof(CurrentMainViewModel));
+            RaisePropertyChanged(nameof(CurrentMainViewModel));
         }
 
         private void OnCurrentPopupViewModelChanged()
         {
-            OnPropertyChanged(nameof(CurrentPopupViewModel));
+            RaisePropertyChanged(nameof(CurrentPopupViewModel));
         }
 
         private void OnUserProfileChanged()
         {
-            OnPropertyChanged(nameof(UserProfile));
+            RaisePropertyChanged(nameof(UserProfile));
         }
 
         public CommandBase GoToHomePageCommand { get; }

@@ -10,19 +10,24 @@ using PlaylistSaver.ProgramData.Stores;
 using System.IO;
 using Helpers;
 using Newtonsoft.Json;
+using PlaylistSaver.Helpers;
 
 namespace PlaylistSaver.PlaylistMethods
 {
     public static class PlaylistItemsData
     {
-        public static async Task PullPlaylistsItemsData(List<string> playlistsIds)
+        /// <summary>
+        /// Retrieves and saves playlists data.
+        /// </summary>
+        /// <param name="playlistsIds">The playlists to retrieve data for.</param>
+        public static async Task PullPlaylistsItemsDataAsync(List<string> playlistsIds)
         {
             List<(string playlistId, PlaylistItemListResponse response)> playlistResponses = new();
 
             // Download playlist items info for every playlist
             foreach (var playlistId in playlistsIds)
             {
-                playlistResponses.Add((playlistId, await RetrievePlaylistItems(playlistId)));
+                playlistResponses.Add((playlistId, await RetrievePlaylistItemsAsync(playlistId)));
             }
 
             if (playlistResponses.Count != playlistsIds.Count)
@@ -45,22 +50,22 @@ namespace PlaylistSaver.PlaylistMethods
 
                 // Create a new playlistInfo.json file and write the playlist data to it
                 File.WriteAllText(dataFile.FullName, jsonString);
-
-                //Directory.CreateDirectory(playlistDataDirectory, DateTime.Now.)
-                //playlistDataDirectory.
             }
 
             List<Task> thumbnailDownloads = new();
-
+            List<string> channelIds = new();
 
             // Download the thumbnail for each playlist item in each playlist
-            // Download images pararelly as it can take a long time
+            // Download images pararelly to reduce the download time
             foreach (var (playlistId, response) in playlistResponses)
             {
-                DirectoryInfo playlistThumbnailDirectory = new(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistId, "thumbnails"));
                 foreach (var playlistItem in response.Items)
                 {
-                    // Image name is its unique id in the url,
+                    // Skip if the video is not available (is deleted)
+                    if (!VideoIsAvailable(playlistItem))
+                        continue;
+
+                    // Image name is its unique id in the url
                     // https://i.ytimg.com/vi/UI-GDOq8000/mqdefault.jpg => UI-GDOq8000.jpg
                     string imagePath = GetPlaylistItemThumbnailPath(playlistId, playlistItem.Snippet.Thumbnails.Medium.Url);
 
@@ -71,29 +76,34 @@ namespace PlaylistSaver.PlaylistMethods
                     if (!File.Exists(imagePath))
                         // Medium quality is always available, no matter the uploaded image resolution,
                         // as it is upscaled to the medium quality
-                        thumbnailDownloads.Add(PlaylistsData.DownloadImage(playlistItem.Snippet.Thumbnails.Medium.Url, imagePath));
+                        // (though other qualities might not be available based on the uploaded images resoluion)
+                        thumbnailDownloads.Add(LocalHelpers.DownloadImageAsync(playlistItem.Snippet.Thumbnails.Medium.Url, imagePath));
+
+                    channelIds.Add(playlistItem.Snippet.VideoOwnerChannelId);
                 }
 
-                // Download the images
-                await Task.WhenAll(thumbnailDownloads);
             }
 
+            // Download the images
+            await Task.WhenAll(thumbnailDownloads);
 
-
-            // This can take a long time, so items are retrieved pararelly
-
+            // Download creator channels
+            await ChannelsData.PullChannelsDataAsync(channelIds);
         }
 
-
+        public static bool VideoIsAvailable(PlaylistItem playlistItem)
+        {
+            return playlistItem.ContentDetails.VideoPublishedAt != null;
+        }
 
         /// <summary>
         /// Retrieves information about items in the playlist from youtube with the given Id.
         /// </summary>
         /// <param name="playlistId">The Id of the playlist to retrieve.</param>
         /// <returns>The playlist in </returns>
-        public static async Task<PlaylistItemListResponse> RetrievePlaylistItems(string playlistId)
+        public static async Task<PlaylistItemListResponse> RetrievePlaylistItemsAsync(string playlistId)
         {
-            var result = await GetPlaylist(playlistId);
+            var result = await GetPlaylistAsync(playlistId);
             if (!result.Succes)
             { }
 
@@ -104,7 +114,7 @@ namespace PlaylistSaver.PlaylistMethods
             // repeat the method until the last page is returned
             while (nextPageToken != null)
             {
-                result = await GetPlaylist(playlistId, nextPageToken);
+                result = await GetPlaylistAsync(playlistId, nextPageToken);
                 if (!result.Succes)
                 { }
                 PlaylistItemListResponse nextPage = result.Playlist;
@@ -126,7 +136,7 @@ namespace PlaylistSaver.PlaylistMethods
         /// <param name="playlistId">The Id of the playlist to retrieve.</param>
         /// <param name="nextPageToken">The next page token. If not passed the method will send a request without one.</param>
         /// <returns>.Succes - if the request returned with a succes; .Playlist - the retrieved playlist items info (null if failed).</returns>
-        private static async Task<(bool Succes, PlaylistItemListResponse Playlist)> GetPlaylist(string playlistId, string nextPageToken = null)
+        private static async Task<(bool Succes, PlaylistItemListResponse Playlist)> GetPlaylistAsync(string playlistId, string nextPageToken = null)
         {
             YouTubeService youtubeService = OAuthSystem.YoutubeService;
 
@@ -157,6 +167,9 @@ namespace PlaylistSaver.PlaylistMethods
             return (true, response);
         }
 
+        /// <summary>
+        /// Returns a thumbnail from the given playlistId directory with the given url.
+        /// </summary>
         public static string GetPlaylistItemThumbnailPath(string playlistId, string thumbnailUrl)
         {
             DirectoryInfo playlistThumbnailDirectory = new(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistId, "thumbnails"));

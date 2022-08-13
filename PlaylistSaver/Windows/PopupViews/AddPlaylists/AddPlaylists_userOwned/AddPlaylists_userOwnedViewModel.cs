@@ -55,13 +55,13 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
             PlaylistsList = new();
             this.homepageViewModel = homepageViewModel;
 
-            DisplayPlaylists();
+            RetrieveAndDisplayPlaylists();
         }
 
         private async Task AddCheckedPlaylists()
         {
             var checkedPlaylists = ReturnCheckedPlaylists();
-            await PlaylistsData.CreatePlaylistsData(checkedPlaylists);
+            await PlaylistsData.PullPlaylistsDataAsync(checkedPlaylists);
 
             // Refresh the homepage to display newly added playlists
             homepageViewModel.LoadPlaylists();
@@ -81,7 +81,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
             var checkedPlaylist = (Playlist)checkedPlaylistObject;
             var checkedPlaylistTuple = ReturnPlaylistTuple(checkedPlaylist);
             ChangePlaylistItemCheckState(checkedPlaylistTuple, !checkedPlaylistTuple.Item1);
-            OnPropertyChanged(nameof(CheckedPlaylistsCount));
+            RaisePropertyChanged(nameof(CheckedPlaylistsCount));
         }
 
         public Tuple<bool, Playlist> ReturnPlaylistTuple(Playlist playlist)
@@ -100,7 +100,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
             {
                 ChangePlaylistItemCheckState(PlaylistsList[i], true);
             }
-            OnPropertyChanged(nameof(CheckedPlaylistsCount));
+            RaisePropertyChanged(nameof(CheckedPlaylistsCount));
         }
 
         public void ChangePlaylistItemCheckState(Tuple<bool, Playlist> playlist, bool checkState)
@@ -110,9 +110,9 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
         }
 
 
-        public async Task DisplayPlaylists()
+        public async Task RetrieveAndDisplayPlaylists()
         {
-            var playlists = await PlaylistsData.RetrieveUserOwnedPlaylistsData();
+            var playlists = await PlaylistsData.RetrieveUserOwnedPlaylistsDataAsync();
 
             // Convert the response to a list and sort the list alphabetically by playlist title
             List<Playlist> playlistsList  = new(playlists.Items);

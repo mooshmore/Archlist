@@ -160,5 +160,14 @@ namespace Helpers
             int randomNumber = random.Next(list.Count);
             return list[randomNumber];
         }
+
+        /// <summary>
+        /// Removes all items from <paramref name="baseList"/> that also exist in the <paramref name="comparedList"/>. <br/>
+        /// This returns a new list - it does not modify neither of the given lists.
+        /// </summary>
+        public static List<T> RemoveCoexistingItems<T>(this List<T> baseList, List<T> comparedList)
+        {
+            return baseList.Except(comparedList).ToList();
+        }
     } 
 }

@@ -33,16 +33,25 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
 
             OpenAddPlaylist_userOwnedViewCommand = new NavigateCommand(popupNavigationStore, () => new AddPlaylists_userOwnedViewModel(popupNavigationStore, this));
             OpenAddPlaylist_linkCommand = new NavigateCommand(popupNavigationStore, () => new AddPlaylists_linkViewModel(popupNavigationStore, this));
-            DownloadPlaylistDataCommand = new AsyncRelayCommand(PullPlaylistData);
+            PullPlaylistDataCommand = new RelayCommand(PullPlaylistData);
             OpenPlaylistCommand = new RelayCommand(OpenPlaylist);
+            UpdateCurrentPlaylistCommand = new RelayCommand(UpdateCurrentDisplayPlaylist);
 
             GlobalItems.UserProfileChanged += OnUserProfileChanged;
             NavigationStore = navigationStore;
         }
 
+        public RelayCommand UpdateCurrentPlaylistCommand { get; }
+        public DisplayPlaylist CurrentDisplayPlaylist { get; set; }
+
+        public void UpdateCurrentDisplayPlaylist(object playlist)
+        {
+            CurrentDisplayPlaylist = (DisplayPlaylist)playlist;
+        }
+
         private void OnUserProfileChanged()
         {
-            OnPropertyChanged(nameof(UserProfile));
+            RaisePropertyChanged(nameof(UserProfile));
         }
 
         public NavigationStore NavigationStore; 
@@ -54,16 +63,14 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
             navigateCommand.Execute(displayPlaylist);
         }
 
-        private async Task PullPlaylistData(object playlistId)
+        private void PullPlaylistData()
         {
-            await PlaylistItemsData.PullPlaylistsItemsData(((string)playlistId).CreateNewList());
+            PlaylistItemsData.PullPlaylistsItemsDataAsync(CurrentDisplayPlaylist.Id.CreateNewList());
         }
-
-
 
         public ICommand OpenAddPlaylist_userOwnedViewCommand { get; }
         public ICommand OpenAddPlaylist_linkCommand { get; }
-        public AsyncRelayCommand DownloadPlaylistDataCommand { get; }
+        public RelayCommand PullPlaylistDataCommand { get; }
 
 
         public void LoadPlaylists()
@@ -76,7 +83,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
                 tempList.Add(new DisplayPlaylist(playlistItem));
             }
             PlaylistsList = new ObservableCollection<DisplayPlaylist>(tempList);
-            OnPropertyChanged(nameof(PlaylistsList));
+            RaisePropertyChanged(nameof(PlaylistsList));
         }
     }
 }

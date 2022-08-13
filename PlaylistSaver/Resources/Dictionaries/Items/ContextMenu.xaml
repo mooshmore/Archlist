@@ -1,0 +1,76 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+    <Setter Property="Foreground" Value="#D4D4D4"/>
+    <Setter Property="Background" Value="#282828"/>
+                Name="Border" CornerRadius="3"
+                BorderThickness="1.5"
+                            BorderBrush="#424242"-->
+    <Style TargetType="{x:Type ContextMenu}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+        <Setter Property="HasDropShadow" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border"
+                Background="#282828"
+                BorderThickness="1"
+                            Padding="3">
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="#424242" />
+                        </Border.BorderBrush>
+                        <StackPanel IsItemsHost="True"
+                      KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasDropShadow" Value="true">
+                            <Setter TargetName="Border" Property="Padding" Value="0,3,0,3" />
+                            <Setter TargetName="Border" Property="CornerRadius" Value="4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DefaultContextMenuItem" TargetType="{x:Type MenuItem}">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <Border x:Name="Bd" Padding="20 5 25 5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" Uid="Border_38">
+                        <StackPanel Orientation="Horizontal">
+                            <ContentPresenter x:Name="Icon" 
+                                              Height="23" 
+                                              VerticalAlignment="Center"
+                                              Margin="0 0 10 0"
+                                              ContentSource="Icon" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            <ContentPresenter x:Name="ContentPresenter" 
+                                              TextBlock.FontFamily="{StaticResource Inter}" 
+                                              TextBlock.Foreground="#D4D4D4"  
+                                              TextBlock.FontSize="14"  
+                                              VerticalAlignment="Center"
+                                              Content="{TemplateBinding Header}" ContentSource="Header" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Uid="ContentPresenter_33"/>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter Property="Background" TargetName="Bd" Value="#585858"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="MenuItem" BasedOn="{StaticResource DefaultContextMenuItem}"/>
+
+
+
+
+
+</ResourceDictionary>
+    

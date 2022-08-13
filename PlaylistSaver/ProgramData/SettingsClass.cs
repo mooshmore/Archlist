@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System.IO;
 using Helpers;
 using PlaylistSaver.ProgramData.Stores;
+using PlaylistSaver.Helpers;
 
 namespace PlaylistSaver
 {
@@ -14,25 +15,15 @@ namespace PlaylistSaver
     /// </remarks>
     public static class Settings
     {
-
-        public static SettingsClass settingsInstance = new();
-
-        /// <summary>
-        /// Defines a quality at which thumbnails will be downloaded.
-        /// </summary>
-        public static ImageQuality? ImageQuality
-        {
-            get => settingsInstance.imageQuality;
-            set => settingsInstance.imageQuality = value;
-        }
+        public static SettingsClass SettingsInstance { get; set; } = new();
 
         /// <summary>
         /// Defines a quality at which thumbnails will be downloaded.
         /// </summary>
         public static bool FirstAppRun
         {
-            get => settingsInstance.firstAppRun;
-            set => settingsInstance.firstAppRun = value;
+            get => SettingsInstance.firstAppRun;
+            set => SettingsInstance.firstAppRun = value;
         }
     }
 
@@ -51,16 +42,12 @@ namespace PlaylistSaver
             if (settingsFile.Exists && !settingsFile.IsEmpty())
             {
                 // Read the settings from the file
-                SettingsClass savedSettings = JsonConvert.DeserializeObject<SettingsClass>(settingsFile.ReadAllText());
-            
-                // If a property doesn't exist set it to a default one
-                imageQuality = savedSettings.imageQuality == null ? Enums.ImageQuality.Medium : savedSettings.imageQuality;
+                SettingsClass savedSettings = settingsFile.Deserialize<SettingsClass>();
             }
             // If file doesn't exist create it and set the default settings
             else
             {
                 Directories.MainDirectory.CreateSubfile("settings.json");
-                imageQuality = Enums.ImageQuality.Medium;
                 firstAppRun = true;
             }
 
@@ -76,7 +63,6 @@ namespace PlaylistSaver
             File.WriteAllText(Directories.MainDirectory.SubFile("settings.json").FullName, jsonString);
         }
 
-        public ImageQuality? imageQuality;
         public bool firstAppRun;
     }
 }

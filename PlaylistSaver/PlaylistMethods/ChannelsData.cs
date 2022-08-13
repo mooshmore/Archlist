@@ -12,47 +12,56 @@ using Helpers;
 using System.Linq;
 using PlaylistSaver.UserData;
 using PlaylistSaver.ProgramData.Stores;
+using PlaylistSaver.Helpers;
 
 namespace PlaylistSaver.PlaylistMethods
 {
     public static class ChannelsData
     {
         /// <summary>
-        /// Returns the channel with the given Id by reading it from locally saved data.
-        /// If the data doesn't exist the channel is downloaded and saved.
+        /// Retrieves and saves playlists data and thumbnails.
         /// </summary>
-        public static Channel GetChannel(string channeld)
+        public static async Task PullChannelsDataAsync(List<string> channelIds)
         {
-            if (Directories.ChannelsDirectory.SubdirectoryExists(channeld))
+            //? What about updating channels data for ex. on thumbnail / channel name change?
+
+            // Remove duplicate channel ids from the list
+            List<string> channelsIdsList = channelIds.Distinct().ToList();
+
+            // Remove already saved existing channel instances from the list
+            List<string> savedChannels = Directories.ChannelsDirectory.GetSubDirectoriesNames();
+            channelsIdsList = channelsIdsList.RemoveCoexistingItems(savedChannels);
+
+            if (channelsIdsList.Count == 0)
+                return;
+
+            var retrievedChannels = await RetrieveChannelsDataAsync(channelsIdsList);
+
+            List<Task> thumbnailDownloads = new();
+            foreach (var channel in retrievedChannels.Items)
             {
-                DirectoryInfo channelDirectory = Directories.ChannelsDirectory.SubDirectory(channeld);
-                FileInfo channelInfo = channelDirectory.SubFile("channelInfo.json");
-                return JsonConvert.DeserializeObject<Channel>(channelInfo.ReadAllText());
+                var channelDirectory = Directories.ChannelsDirectory.CreateSubdirectory(channel.Id);
+                FileInfo channelData =  channelDirectory.CreateSubfile("channelInfo.json");
+                channelData.Serialize(channel);
+
+                // In channel thumbnails all qualities are always available (image is upscaled),
+                // but only 3 are available - meduium, default and highres
+                thumbnailDownloads.Add(LocalHelpers.DownloadImageAsync(channel.Snippet.Thumbnails.Default__.Url, channelDirectory, "channelThumbnail.jpg"));
             }
-            else
-            {
-                List<string> channelsIdsList = new() { channeld };
-                return Task.Run(async () => RetrieveAndSaveChannelsData(channelsIdsList).Result).Result[0];
-            }
+            await Task.WhenAll(thumbnailDownloads);
         }
 
-        public static async Task<List<Channel>> RetrieveAndSaveChannelsData(List<PlaylistItem> playlistItems)
+        public static Channel ReadSavedChannelData(string channelId)
         {
-            // Distinct by the channels to don't download the same channel twice
-            //List<string> channelsIdsList = playlistItems.Select(o => o.ItemInfo.OwnerChannelId).Distinct().ToList();
-
-            //return Task.Run(async () => RetrieveAndSaveChannelsData(channelsIdsList).Result).Result;
-            // check if this works
-            //return await Task.Run(() => RetrieveAndSaveChannelsData(channelsIdsList));
-
-            return null;
-
+            DirectoryInfo channelDirectory = Directories.ChannelsDirectory.SubDirectory(channelId);
+            FileInfo channelInfo = channelDirectory.SubFile("channelInfo.json");
+            return channelInfo.Deserialize<Channel>();
         }
 
         /// <summary>
-        /// Saves the data about channels that are in the videos in the playlist.
+        /// Retrieves data about channels that are in the videos in the playlist.
         /// </summary>
-        public static async Task<List<Channel>> RetrieveAndSaveChannelsData(List<string> channelsIdsList)
+        public static async Task<ChannelListResponse> RetrieveChannelsDataAsync(List<string> channelsIdsList)
         {
             // Contains a total list of channels in a form of a request list that are currently being retrieved
             string currentChannelsList = "";
@@ -64,53 +73,30 @@ namespace PlaylistSaver.PlaylistMethods
                 channelCount++;
                 currentChannelsList += $"{channelId},";
 
-                // Data of max 50 channels can be retrieved at once
-                // Retrieve the data if the count has reached 50 or the item is the last retrieved item
+                // To not retrieve each channel one by one, they are added together to a 
+                // currentChannelsList string and sent as one request;
+                // There can be a data maximum of 50 channels retrieved at once, so if the
+                // the channel count goes up to 50 or the channel is the last channel in the list 
+                // retrieve the data then
                 if (channelCount == 50 || channelsIdsList.IsLastItem(channelId))
                 {
                     channelCount = 0;
-                    GetChannelsData(currentChannelsList.TrimToLast(",")).Wait();
+                    await GetChannelsDataAsync(currentChannelsList.TrimToLast(","));
                     currentChannelsList = "";
                 }
             }
 
-            List<Channel> channelsList = new();
 
-            // Convert the default google channel class to a one used in the program
-            foreach (Google.Apis.YouTube.v3.Data.Channel channelData in channels.Items)
-            {
-                channelsList.Add(new Channel(channelData));
-            }
-
-            // Save data for every channel
-            foreach (Channel channel in channelsList)
-            {
-                SaveChannelData(channel);
-            }
+            return channels;
 
             // Retrieves data for the given channels
-            async Task GetChannelsData(string currentChannelsList)
+            async Task GetChannelsDataAsync(string currentChannelsList)
             {
                 ChannelsResource.ListRequest channelListRequest = OAuthSystem.YoutubeService.Channels.List(part: "statistics,snippet");
                 channelListRequest.Id = currentChannelsList;
 
-                ChannelListResponse currentChannelListResponse;
-                try
-                {
-                    currentChannelListResponse = await channelListRequest.ExecuteAsync();
-                }
-                catch (GoogleApiException requestError)
-                {
-                    switch (requestError.Error.Code)
-                    {
-                        case 404:
-                            // playlist not found
-                            // private playlist or incorrect link
-                            //return (false, null);
-                            break;
-                    }
-                    throw;
-                }
+                ChannelListResponse currentChannelListResponse = await channelListRequest.ExecuteAsync();
+                //! Some api error handling should be here
 
                 // Assign the object on the first run
                 if (channels == null)
@@ -124,34 +110,6 @@ namespace PlaylistSaver.PlaylistMethods
                     }
                 }
             }
-
-            return channelsList;
         }
-
-        /// <summary>
-        /// Saves the channel data locally - that includes info about the channel in a form of a .json file and 
-        /// downloading and saving the channel thumbnail.
-        /// </summary>
-        /// <param name="channel">The channel to save information about.</param>
-        private static void SaveChannelData(Channel channel)
-        {
-            DirectoryInfo channelDirectory = Directories.ChannelsDirectory.CreateSubdirectory(channel.ChannelId);
-
-            // Youtube profile thumbnails have different url when they are changed, so only redownload
-            // the thumbnail if the url(id to be precise) doesn't match or the thumbnail doesn't exist
-            if (!channelDirectory.SubfileExists_Prefix(channel.ThumbnailId))
-            {
-                // Remove the thumbnail (and all other files) if the thumbnail Id doesn't match (channelInfo is overwritten anyways)
-                channelDirectory.DeleteAllSubs();
-                // Save the thumbnail   
-                GlobalItems.WebClient.DownloadFile(channel.ThumbnailURL, channel.ThumbnailPath);
-            }
-
-            // Serialize the channel data into a json
-            string jsonString = JsonConvert.SerializeObject(channel);
-            // Create a new channelInfo.json file and write the channel data to it
-            File.WriteAllText(channelDirectory.CreateSubfile("channelInfo.json").FullName, jsonString);
-        }
-
     }
 }
