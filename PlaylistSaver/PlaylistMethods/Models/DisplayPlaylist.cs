@@ -19,18 +19,32 @@ namespace PlaylistSaver.PlaylistMethods.Models
         public DisplayPlaylist(Playlist playlist)
         {
             Title = playlist.Snippet.Title;
+            Description = playlist.Snippet.Description;
             Id = playlist.Id;
             ItemCount = playlist.ContentDetails.ItemCount.ToString();
             Url = "https://www.youtube.com/playlist?list=" + playlist.Id;
             PrivacyStatus = playlist.Status.PrivacyStatus.CapitalizeFirst();
 
             Creator = new DisplayChannel(playlist.Snippet.ChannelId);
+            MissingItemsCount = GetMissingItemsCount();
+
+            // Convert to a WriteableBitmap so that the image won't be locked by a process
+            Uri imageUri = new(Path.Combine(Directories.PlaylistsDirectory.FullName, Id, "playlistThumbnail.jpg"));
+            BitmapImage bitmapImage = new(imageUri);
+            ThumbnailPath = new WriteableBitmap(bitmapImage);
+        }
+
+        public int GetMissingItemsCount()
+        {
+            var missingItemsFile = new FileInfo(Path.Combine(MissingItemsDirectory.FullName, "recent.json"));
+            return missingItemsFile.Deserialize<List<MissingPlaylistItem>>().Count;
         }
 
         public string Title { get; set; }
+        public string Description { get; set; }
         public string Id { get; set; }
         public string ItemCount { get; set; }
-
+        public int MissingItemsCount { get; set; }
         public DisplayChannel Creator { get; set; }
 
         public string Url { get; set; }
@@ -43,8 +57,8 @@ namespace PlaylistSaver.PlaylistMethods.Models
             _ => null,
         };
 
-        public string ThumbnailPath => Path.Combine(Directories.PlaylistsDirectory.FullName, Id, "playlistThumbnail.jpg");
-
+        public WriteableBitmap ThumbnailPath { get; set; }
         public DirectoryInfo DataDirectory => new(Path.Combine(Directories.PlaylistsDirectory.FullName, Id, "data"));
+        public DirectoryInfo MissingItemsDirectory => new(Path.Combine(Directories.PlaylistsDirectory.FullName, Id, "missingItems"));
     }
 }

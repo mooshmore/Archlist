@@ -1,5 +1,4 @@
-﻿using static PlaylistSaver.Enums;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.IO;
 using Helpers;
 using PlaylistSaver.ProgramData.Stores;
@@ -42,7 +41,7 @@ namespace PlaylistSaver
             if (settingsFile.Exists && !settingsFile.IsEmpty())
             {
                 // Read the settings from the file
-                SettingsClass savedSettings = settingsFile.Deserialize<SettingsClass>();
+                settingsFile.Deserialize<SettingsClass>();
             }
             // If file doesn't exist create it and set the default settings
             else

@@ -40,6 +40,14 @@ namespace PlaylistSaver.Windows
 
             GoToHomePageCommand = new NavigateCommand(_mainNavigationStore, () => new HomepageViewModel(navigationStore, popupNavigationStore));
             LogOutCommand = new AsyncRelayCommand(OAuthSystem.LogOutAsync);
+            HidePopupViewCommand = new RelayCommand(HidePopupView);
+        }
+
+        public bool OverlayVisibility { get; set; } = false;
+
+        private void HidePopupView()
+        {
+            _popupNavigationStore.CurrentViewModel = null;
         }
 
         private void OnCurrentMainWindowViewModelChanged()
@@ -50,6 +58,9 @@ namespace PlaylistSaver.Windows
         private void OnCurrentPopupViewModelChanged()
         {
             RaisePropertyChanged(nameof(CurrentPopupViewModel));
+            OverlayVisibility = CurrentPopupViewModel != null;
+
+            RaisePropertyChanged(nameof(OverlayVisibility));
         }
 
         private void OnUserProfileChanged()
@@ -57,7 +68,8 @@ namespace PlaylistSaver.Windows
             RaisePropertyChanged(nameof(UserProfile));
         }
 
-        public CommandBase GoToHomePageCommand { get; }
+        public RelayCommand HidePopupViewCommand { get; }
+        public NavigateCommand GoToHomePageCommand { get; }
         public AsyncRelayCommand LogOutCommand { get; }
     }
 }

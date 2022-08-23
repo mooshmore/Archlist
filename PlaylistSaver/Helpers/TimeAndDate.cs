@@ -81,6 +81,40 @@ namespace Helpers
         }
 
         /// <summary>
+        /// Returns the difference between two dates in a format for ex "x days ago".
+        /// </summary>
+        public static string StringDifference(DateTime olderDate, DateTime newerDate)
+        {
+            var difference = newerDate - olderDate;
+
+            int yearsDifference = difference.Days / 365;
+            int monthsDifference = difference.Days / 30;
+            int weeksDifference = difference.Days / 7;
+            int daysDifference = difference.Days;
+            int hoursDifference = difference.Hours;
+            int minutesDifference = difference.Minutes;
+            int secondsDifference = difference.Seconds;
+
+            if (yearsDifference > 0)
+                return $"{yearsDifference} year" + (yearsDifference != 1 ? "s" : "") + " ago";
+            else if (monthsDifference > 0)
+                return $"{monthsDifference} month" + (monthsDifference != 1 ? "s" : "") + " ago";
+            else if (weeksDifference > 0)
+                return $"{weeksDifference} week" + (weeksDifference != 1 ? "s" : "") + " ago";
+            else if (daysDifference > 0)
+                return $"{daysDifference} day" + (daysDifference != 1 ? "s" : "") + " ago";
+            else if (hoursDifference > 0)
+                return $"{hoursDifference} hour" + (hoursDifference != 1 ? "s" : "") + " ago";
+            else if (minutesDifference > 0)
+                return $"{minutesDifference} minute" + (minutesDifference != 1 ? "s" : "") + " ago";
+            else
+                return $"{secondsDifference} second" + (secondsDifference != 1 ? "s" : "") + " ago";
+
+       
+        }
+        
+
+        /// <summary>
         /// Creates a formatted time (HH:mm) from the given hours and minutes.
         /// </summary>
         /// <param name="addHourLeadingZero">Whether to add the zero at the front if the hour < 10. False by default. Example - true - 05:30, false - 5:30.</param>

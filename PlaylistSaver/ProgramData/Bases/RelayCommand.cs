@@ -17,6 +17,9 @@ namespace PlaylistSaver.ProgramData.Bases
             _canExecute = canExecute ?? (() => true);
         }
 
+        public RelayCommand()
+        {
+        }
 
         private readonly Action _callback;
         private readonly Action<object> _parameterCallback;

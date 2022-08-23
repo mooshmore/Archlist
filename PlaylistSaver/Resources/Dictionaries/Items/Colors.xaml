@@ -20,6 +20,8 @@
     <SolidColorBrush x:Key="Border_dark">#303030</SolidColorBrush>
 
     <SolidColorBrush x:Key="Accent_red">#CC0000</SolidColorBrush>
+    <SolidColorBrush x:Key="Removal_red">#F84720</SolidColorBrush>
+    <SolidColorBrush x:Key="Pastel_red">#FF3A3B</SolidColorBrush>
     <SolidColorBrush x:Key="Accent_blue">#3EA6FF</SolidColorBrush>
 
     

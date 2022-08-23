@@ -37,7 +37,6 @@
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="Margin" Value="0 0 15 0"/>
-
     </Style>
 
     <Style x:Key="InfoGrid" TargetType="Grid">

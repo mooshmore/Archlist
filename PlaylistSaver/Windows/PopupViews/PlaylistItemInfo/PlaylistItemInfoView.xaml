@@ -1,0 +1,116 @@
+﻿<UserControl x:Class="PlaylistSaver.Windows.PopupViews.PlaylistItemInfo.PlaylistItemInfoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PlaylistSaver.Windows.PopupViews.PlaylistItemInfo" 
+             xmlns:controls="clr-namespace:PlaylistSaver.Resources.Controls"
+             xmlns:converters="clr-namespace:PlaylistSaver.Helpers.BindingConverters"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=local:PlaylistItemInfoViewModel}"
+             d:DesignHeight="650" d:DesignWidth="900">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="PlaylistItemInfoDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:SubtractConverter x:Key="SubtractConverter"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisiblity"/>
+        </ResourceDictionary>
+        <!--<ResourceDictionary Source="/PlaylistSaver;component/Resources/Dictionaries/ViewsDictionaries/PlaylistItemsDictionary.xaml"/>-->
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border CornerRadius="16 16 0 0" BorderThickness="0 0 0 1.5" BorderBrush="{StaticResource Text_dimmed}" Background="{StaticResource Background_navbar}">
+            <Grid>
+            <Grid Margin="50 40 50 0">
+                <Grid.ColumnDefinitions>
+                    <!--Thumbnail-->
+                    <ColumnDefinition Width="233"/>
+                    <!--Item info-->
+                        <ColumnDefinition Width="*"/>
+                        <!--Browser icon-->
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <!--Title-->
+                    <RowDefinition Height="55"/>
+                    <!--Publish date-->
+                    <RowDefinition Height="35"/>
+                    <!--Creator-->
+                    <RowDefinition Height="40"/>
+                    <!--180-->
+                </Grid.RowDefinitions>
+
+                    <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Source="{Binding DisplayPlaylistItem.ThumbnailPath}" Margin="0 0 13 0"/>
+                    <StackPanel Grid.Column="1" Grid.RowSpan="3" Style="{StaticResource PlaylistData}">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <controls:SelectableTextBlock Style="{StaticResource ItemTitle}" MaxWidth="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}, Converter={converters:SubtractConverter Value=15}}" Text="{Binding DisplayPlaylistItem.Title}" ToolTip="{Binding DisplayPlaylistItem.Title}"/>
+                                <Image Grid.Column="1" Height="18" HorizontalAlignment="Left" Margin="8 0 0 0" Source="/Resources/Images/Symbols/White/copy_32px.png" Style="{StaticResource HighlightHoverImage_dark}" ToolTip="Copy title">
+                                    <Image.InputBindings>
+                                        <MouseBinding Gesture="LeftClick" Command="{Binding CopyTitleCommand}"/>
+                                    </Image.InputBindings>
+                                </Image>
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Style="{StaticResource ItemPublishDate}" Grid.Row="1" Text="{Binding DisplayPlaylistItem.PublishDate}" ToolTip="Publish date"/>
+                        <TextBlock ToolTip="{Binding DisplayPlaylistItem.Creator.ChannelTitle}">
+                            <Hyperlink NavigateUri="{Binding DisplayPlaylistItem.Creator.ChannelUrl}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Height="35" Width="35" VerticalAlignment="Center">
+                                        <Ellipse.Fill>
+                                            <ImageBrush ImageSource="{Binding DisplayPlaylistItem.Creator.ThumbnailPath}"/>
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+                                    <controls:SelectableTextBlock Style="{StaticResource ItemCreatorName}"  Text="{Binding DisplayPlaylistItem.Creator.ChannelTitle}" Grid.Column="2"/>
+                                </StackPanel>
+                            </Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            <Image Style="{StaticResource CloseWindow}">
+                <Image.InputBindings>
+                    <MouseBinding Gesture="LeftClick" Command="{Binding CloseViewCommand}"/>
+                </Image.InputBindings>
+            </Image>
+            </Grid>
+        </Border>
+
+        <Border CornerRadius="0 0 16 16" Grid.Row="1" Background="{StaticResource Border_dark}">
+            <StackPanel>
+                <Border Visibility="{Binding Path=DisplayRemovalInfo, Converter={StaticResource BoolToVisiblity}}" BorderThickness="0 1 0 1" Background="{StaticResource Background_navbar}" BorderBrush="{StaticResource Removal_red}">
+                    <Grid Margin="70 10 0 10">
+                        <!--DeletionInfo-->
+                        <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.Row="1" Grid.RowSpan="2">
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding DisplayPlaylistItem.RemovalDayMonth}" Style="{StaticResource RemovalDayMonth}"/>
+                                <TextBlock Text="{Binding DisplayPlaylistItem.RemovalYear}" Style="{StaticResource RemovalYear}"/>
+                            </StackPanel>
+                            <Image Source="{Binding DisplayPlaylistItem.RemovalThumbnail}" Style="{StaticResource RemovalImage}"/>
+                            <TextBlock Text="{Binding DisplayPlaylistItem.RemovalReasonFull}" Style="{StaticResource RemovalReason}" ToolTip="{Binding DisplayPlaylistItem.RemovalReasonFull}"/>
+                        </StackPanel>
+                    </Grid>
+                    
+                </Border>
+                <Grid Margin="50 23 50 40">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource Description}" Text="Description"/>
+                    <Grid Grid.Row="1">
+                        <ScrollViewer Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" VerticalScrollBarVisibility="Visible">
+                            <StackPanel>
+                                <controls:SelectableTextBlock Grid.Column="0" Style="{StaticResource ItemDescription}" Text="{Binding DisplayPlaylistItem.Description}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

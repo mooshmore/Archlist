@@ -30,10 +30,19 @@
     <None Remove="Resources\Images\mooshmore_thumbnail_128px.png" />
     <None Remove="Resources\Images\mooshmore_thumbnail_64px.png" />
     <None Remove="Resources\Images\no_thumbnail.jpg" />
+    <None Remove="Resources\Images\Symbols\Other\positiveGreen_ok_32px.png" />
     <None Remove="Resources\Images\Symbols\PastelRed\cancel_24px.png" />
     <None Remove="Resources\Images\Symbols\PastelRed\cancel_32px.png" />
     <None Remove="Resources\Images\Symbols\PastelRed\cancel_48px.png" />
     <None Remove="Resources\Images\Symbols\PastelRed\cancel_64px.png" />
+    <None Remove="Resources\Images\Symbols\PastelRed\ok_24px.png" />
+    <None Remove="Resources\Images\Symbols\PastelRed\ok_32px.png" />
+    <None Remove="Resources\Images\Symbols\PastelRed\ok_64px.png" />
+    <None Remove="Resources\Images\Symbols\PastelRed\video_playlist_32px.png" />
+    <None Remove="Resources\Images\Symbols\RemovalRed\box_important_24px.png" />
+    <None Remove="Resources\Images\Symbols\RemovalRed\box_important_32px.png" />
+    <None Remove="Resources\Images\Symbols\RemovalRed\box_important_48px.png" />
+    <None Remove="Resources\Images\Symbols\RemovalRed\box_important_64px.png" />
     <None Remove="Resources\Images\Symbols\White\add_32px.png" />
     <None Remove="Resources\Images\Symbols\White\add_64px.png" />
     <None Remove="Resources\Images\Symbols\White\add_link_64px.png" />
@@ -47,6 +56,7 @@
     <None Remove="Resources\Images\Symbols\White\close_32px.png" />
     <None Remove="Resources\Images\Symbols\White\close_48px.png" />
     <None Remove="Resources\Images\Symbols\White\close_64px.png" />
+    <None Remove="Resources\Images\Symbols\White\copy_32px.png" />
     <None Remove="Resources\Images\Symbols\White\done_24px.png" />
     <None Remove="Resources\Images\Symbols\White\done_32px.png" />
     <None Remove="Resources\Images\Symbols\White\done_48px.png" />
@@ -58,8 +68,13 @@
     <None Remove="Resources\Images\Symbols\White\earth_32px.png" />
     <None Remove="Resources\Images\Symbols\White\earth_64px.png" />
     <None Remove="Resources\Images\Symbols\White\expand_arrow.png" />
+    <None Remove="Resources\Images\Symbols\White\expand_arrow_24px.png" />
+    <None Remove="Resources\Images\Symbols\White\expand_arrow_32px.png" />
     <None Remove="Resources\Images\Symbols\White\info_24px.png" />
     <None Remove="Resources\Images\Symbols\White\info_64px.png" />
+    <None Remove="Resources\Images\Symbols\White\left_24px.png" />
+    <None Remove="Resources\Images\Symbols\White\left_32px.png" />
+    <None Remove="Resources\Images\Symbols\White\left_48px.png" />
     <None Remove="Resources\Images\Symbols\White\lock_24px.png" />
     <None Remove="Resources\Images\Symbols\White\lock_32px.png" />
     <None Remove="Resources\Images\Symbols\White\lock_64px.png" />
@@ -76,10 +91,10 @@
     <None Remove="Resources\Images\Symbols\White\subtract_24px.png" />
     <None Remove="Resources\Images\Symbols\White\subtract_64px.png" />
     <None Remove="Resources\Images\Symbols\White\video_dots_24px.png" />
+    <None Remove="Resources\Images\Symbols\White\video_playlist_32px.png" />
     <None Remove="Resources\Images\Symbols\White\web_24px.png" />
     <None Remove="Resources\Images\Symbols\White\web_32px.png" />
     <None Remove="Resources\Images\Symbols\White\web_64px.png" />
-    <None Remove="Resources\Images\Temp\PlaylistCreator_thumbnail_large.png" />
     <None Remove="Resources\Images\Symbols\White\video_playlist_24px.png" />
     <None Remove="Resources\Fonts\Inter-VariableFont_slnt,wght.ttf" />
     <None Remove="Resources\Fonts\Roboto-Black.ttf" />
@@ -94,12 +109,14 @@
     <None Remove="Resources\Fonts\Roboto-Regular.ttf" />
     <None Remove="Resources\Fonts\Roboto-Thin.ttf" />
     <None Remove="Resources\Fonts\Roboto-ThinItalic.ttf" />
+    <None Remove="Resources\Images\Thumbnails\missingThumbnail.jpg" />
     <None Remove="Resources\Images\youtube_logo_256px.png" />
     <None Remove="Resources\Images\youtube_logo_32px.png" />
     <None Remove="Resources\Images\youtube_logo_64px.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\Symbols\Other\positiveGreen_ok_32px.png" />
     <Resource Include="Resources\Images\Symbols\PastelRed\cancel_24px.png" />
     <Resource Include="Resources\Images\Symbols\PastelRed\cancel_32px.png" />
     <Resource Include="Resources\Images\Symbols\PastelRed\cancel_48px.png" />
@@ -115,6 +132,7 @@
   <ItemGroup>
     <PackageReference Include="Google.Apis.Auth" Version="1.57.0" />
     <PackageReference Include="Google.Apis.YouTube.v3" Version="1.57.0.2756" />
+    <PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -123,13 +141,19 @@
 
   <ItemGroup>
     <Resource Include="Resources\Fonts\Caveat-VariableFont_wght.ttf" />
-    <Resource Include="Resources\Images\Symbols\box_important_24px.png" />
-    <Resource Include="Resources\Images\Symbols\box_important_48px.png" />
     <Resource Include="Resources\Images\Logos\AppLogo\appLogo_128px.png" />
     <Resource Include="Resources\Images\Logos\AppLogo\appLogo_256px.png" />
     <Resource Include="Resources\Images\Logos\AppLogo\appLogo_32px.png" />
     <Resource Include="Resources\Images\Logos\AppLogo\appLogo_48px.png" />
     <Resource Include="Resources\Images\Logos\AppLogo\appLogo_64px.png" />
+    <Resource Include="Resources\Images\Symbols\PastelRed\ok_24px.png" />
+    <Resource Include="Resources\Images\Symbols\PastelRed\ok_32px.png" />
+    <Resource Include="Resources\Images\Symbols\PastelRed\ok_64px.png" />
+    <Resource Include="Resources\Images\Symbols\PastelRed\video_playlist_32px.png" />
+    <Resource Include="Resources\Images\Symbols\RemovalRed\box_important_24px.png" />
+    <Resource Include="Resources\Images\Symbols\RemovalRed\box_important_32px.png" />
+    <Resource Include="Resources\Images\Symbols\RemovalRed\box_important_48px.png" />
+    <Resource Include="Resources\Images\Symbols\RemovalRed\box_important_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\add_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\add_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\add_link_64px.png" />
@@ -143,6 +167,7 @@
     <Resource Include="Resources\Images\Symbols\White\close_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\close_48px.png" />
     <Resource Include="Resources\Images\Symbols\White\close_64px.png" />
+    <Resource Include="Resources\Images\Symbols\White\copy_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\done_24px.png" />
     <Resource Include="Resources\Images\Symbols\White\done_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\done_48px.png" />
@@ -154,8 +179,13 @@
     <Resource Include="Resources\Images\Symbols\White\earth_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\earth_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\expand_arrow.png" />
+    <Resource Include="Resources\Images\Symbols\White\expand_arrow_24px.png" />
+    <Resource Include="Resources\Images\Symbols\White\expand_arrow_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\info_24px.png" />
     <Resource Include="Resources\Images\Symbols\White\info_64px.png" />
+    <Resource Include="Resources\Images\Symbols\White\left_24px.png" />
+    <Resource Include="Resources\Images\Symbols\White\left_32px.png" />
+    <Resource Include="Resources\Images\Symbols\White\left_48px.png" />
     <Resource Include="Resources\Images\Symbols\White\lock_24px.png" />
     <Resource Include="Resources\Images\Symbols\White\lock_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\lock_64px.png" />
@@ -172,24 +202,21 @@
     <Resource Include="Resources\Images\Symbols\White\subtract_24px.png" />
     <Resource Include="Resources\Images\Symbols\White\subtract_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\video_dots_24px.png" />
+    <Resource Include="Resources\Images\Symbols\White\video_playlist_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\web_24px.png" />
     <Resource Include="Resources\Images\Symbols\White\web_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\web_64px.png" />
-    <Resource Include="Resources\Images\Temp\PlaylistCreator_thumbnail_large.png" />
     <Resource Include="Resources\Images\Thumbnails\btn_google_signin_light_normal_web%402x.png" />
     <Resource Include="Resources\Images\Logos\Github\github_logo_120px.png" />
     <Resource Include="Resources\Images\Logos\Github\github_logo_32px.png" />
     <Resource Include="Resources\Images\Logos\AppCreator\mooshmore_thumbnail_1000px.png" />
     <Resource Include="Resources\Images\Logos\AppCreator\mooshmore_thumbnail_128px.png" />
     <Resource Include="Resources\Images\Logos\AppCreator\mooshmore_thumbnail_64px.png" />
+    <Resource Include="Resources\Images\Thumbnails\missingThumbnail.jpg" />
     <Resource Include="Resources\Images\Thumbnails\no_thumbnail.jpg" />
     <Resource Include="Resources\Fonts\Inter-VariableFont_slnt,wght.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\Temp\ChannelThumbnail.png" />
-    <Resource Include="Resources\Images\Temp\PlaylistCreator_thumbnail.png" />
-    <Resource Include="Resources\Images\Temp\PlaylistThumbnail.png" />
-    <Resource Include="Resources\Images\Temp\VideoThumbnail.png" />
     <Resource Include="Resources\Fonts\Roboto-Black.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -232,9 +259,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\Images\Symbols\RemovalRed\" />
-    <Folder Include="Resources\Images\Symbols\Other\" />
+    <Folder Include="Resources\Images\Temp\" />
     <Folder Include="Windows\MainWindowViews\AppInfo\" />
+    <Folder Include="Windows\MainWindowViews\About\" />
     <Folder Include="Windows\MainWindowViews\Settings\" />
   </ItemGroup>
 
@@ -242,10 +269,6 @@
     <Reference Include="WpfLoadingAnimation">
       <HintPath>..\..\WPF\WpfLoadingAnimation\WpfLoadingAnimation\bin\Debug\WpfLoadingAnimation.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\Images\Symbols\ok_mark_32px.png" />
   </ItemGroup>
 
 </Project>

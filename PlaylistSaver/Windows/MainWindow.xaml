@@ -8,11 +8,24 @@
         xmlns:homepage="clr-namespace:PlaylistSaver.Windows.MainWindowViews.Homepage" 
         xmlns:AddPlaylists_link="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link" 
         xmlns:AddPlaylists_userOwned="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned" 
+        xmlns:PlaylistItemInfo="clr-namespace:PlaylistSaver.Windows.PopupViews.PlaylistItemInfo" 
+        xmlns:converters="clr-namespace:PlaylistSaver.Helpers.BindingConverters"
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
         Background="{StaticResource Background_default_dark}"
         WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="900" Width="1500">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <!--<ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="AddPlaylists_userOwnedDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>-->
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisiblity"/>
+            <converters:BoolToVisibilityInvertedConverter x:Key="BoolToVisiblityInverted"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
 
     <!--WindowChrome caption, height defines window draggable border height-->
     <WindowChrome.WindowChrome>
@@ -103,6 +116,14 @@
                 </ContentControl>
 
             </Grid>
+
+            <!--Opacity overlay grid-->
+            <Grid Grid.ColumnSpan="3" Grid.RowSpan="3" Background="{StaticResource Background_default_dark}" Opacity="0.6" 
+                  Visibility="{Binding Path=OverlayVisibility, Converter={StaticResource BoolToVisiblity}}">
+                <Grid.InputBindings>
+                    <MouseBinding Gesture="LeftClick" Command="{Binding HidePopupViewCommand}"/>
+                </Grid.InputBindings>
+            </Grid>
             
             <!--Popup Views-->
             <ContentControl Content="{Binding CurrentPopupViewModel}" Grid.Column="1" Grid.Row="1">
@@ -112,6 +133,9 @@
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type AddPlaylists_userOwned:AddPlaylists_userOwnedViewModel}">
                         <AddPlaylists_userOwned:AddPlaylists_userOwnedView/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type PlaylistItemInfo:PlaylistItemInfoViewModel}">
+                        <PlaylistItemInfo:PlaylistItemInfoView/>
                     </DataTemplate>
                 </ContentControl.Resources>
             </ContentControl>

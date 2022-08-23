@@ -15,6 +15,14 @@
         <Setter Property="FontSize" Value="22"/>
     </Style>
 
+    <Style x:Key="NothingHere" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{StaticResource Text_secondary}"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Margin" Value="10"/>
+
+    </Style>
+
     <Style x:Key="BrowserImage_dark" TargetType="Image" BasedOn="{StaticResource HighlightHoverImage}">
         <Setter Property="Source" Value="{StaticResource BrowserImage}"/>
     </Style>
@@ -53,7 +61,7 @@
     </Style>
 
     <Style x:Key="PlaylistCreatorTitle" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
-        <Setter Property="FontSize" Value="17"/>
+        <Setter Property="FontSize" Value="15"/>
         <Setter Property="Width" Value="160"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
@@ -63,10 +71,8 @@
     <Style x:Key="PlaylistItem_title" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="15"/>
-    </Style>
-
-    <Style x:Key="PlaylistItem_title_expanded" TargetType="TextBlock" BasedOn="{StaticResource PlaylistItem_title}">
-        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="TextTrimming" Value="WordEllipsis"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
 
     <Style x:Key="PlaylistItem_publishDate" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
@@ -79,17 +85,15 @@
     <Style x:Key="PlaylistItem_channelTitle" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
         <Setter Property="Foreground" Value="{StaticResource Text_dimmed}"/>
     </Style>
-
-    <Style x:Key="PlaylistItem_channelTitle_expanded" TargetType="TextBlock" BasedOn="{StaticResource PlaylistItem_channelTitle}">
-        <Setter Property="FontSize" Value="15"/>
-        <Setter Property="Margin" Value="8 4 0 0"/>
+    
+    <Style x:Key="SeparatorBorder_light" TargetType="Border">
+        <Setter Property="BorderThickness" Value="0 2 0 0"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Border_light}"/>
     </Style>
 
-    <Style x:Key="PlaylistItem_description" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
-        <Setter Property="TextWrapping" Value="Wrap"/>
-        <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Margin" Value="0 10 0 0"/>
-        <Setter Property="Foreground" Value="{StaticResource Text_shaded}"/>
+    <Style x:Key="SeparatorBorder_dark" TargetType="Border">
+        <Setter Property="BorderThickness" Value="0 1 0 0"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Border_dark}"/>
     </Style>
 
     <Style x:Key="PlaylistItem_separator" TargetType="Border" BasedOn="{StaticResource SeparatorBorder_dark}">
@@ -103,38 +107,129 @@
         <Setter Property="Margin" Value="0 5 0 0"/>
     </Style>
 
-    <BitmapImage x:Key="ExpandArrow" UriSource="/Resources/Images/Symbols/White/expand_arrow.png" />
-
-    <Style x:Key="PlaylistItem_expandArrow" TargetType="Image">
-        <Setter Property="HorizontalAlignment" Value="Center"/>
+    <Style x:Key="RemovalReason" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Foreground" Value="{StaticResource Removal_red}"/>
+        <Setter Property="FontSize" Value="14"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Opacity" Value="0.2"/>
-        <Setter Property="Source" Value="{StaticResource ExpandArrow}"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="Height" Value="8"/>
-        <Setter Property="Margin" Value="50 14 50 0"/>
+    </Style>
+
+    <Style x:Key="RemovalDayMonth" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Foreground" Value="{StaticResource Text_primary}"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+
+    <Style x:Key="RemovalYear" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Foreground" Value="{StaticResource Text_secondary}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+    
+    <Style x:Key="RemovalImage" TargetType="Image">
+        <Setter Property="Height" Value="26"/>
+        <Setter Property="Margin" Value="10 0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="GridBackgroundHover" TargetType="Grid">
         <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#12ffffff"/>
+            </Trigger>
+        </Style.Triggers>
+        <!--<Style.Triggers>
             <EventTrigger RoutedEvent="Image.MouseEnter">
                 <BeginStoryboard>
                     <Storyboard>
-                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.8" Duration="0:0:0.20" />
+                        <ColorAnimation To="Green" 
+                                    Storyboard.TargetProperty="(Grid.Background).(SolidColorBrush.Color)" 
+                                    FillBehavior="HoldEnd" 
+                                    Duration="0:0:1"/>
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
             <EventTrigger RoutedEvent="Image.MouseLeave">
                 <BeginStoryboard>
                     <Storyboard>
-                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.2" Duration="0:0:0.20" />
+                        <ColorAnimation To="Green" 
+                                    Storyboard.TargetProperty="(Grid.Background).(SolidColorBrush.Color)" 
+                                    Duration="0:0:1"/>
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
+        </Style.Triggers>-->
+    </Style>
+
+    <Style x:Key="HoverHighlight" TargetType="StackPanel">
+        <Setter Property="Opacity" Value="0.7"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#4fff"/>
+                <Setter Property="Opacity" Value="0.9"/>
+            </Trigger>
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="MissingItemsText" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="Padding" Value="8"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
 
-    <Style x:Key="PlaylistItem_expandArrow_hide" TargetType="Image" BasedOn="{StaticResource PlaylistItem_expandArrow}">
-        <Setter Property="Visibility" Value="Hidden"/>
+    <Style x:Key="MarkAllAsSeen" TargetType="Image">
+        <Setter Property="Height" Value="11"/>
+        <Setter Property="Margin" Value="8 0 3 0"/>
     </Style>
     
+    <Style x:Key="ExpandHiddenItems" TargetType="Image" BasedOn="{StaticResource HighlightHoverImage}">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="30 0 52 0"/>
+    </Style>
+
+    <Style x:Key="PlaylistDate" TargetType="StackPanel">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="Margin" Value="0 0 20 0"/>
+        <Setter Property="Opacity" Value="0.8"/>
+    </Style>
+    
+    <Style x:Key="PlaylistDateBorder" TargetType="Border">
+        <Setter Property="Panel.ZIndex" Value="5"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="BorderBrush" Value="#393939"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="CornerRadius" Value="2"/>
+        <Setter Property="Background" Value="{StaticResource Background_topbar}"/>
+    </Style>
+
+    <Style x:Key="PlaylistDateText" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Margin" Value="0 0 7 0"/>
+    </Style>
+
+    <Style x:Key="PlaylistDatePick" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Opacity" Value="0.6"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="0 5 0 5"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Opacity" Value="0.9"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="PlaylistDateImage" TargetType="Image">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Height" Value="10"/>
+        <Setter Property="Source" Value="/Resources/Images/Symbols/White/expand_arrow_24px.png"/>
+    </Style>
 
 </ResourceDictionary>

@@ -5,10 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PlaylistSaver.Windows.MainWindowViews.Homepage"
              xmlns:Behaviours="clr-namespace:PlaylistSaver.Resources.Behaviours"
+             xmlns:converters="clr-namespace:PlaylistSaver.Helpers.BindingConverters"
              d:DataContext="{d:DesignInstance Type=local:HomepageViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="1200"
              x:Name="HomePageViewControl">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <!--<ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="AddPlaylists_userOwnedDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>-->
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisiblity"/>
+            <converters:BoolToVisibilityInvertedConverter x:Key="BoolToVisiblityInverted"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -37,18 +48,10 @@
             </StackPanel>
         </Grid>
 
-        <ScrollViewer Grid.Row="1" Padding="0">
+        <ScrollViewer Grid.Row="1" Padding="0" VerticalScrollBarVisibility="Auto">
             <StackPanel Orientation="Vertical">
                 <!--Welcome grid-->
-                <Grid Height="190" Background="{StaticResource Background_default_light}" RenderTransformOrigin="0.5,0.5">
-                    <Grid.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform ScaleX="1"/>
-                            <SkewTransform/>
-                            <RotateTransform/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Grid.RenderTransform>
+                <Grid Height="190" Margin="0 0 0 20" Background="{StaticResource Background_default_light}">
                     <StackPanel Margin="60 30 0 0" Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
                             <Ellipse Height="70" Width="70">
@@ -59,15 +62,22 @@
                             <TextBlock Foreground="White" Margin="15 0 0 0" FontSize="45" Text="{Binding UserProfile.WelcomeGreeting}" VerticalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
-                            <Image Margin="10 0 10 0" Source="/Resources/Images/Color/box_important_24px.png" Height="24" VerticalAlignment="Center"/>
-                            <TextBlock Text="37 videos have been removed from 15 of your playlists." FontSize="14" Foreground="{StaticResource Text_shaded}" VerticalAlignment="Center"/>
+                            <Image Margin="10 0 10 0" Source="{Binding MissingItemsImage}" Height="26" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding MissingItemsText}" FontSize="18" Foreground="{StaticResource Text_shaded}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
 
-                <!--All playlists-->
-                <ItemsControl ItemsSource="{Binding PlaylistsList}" Padding="40 10 10 10">
-                    <ItemsControl.ItemTemplate>
+                <!--Missing items playlists-->
+
+                <StackPanel Margin="40 0 10 0" Visibility="{Binding Path=DisplayMissingItemsPanel, Converter={StaticResource BoolToVisiblity}}">
+                    <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
+                        <Image Margin="20 0 5 0" Source="/Resources/Images/Symbols/RemovalRed/box_important_32px.png" Height="24" VerticalAlignment="Center"/>
+                        <TextBlock Foreground="{StaticResource Text_primary}" FontSize="16" Text="Missing items playlists"/>
+                    </StackPanel>
+                    <Border Margin="20 10 0 0" BorderThickness="0 0 0 3" BorderBrush="{StaticResource Border_dark}"/>
+                    <ItemsControl ItemsSource="{Binding MissingItemsPlaylistsList}">
+                        <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Vertical" Height="230" Width="231" HorizontalAlignment="Left" Margin="20">
                                 <Grid Background="Black" Height="130" Width="231" Cursor="Hand">
@@ -82,11 +92,20 @@
                                     </Grid.InputBindings>
 
                                     <Image Grid.ColumnSpan="2" Source="{Binding ThumbnailPath}"/>
+
+                                    <!--Short playlist info-->
                                     <Grid Grid.Column="1" Background="#C0393939">
-                                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <!--Item count-->
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock FontSize="14" FontFamily="{StaticResource Inter}" Foreground="White" Text="{Binding ItemCount}"/>
                                                 <Image Source="/Resources/Images/Symbols/White/video_dots_24px.png" VerticalAlignment="Center" Margin="2 0 0 0" Height="17" />
+                                            </StackPanel>
+
+                                            <!--Missing items-->
+                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
+                                                <TextBlock FontSize="14" FontFamily="{StaticResource Inter}" Foreground="{StaticResource Removal_red}" Text="{Binding MissingItemsCount}"/>
+                                                <Image Source="/Resources/Images/Symbols/RemovalRed/box_important_24px.png" VerticalAlignment="Center" Margin="2 0 0 0" Height="17" />
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
@@ -97,11 +116,13 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
+                                    <!--Playlist title-->
                                     <TextBlock Cursor="Hand" FontSize="22" Foreground="White" FontFamily="{StaticResource Inter}"  Text="{Binding Title}">
                                         <TextBlock.InputBindings>
                                             <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" />
                                         </TextBlock.InputBindings>
                                     </TextBlock>
+                                    <!--Context menu-->
                                     <Image Source="/Resources/Images/Symbols/White/more_24px.png" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}" Behaviours:LeftClickContextMenu.IsLeftClickEnabled="True" Behaviours:LeftClickContextMenu.BindToTag="True" Style="{StaticResource ImageButton_hover}"  Grid.Column="1" Cursor="Hand" Height="20" >
                                         <Image.InputBindings>
                                             <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.UpdateCurrentPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" CommandParameter="{Binding}"/>
@@ -119,6 +140,7 @@
                                     </Image>
                                 </Grid>
 
+                                <!--Playlist creator-->
                                 <TextBlock>
                                     <Hyperlink NavigateUri="{Binding Creator.ChannelUrl}">
                                         <TextBlock FontSize="16" Foreground="{StaticResource Text_dimmed}" Text="{Binding Creator.ChannelTitle}"/>
@@ -128,12 +150,96 @@
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
-                    <ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
-                </ItemsControl>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!--All playlists-->
+                <StackPanel Margin="40 0 10 10">
+                    <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
+                        <!--<Image Margin="20 0 5 0" Source="/Resources/Images/Symbols/White/video_playlist_32px.png" Height="24" VerticalAlignment="Center"/>-->
+                        <Image Margin="20 0 5 0" Source="/Resources/Images/Symbols/PastelRed/video_playlist_32px.png" Height="28" VerticalAlignment="Center"/>
+                        <TextBlock Foreground="{StaticResource Text_primary}" FontSize="16" Text="{Binding AllPlaylistsTitle}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Border Margin="20 10 0 0" BorderThickness="0 0 0 3" BorderBrush="{StaticResource Border_dark}"/>
+                    <ItemsControl ItemsSource="{Binding PlaylistsList}">
+                        <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical" Height="230" Width="231" HorizontalAlignment="Left" Margin="20">
+                                <Grid Background="Black" Height="130" Width="231" Cursor="Hand">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="80"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.InputBindings>
+                                        <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.OpenPlaylistCommand, 
+                                        RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}" />
+                                    </Grid.InputBindings>
+
+                                    <Image Grid.ColumnSpan="2" Source="{Binding ThumbnailPath}"/>
+                                    
+                                    <!--Item count-->
+                                    <Grid Grid.Column="1" Background="#C0393939">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock FontSize="14" FontFamily="{StaticResource Inter}" Foreground="White" Text="{Binding ItemCount}"/>
+                                            <Image Source="/Resources/Images/Symbols/White/video_dots_24px.png" VerticalAlignment="Center" Margin="2 0 0 0" Height="17" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                </Grid>
+                                <Grid Margin="0 10 0 2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <!--Playlist title-->
+                                    <TextBlock Cursor="Hand" FontSize="22" Foreground="White" FontFamily="{StaticResource Inter}"  Text="{Binding Title}">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" CommandParameter="{Binding}" />
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+                                    <!--Context menu-->
+                                    <Image Source="/Resources/Images/Symbols/White/more_24px.png" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}" Behaviours:LeftClickContextMenu.IsLeftClickEnabled="True" Behaviours:LeftClickContextMenu.BindToTag="True" Style="{StaticResource ImageButton_hover}"  Grid.Column="1" Cursor="Hand" Height="20" >
+                                        <Image.InputBindings>
+                                            <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.UpdateCurrentPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                            <MouseBinding Gesture="RightClick" Command="{Binding DataContext.UpdateCurrentPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                        </Image.InputBindings>
+                                        <Image.ContextMenu>
+                                            <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={x:Static RelativeSource.Self}}">
+                                                <MenuItem Header="Download playlist data" Command="{Binding PullPlaylistDataCommand}">
+                                                    <MenuItem.Icon>
+                                                        <Image Source="/Resources/Images/Symbols/White/downloading_updates_24px.png"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                            </ContextMenu>
+                                        </Image.ContextMenu>
+                                    </Image>
+                                </Grid>
+
+                                <!--Playlist creator-->
+                                <TextBlock>
+                                    <Hyperlink NavigateUri="{Binding Creator.ChannelUrl}">
+                                        <TextBlock FontSize="16" Foreground="{StaticResource Text_dimmed}" Text="{Binding Creator.ChannelTitle}"/>
+                                    </Hyperlink>
+                                </TextBlock>
+
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </StackPanel>
+
+
             </StackPanel>
         </ScrollViewer>
     </Grid>

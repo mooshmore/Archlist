@@ -4,9 +4,12 @@ using Newtonsoft.Json;
 using PlaylistSaver.Helpers;
 using PlaylistSaver.PlaylistMethods;
 using PlaylistSaver.PlaylistMethods.Models;
+using PlaylistSaver.ProgramData;
 using PlaylistSaver.ProgramData.Bases;
+using PlaylistSaver.ProgramData.Commands;
 using PlaylistSaver.ProgramData.Stores;
 using PlaylistSaver.Windows.MainWindowViews.Homepage;
+using PlaylistSaver.Windows.PopupViews.PlaylistItemInfo;
 using PlaylistSaver.Windows.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -16,44 +19,95 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
 {
-    public class PlaylistItemsViewModel : ViewModelBase
+    public partial class PlaylistItemsViewModel : ViewModelBase
     {
-        public ObservableCollection<DisplayPlaylistItem> PlaylistsItemsList { get; set; }
-        public DisplayPlaylist DisplayedPlaylist { get; set; }
+        public ObservableCollection<DisplayPlaylistItem> _playlistsItemsList;
+        public ObservableCollection<DisplayPlaylistItem> PlaylistsItemsList
+        {
+            get => _playlistsItemsList;
+            set
+            {
+                _playlistsItemsList = value;
+                RaisePropertyChanged();
+            }
+        }
 
-        public PlaylistItemsViewModel(NavigationStore navigationStore, DisplayPlaylist displayPlaylist)
+        private readonly NavigationStore popupNavigationStore;
+
+        public PlaylistItemsViewModel(NavigationStore navigationStore, NavigationStore popupNavigationStore, DisplayPlaylist displayPlaylist)
         {
             DisplayedPlaylist = displayPlaylist;
-            //PlaylistData = playlistData;
 
-            LoadPlaylistItems(displayPlaylist);
+            DisplayedDay = DisplayedPlaylist.DataDirectory.LastCreatedDirectory()?.Name;
+            DisplayedHour = DisplayedPlaylist.DataDirectory.LastCreatedDirectory()?.LastCreatedFile().Name.Replace("-", ":").Replace(".json", "");
 
+            LoadSavedDays();
+            LoadSavedHours();
+            LoadPlaylistItems();
+            LoadMissingItems("recent");
+            SetMissingItemsInfo();
+            SetLastUpdateTime();
 
-            ChangeExpandedStateCommannd = new RelayCommand(ChangeExpandedState);
+            if (MissingItemsList.Count != 0)
+            {
+                DisplayMissingItemsPanel = true;
+                RaisePropertyChanged(nameof(DisplayMissingItemsPanel));
+            }
+
+            ReturnToHomePageCommand = new NavigateCommand(navigationStore, () => new HomepageViewModel(navigationStore, popupNavigationStore));
+            this.popupNavigationStore = popupNavigationStore;
+
+            DisplayDayPanelCommand = new RelayCommand(DisplayDayPanel);
+            DisplayHourPanelCommand = new RelayCommand(DisplayHourPanel);
+            ChangeDisplayedDayCommand = new RelayCommand(ChangeDisplayedDay);
+            ChangeDisplayedHourCommand = new RelayCommand(ChangeDisplayedHour);
+            DisplayPlaylistItemInfoCommand = new RelayCommand(DisplayPlaylistItemInfo);
+            ExpandMissingItemsPanelCommand = new RelayCommand(ChangeDisplayMissingItemsPanel);
+            MarkAllAsSeenCommand = new RelayCommand(MarkAllAsSeen);
+            SeePreviousItemsCommand = new RelayCommand(SeePreviousItems);
         }
 
-        public RelayCommand ChangeExpandedStateCommannd { get; }
-
-        public void ChangeExpandedState(object parameter)
+        private void SetLastUpdateTime()
         {
-            var displayPlaylist = (DisplayPlaylistItem)parameter;
+            if (DisplayedPlaylist.DataDirectory.LastCreatedDirectory() != null)
+            {
+                string lastUpdateDay = DisplayedPlaylist.DataDirectory.LastCreatedDirectory().Name;
+                string lastUpdateHour = DisplayedPlaylist.DataDirectory.LastCreatedDirectory().LastCreatedFile().NoExtensionName();
 
-            displayPlaylist.DescriptionHeight = 200;
-            displayPlaylist.Description = "XD";
+                DateTime lastUpdateDate = DateTime.ParseExact($"{lastUpdateDay} {lastUpdateHour}", "yyyy-MM-dd HH-mm", System.Globalization.CultureInfo.InvariantCulture);
+                LastUpdateTime = $"Last updated {TimeAndDate.StringDifference(lastUpdateDate, DateTime.Now)}";
+            }
+            else
+                LastUpdateTime = "Not previously updated";
 
-            var ok = displayPlaylist.DescriptionHeight;
-            RaisePropertyChanged(nameof(displayPlaylist.DescriptionHeight));
+            RaisePropertyChanged(LastUpdateTime);
         }
 
-        private void LoadPlaylistItems(DisplayPlaylist displayPlaylist)
+        public string LastUpdateTime { get; set; }
+
+        private void DisplayPlaylistItemInfo(object displayPlaylistItem)
+        {
+            var navigateCommand = new NavigateCommand(popupNavigationStore, () => new PlaylistItemInfoViewModel(popupNavigationStore, (DisplayPlaylistItem)displayPlaylistItem));
+            navigateCommand.Execute(navigateCommand);
+        }
+
+        public NavigateCommand ReturnToHomePageCommand { get; }
+
+        private void LoadPlaylistItems()
         {
             PlaylistsItemsList = new();
 
+            if (DisplayedDay == null || DisplayedHour == null)
+                return;
+
+            string playlistDataFilePath = Path.Combine(DisplayedPlaylist.DataDirectory.FullName, DisplayedDay, $"{DisplayedHour?.Replace(":", "-")}.json");
+
             // Get the data from the most recent file
-            FileInfo playlistDataFile = displayPlaylist.DataDirectory.LastCreatedDirectory()?.LastCreatedFile();
+            FileInfo playlistDataFile = new(playlistDataFilePath);
             if (playlistDataFile == null)
                 return;
 
@@ -62,8 +116,8 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
             foreach (var playlistItem in playlist.Items)
             {
                 // ! Don't add videos that are unavailable
-                if (PlaylistItemsData.VideoIsAvailable(playlistItem))
-                    PlaylistsItemsList.Add(new DisplayPlaylistItem(playlistItem, displayPlaylist.Id));
+                if (PlaylistItemsData.IsAvailable(playlistItem))
+                    PlaylistsItemsList.Add(new DisplayPlaylistItem(playlistItem, DisplayedPlaylist.Id));
             }
         }
     }

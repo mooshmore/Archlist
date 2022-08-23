@@ -55,10 +55,10 @@
             <!--Playlists list-->
             <Grid Grid.Row="2" Style="{StaticResource PlaylistsList}">
                 <ScrollViewer Margin="10 10">
-                    <ItemsControl x:Name="PlaylistsListBox" ItemsSource="{Binding PlaylistsList}" HorizontalAlignment="Center">
+                    <ItemsControl ItemsSource="{Binding PlaylistsList}" HorizontalAlignment="Center">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="15" Height="130" Width="170">
+                                <Grid Margin="15 0" Height="160" Width="170">
                                     <Grid.InputBindings>
                                         <MouseBinding Gesture="LeftClick" 
                                                       Command="{Binding DataContext.CheckPlaylistCommand,
@@ -71,7 +71,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="96"/>
-                                        <RowDefinition Height="60"/>
+                                        <RowDefinition Height="90"/>
                                     </Grid.RowDefinitions>
                                     <Border Background="Black" Grid.ColumnSpan="2" Cursor="Hand">
                                         <Image Grid.ColumnSpan="2" Source="{Binding Item2.Snippet.Thumbnails.Medium.Url}"/>
@@ -87,10 +87,10 @@
                                                    Source="/Resources/Images/Symbols/White/add_32px.png"/>
                                             <Image Style="{StaticResource AddImage}" 
                                                    Visibility="{Binding Path=Item1, Converter={StaticResource BoolToVisiblity}}" 
-                                                   Source="/Resources/Images/Color/ok_mark_32px.png"/>
+                                                   Source="/Resources/Images/Symbols/PastelRed/ok_32px.png"/>
                                         </StackPanel>
                                     </Grid>
-                                    <TextBlock x:Name="Title" Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="5" FontSize="19" Grid.Row="1" Text="{Binding Item2.Snippet.Title}" Style="{StaticResource DefaultTextblock}"/>
+                                    <TextBlock x:Name="Title" Grid.ColumnSpan="2" TextWrapping="Wrap" TextTrimming="WordEllipsis"  Margin="5 8 5 5" FontSize="19" Grid.Row="1" Height="60" VerticalAlignment="Top"  Text="{Binding Item2.Snippet.Title}" Style="{StaticResource DefaultTextblock}"/>
                                 </Grid>
                                 
                                 <!--Change the playlist title color to red when it is checked-->

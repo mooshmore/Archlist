@@ -16,6 +16,7 @@ using PlaylistSaver.UserData;
 using PlaylistSaver.ProgramData.Stores;
 using System.Net;
 using PlaylistSaver.Helpers;
+using PlaylistSaver.PlaylistMethods.Models;
 
 namespace PlaylistSaver.PlaylistMethods
 {
@@ -133,6 +134,33 @@ namespace PlaylistSaver.PlaylistMethods
             }
         }
 
+        internal static async Task UpdatePlaylistsDataAsync(List<string> playlistsIds)
+        {
+            var playlistsList = await RetrievePlaylistsDataAsync(playlistsIds);
+            List<Task> thumbnailDownloads = new();
+
+            foreach (var playlist in playlistsList.Items)
+            {
+                var playlistDirectory = new DirectoryInfo(Path.Combine(Directories.PlaylistsDirectory.FullName, playlist.Id));
+
+                // Write the new data to the file
+                var playlistInfoFile = new FileInfo(Path.Combine(playlistDirectory.FullName, "playlistInfo.json"));
+                var previousPlaylistData = playlistInfoFile.Deserialize<Playlist>();
+
+                playlistInfoFile.Serialize(playlist);
+
+                // Update the thumbnail if it has changed
+                if (previousPlaylistData.Snippet.Thumbnails.Medium.Url != playlist.Snippet.Thumbnails.Medium.Url)
+                    thumbnailDownloads.Add(LocalHelpers.DownloadImageAsync(playlist.Snippet.Thumbnails.Medium.Url, playlistDirectory, "playlistThumbnail.jpg"));
+
+            }
+
+            await Task.WhenAll(thumbnailDownloads);
+        }
+
+        /// <summary>
+        /// Downloads and saves locally information and thumbnais of playlists.
+        /// </summary>
         public static async Task PullPlaylistsDataAsync(List<Playlist> playlistsList)
         {
             var existingPlaylists = ReadSavedPlaylists();
@@ -147,6 +175,11 @@ namespace PlaylistSaver.PlaylistMethods
                 var playlistDirectory = Directories.PlaylistsDirectory.CreateSubdirectory(playlist.Id);
                 playlistDirectory.CreateSubdirectory("data");
                 playlistDirectory.CreateSubdirectory("thumbnails");
+
+                var missingItemsDirectory = playlistDirectory.CreateSubdirectory("missingItems");
+                missingItemsDirectory.CreateSubfile("latestPlaylistItemsData.json");
+                missingItemsDirectory.CreateSubfile("recent.json").Serialize(new List<MissingPlaylistItem>());
+                missingItemsDirectory.CreateSubfile("seen.json").Serialize(new List<MissingPlaylistItem>());
 
                 // Serialize the playlist data into a json
                 string jsonString = JsonConvert.SerializeObject(playlist);

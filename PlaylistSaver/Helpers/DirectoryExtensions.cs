@@ -249,6 +249,14 @@ namespace Helpers
         }
 
         /// <summary>
+        /// Returns a list of names of all subfiles of the given directory.
+        /// </summary>
+        public static List<string> GetSubFilesNames(this DirectoryInfo directory)
+        {
+            return Directory.GetFiles(directory.FullName).Select(Path.GetFileName).ToList();
+        }
+
+        /// <summary>
         /// Returns a BitmapImage from the given path in the project.
         /// </summary>
         /// <param name="imagePath">The path to the image in the project. Only specify the path inside of the project.</param>
@@ -257,6 +265,28 @@ namespace Helpers
             string appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
             Uri uriSource = new($@"/{appName};component/{imagePath}", UriKind.Relative);
             return new BitmapImage(uriSource);
+        }
+
+        /// <summary>
+        /// Checks if the given file is locked (being used by a process).
+        /// </summary>
+        /// <returns>True if the file is in use, false if not.</returns>
+        public static bool IsLocked(this FileInfo file)
+        {
+            try
+            {
+                File.OpenWrite(file.FullName).Close();
+                return false;
+            }
+            catch (Exception) { return true; }
+        }
+
+        /// <summary>
+        /// Returns the name of the file without the extension.
+        /// </summary>
+        public static string NoExtensionName(this FileInfo file)
+        {
+            return Path.GetFileNameWithoutExtension(file.Name);
         }
     }
 }

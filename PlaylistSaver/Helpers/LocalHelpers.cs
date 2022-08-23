@@ -58,7 +58,14 @@ namespace PlaylistSaver.Helpers
         public static async Task DownloadImageAsync(string thumbnailUrl, DirectoryInfo downloadDirectory, string thumbnailName)
         {
             WebClient downloadWebClient = new();
-            await downloadWebClient.DownloadFileTaskAsync(new Uri(thumbnailUrl), Path.Combine(downloadDirectory.FullName, thumbnailName));
+            string thumbnailPath = Path.Combine(downloadDirectory.FullName, thumbnailName);
+            // Make sure that the file isn't locked, otherwise it won't be downloaded
+            if (!new FileInfo(thumbnailPath).IsLocked())
+                await downloadWebClient.DownloadFileTaskAsync(new Uri(thumbnailUrl), thumbnailPath);
+            else
+            {
+
+            }
         }
     }
 }

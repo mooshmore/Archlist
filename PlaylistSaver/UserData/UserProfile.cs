@@ -8,7 +8,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using static PlaylistSaver.Enums;
 
 namespace PlaylistSaver.UserData
 {
@@ -50,7 +49,8 @@ namespace PlaylistSaver.UserData
         public string Name { get; set; }
         public string Email { get; set; }
         public string PictureURL { get; set; }
-        // ! Don't set it to static or the binding won't work
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Setting the property as static will make the binding not work.")]
         public string PicturePath => Path.Combine(Directories.UserDataDirectory.FullName, "userPicture.jpg");
         public string WelcomeGreeting { get; set; }
     }

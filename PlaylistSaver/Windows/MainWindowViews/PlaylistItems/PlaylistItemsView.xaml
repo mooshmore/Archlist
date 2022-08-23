@@ -7,13 +7,14 @@
              xmlns:viewmodels="clr-namespace:PlaylistSaver.Windows.MainWindowViews.PlaylistItems"
              xmlns:converters="clr-namespace:PlaylistSaver.Helpers.BindingConverters"
              d:DataContext="{d:DesignInstance Type=viewmodels:PlaylistItemsViewModel}"
-                          mc:Ignorable="d" 
-             d:DesignHeight="650" d:DesignWidth="1200">
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1200">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="PlaylistItemsDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisiblity"/>
             <converters:GridLengthConverter x:Key="GridLengthConverter"/>
         </ResourceDictionary>
         <!--<ResourceDictionary Source="/PlaylistSaver;component/Resources/Dictionaries/ViewsDictionaries/PlaylistItemsDictionary.xaml"/>-->
@@ -28,7 +29,13 @@
         <!--Side panel-->
         <Grid Background="{StaticResource Background_default_light}">
             <StackPanel Style="{StaticResource PlaylistBanner}" Grid.Column="0">
-                <Image x:Name="PlaylistThumbnail" Source="{Binding DisplayedPlaylist.ThumbnailPath}"/>
+                <Image Height="26" Width="26" Style="{StaticResource HighlightHoverImage}" HorizontalAlignment="Left" Source="/Resources/Images/Symbols/White/left_32px.png">
+                    <Image.InputBindings>
+                        <MouseBinding Gesture="LeftClick" Command="{Binding ReturnToHomePageCommand}"/>
+                    </Image.InputBindings>
+                </Image>
+                <Border Style="{StaticResource SeparatorBorder_light}" Margin="0 10 0 12"/>
+                <Image Source="{Binding DisplayedPlaylist.ThumbnailPath}" ToolTip="Open playlist in a browser"/>
                 <Border Style="{StaticResource SeparatorBorder_light}" Margin="0 20 0 12"/>
                 <Grid MaxHeight="295">
                     <Grid.ColumnDefinitions>
@@ -36,7 +43,7 @@
                         <ColumnDefinition Width="30"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Style="{StaticResource PlaylistTitle}" Grid.Column="0" Text="{Binding DisplayedPlaylist.Title}" d:Text="Playlist title"/>
-                    <TextBlock Grid.Column="1" Style="{StaticResource PlaylistBrowser}">
+                    <TextBlock Grid.Column="1" Style="{StaticResource PlaylistBrowser}" ToolTip="Open playlist in a browser">
                         <Hyperlink NavigateUri="{Binding DisplayedPlaylist.Url}">
                             <Image Style="{StaticResource BrowserImage_dark}"/>
                         </Hyperlink>
@@ -44,7 +51,7 @@
                 </Grid>
                 <!--Playlist content info-->
                 <TextBlock Style="{StaticResource Text_PlaylistInfo}" Margin="0 5 0 2" Text="{Binding DisplayedPlaylist.ItemCount, StringFormat='\{0} videos'}" d:Text="45 videos"/>
-                <TextBlock Style="{StaticResource Text_PlaylistInfo}" Margin="0 2" d:Text="Updated 2 days ago"/>
+                <TextBlock Style="{StaticResource Text_PlaylistInfo}" Margin="0 2 0 6" Text="{Binding LastUpdateTime}"/>
                 <!--Privacy status-->
                 <StackPanel Style="{StaticResource PlaylistPrivacyStatus}">
                     <Image Style="{StaticResource PlaylistPrivacyStatus_image}" Source="{Binding DisplayedPlaylist.PrivacyStatusImage}"/>
@@ -55,7 +62,7 @@
                 <TextBlock Margin="0 16 0 0" ToolTip="Playlist creator">
                     <Hyperlink NavigateUri="{Binding DisplayedPlaylist.Creator.ChannelUrl}" Cursor="Hand">
                         <StackPanel Style="{StaticResource PlaylistCreator}">
-                            <Ellipse Height="35" Width="35" VerticalAlignment="Center">
+                            <Ellipse Height="32" Width="32" VerticalAlignment="Center">
                                 <Ellipse.Fill>
                                     <ImageBrush ImageSource="{Binding DisplayedPlaylist.Creator.ThumbnailPath}"/>
                                 </Ellipse.Fill>
@@ -64,19 +71,199 @@
                         </StackPanel>
                     </Hyperlink>
                 </TextBlock>
-
             </StackPanel>
         </Grid>
         
         <!--Playlists panel-->
         <Grid Margin="0 0 0 50" Grid.Column="1" Background="{StaticResource Background_default_dark}">
-            <ScrollViewer x:Name="ItemsScroll" CanContentScroll="False" Margin="20 30 30 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!--Topbar-->
+            <Grid Background="{StaticResource Background_topbar}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    
+                    <StackPanel Style="{StaticResource PlaylistDate}">
+                        <StackPanel.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding DisplayDayPanelCommand}"/>
+                        </StackPanel.InputBindings>
+                        <TextBlock Width="83" Text="{Binding DisplayedDay}" Style="{StaticResource PlaylistDateText}"/>
+                        <Image Style="{StaticResource PlaylistDateImage}"/>
+                    </StackPanel>
+                    
+                    <StackPanel Style="{StaticResource PlaylistDate}">
+                        <StackPanel.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding DisplayHourPanelCommand}"/>
+                        </StackPanel.InputBindings>
+                        <TextBlock Width="45" Text="{Binding DisplayedHour}" Style="{StaticResource PlaylistDateText}"/>
+                        <Image Style="{StaticResource PlaylistDateImage}"/>
+                    </StackPanel>
+                    
+                </StackPanel>
+            </Grid>
+
+            <!--Day popup panel-->
+            <Border Style="{StaticResource PlaylistDateBorder}" Grid.RowSpan="4" Margin="0 54 125 0" Visibility="{Binding Path=DisplayedDayPanelVisibility, Converter={StaticResource BoolToVisiblity}}">
+                <ScrollViewer MaxHeight="300" Width="110" VerticalScrollBarVisibility="Visible" Margin="8 0 0 0">
+                    <StackPanel Width="100">
+                        <ItemsControl ItemsSource="{Binding PlaylistSavedDays}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Style="{StaticResource PlaylistDatePick}" Text="{Binding}">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.ChangeDisplayedDayCommand, 
+                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}" />
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!--Hour popup panel-->
+            <Border Style="{StaticResource PlaylistDateBorder}" Grid.RowSpan="4" Margin="0 54 25 0" Visibility="{Binding Path=DisplayedHourPanelVisibility, Converter={StaticResource BoolToVisiblity}}">
+                <ScrollViewer MaxHeight="300" Width="90" VerticalScrollBarVisibility="Visible" Margin="5 0 0 0">
+                    <StackPanel Width="80">
+                        <ItemsControl ItemsSource="{Binding PlaylistSavedHours}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Style="{StaticResource PlaylistDatePick}" Text="{Binding}">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.ChangeDisplayedHourCommand, 
+                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}" />
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!--Altered items panel-->
+            <Grid Grid.Row="1" Background="{StaticResource Background_navbar}" Cursor="Hand">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="65 0 0 0">
+                    <Image Source="{Binding MissingItemsImage}" Height="24" Margin="0 0 6.5 0"/>
+                    <TextBlock Style="{StaticResource MissingItemsText}" Text="{Binding MissingItemsText}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <StackPanel Style="{StaticResource HoverHighlight}">
+                        <TextBlock Text="{Binding SeePreviousItemsText}" Style="{StaticResource MissingItemsText}"/>
+                        <StackPanel.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding SeePreviousItemsCommand}"/>
+                        </StackPanel.InputBindings>
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource HoverHighlight}" Orientation="Horizontal" Margin="12 0 0 0" VerticalAlignment="Center" Visibility="{Binding Path=MarkAllAsSeenVisibility, Converter={StaticResource BoolToVisiblity}}">
+                        <Image Style="{StaticResource MarkAllAsSeen}" Source="/Resources/Images/Symbols/White/done_24px.png" Height="22"/>
+                        <TextBlock Text="Mark all as seen" Margin="0 0 3 0" Style="{StaticResource MissingItemsText}"/>
+                        <StackPanel.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding MarkAllAsSeenCommand}"/>
+                        </StackPanel.InputBindings>
+                    </StackPanel>
+                    <Image Height="11" Style="{StaticResource ExpandHiddenItems}" Source="/Resources/Images/Symbols/White/expand_arrow_24px.png">
+                    </Image>
+                </StackPanel>
+                <Grid.InputBindings>
+                    <MouseBinding  Gesture="LeftClick" Command="{Binding ExpandMissingItemsPanelCommand}"/>
+                </Grid.InputBindings>
+            </Grid>
+
+            <!--Missing playlist items-->
+            <Grid Grid.Row="2" MaxHeight="500" Background="{StaticResource Background_navbar}" Visibility="{Binding Path=DisplayMissingItemsPanel, Converter={StaticResource BoolToVisiblity}}">
+                <Border BorderThickness="1"/>
+                <ScrollViewer>
+                    <StackPanel>
+                        <ItemsControl ItemsSource="{Binding Path=MissingItemsList, UpdateSourceTrigger=PropertyChanged}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Style="{StaticResource GridBackgroundHover}" ToolTip="{Binding RemovalReasonFull}">
+                                        <Grid.ColumnDefinitions>
+                                            <!--0: Index-->
+                                            <ColumnDefinition Width="50"/>
+                                            <!--1: Thumbnail-->
+                                            <ColumnDefinition Width="100"/>
+                                            <!--2: Item data margin-->
+                                            <ColumnDefinition Width="10"/>
+                                            <!--3: Item data-->
+                                            <ColumnDefinition Width="*"/>
+                                            <!--4: Deletion reason-->
+                                            <ColumnDefinition Width="300"/>
+                                            <!--5: Browser icon-->
+                                            <ColumnDefinition Width="30"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <!--0: Top padding-->
+                                            <RowDefinition Height="10"/>
+                                            <!--1: Title-->
+                                            <RowDefinition Height="30"/>
+                                            <!--2: Creator-->
+                                            <RowDefinition Height="30"/>
+                                            <!--3: Border-->
+                                            <RowDefinition Height="13"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!--Index-->
+                                        <TextBlock Text="{Binding Index}" Grid.RowSpan="5" Foreground="{StaticResource Text_faded}" HorizontalAlignment="Center" FontSize="14" VerticalAlignment="Center" />
+                                        <!--Thumbnail-->
+                                        <Image Grid.Column="1" Source="{Binding ThumbnailPath}" Grid.Row="1" Grid.RowSpan="2"/>
+                                        <!--Title-->
+                                        <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding Title}" ToolTip="{Binding Title}" Style="{StaticResource PlaylistItem_title}" />
+                                        <!--Creator-->
+                                        <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left">
+                                            <Hyperlink NavigateUri="{Binding Creator.ChannelUrl}">
+                                                <TextBlock Margin="0 0 0 0" Style="{StaticResource PlaylistItem_channelTitle}" Text="{Binding Creator.ChannelTitle}" Grid.Column="2"/>
+                                            </Hyperlink>
+                                        </TextBlock>
+
+                                        <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.Row="1" Grid.RowSpan="2">
+                                            <StackPanel Orientation="Vertical" VerticalAlignment="Center" ToolTip="Item found missing date">
+                                                <TextBlock Text="{Binding RemovalDayMonth}" Style="{StaticResource RemovalDayMonth}"/>
+                                                <TextBlock Text="{Binding RemovalYear}" Style="{StaticResource RemovalYear}"/>
+                                            </StackPanel>
+                                            <Image Source="{Binding RemovalThumbnail}" Style="{StaticResource RemovalImage}"/>
+                                            <TextBlock Text="{Binding RemovalReasonShort}" Style="{StaticResource RemovalReason}" ToolTip="Short removal reason"/>
+                                        </StackPanel>
+                                        
+                                        <!--Browser icon-->
+                                        <TextBlock Style="{StaticResource PlaylistItem_browser}" ToolTip="Open video in a browser" Grid.Column="5" Grid.Row="1" Grid.RowSpan="3">
+                                            <Hyperlink NavigateUri="{Binding Url}">
+                                                <Image Style="{StaticResource BrowserImage_dark}"/>
+                                            </Hyperlink>
+                                        </TextBlock>
+                                        <!--Separator-->
+                                        <Border Style="{StaticResource PlaylistItem_separator}" Grid.Row="3" BorderThickness="0 0 0 1" Grid.ColumnSpan="5"/>
+
+                                        <Grid.InputBindings>
+                                            <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.DisplayPlaylistItemInfoCommand, 
+                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}" />
+                                        </Grid.InputBindings>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Theres nothing here :/" Visibility="{Binding Path=DisplayNothingHere, Converter={StaticResource BoolToVisiblity}}" Style="{StaticResource NothingHere}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+
+            <!--Playlist items-->
+            <ScrollViewer Grid.Row="3" CanContentScroll="False" Margin="20 30 30 0">
                 <StackPanel>
                     <Border Style="{StaticResource SeparatorBorder_dark}"/>
-                    <ItemsControl x:Name="PlaylistItemListBox" ItemsSource="{Binding Path=PlaylistsItemsList, UpdateSourceTrigger=PropertyChanged}">
+                    <ItemsControl ItemsSource="{Binding Path=PlaylistsItemsList, UpdateSourceTrigger=PropertyChanged}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="0 10 0 0">
+                                <Grid Style="{StaticResource GridBackgroundHover}">
                                     <Grid.ColumnDefinitions>
                                         <!--0: Index-->
                                         <ColumnDefinition Width="50"/>
@@ -90,65 +277,42 @@
                                         <ColumnDefinition Width="30"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
+                                        <!--Top padding-->
+                                        <RowDefinition Height="10"/>
                                         <!--0: Title-->
                                         <RowDefinition Height="30"/>
-                                        <!--1: Date-->
-                                        <RowDefinition Height="0"/>
-                                        <!--2: Creator-->
+                                        <!--1: Creator-->
                                         <RowDefinition Height="30"/>
-                                        <!--3: Collapse arrow-->
-                                        <RowDefinition Height="0"/>
-                                        <!--4: Description-->
-                                        <RowDefinition Height="{Binding Path=DescriptionHeight, 
-                                  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
-                                  Converter={StaticResource GridLengthConverter}}" />
-                                        <!--5: Border-->
+                                        <!--2: Border-->
                                         <RowDefinition Height="13"/>
                                     </Grid.RowDefinitions>
-
+    
+                                    <!--Index-->
                                     <TextBlock Text="{Binding Index}" Grid.RowSpan="5" Foreground="{StaticResource Text_faded}" HorizontalAlignment="Center" FontSize="14" VerticalAlignment="Center" />
-                                    <Image x:Name="VideoThumbnail" Grid.Column="1" Source="{Binding ThumbnailPath}" Grid.RowSpan="3"/>
-                                    <TextBlock x:Name="VideoTitle" Text="{Binding Title}" Style="{StaticResource PlaylistItem_title}" Grid.Column="3"/>
-                                    <TextBlock x:Name="PublishDate" Text="{Binding PublishDate}" Style="{StaticResource PlaylistItem_publishDate}" Grid.Row="1" Grid.Column="3"/>
-                                    <Grid Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left">
-                                        <TextBlock VerticalAlignment="Bottom">
-                                            <Hyperlink NavigateUri="{Binding Creator.ChannelUrl}">
-                                                <StackPanel Orientation="Horizontal" Height="26">
-                                                    <Ellipse Height="0" Width="0" VerticalAlignment="Center">
-                                                    <!--<Ellipse Height="26" Width="26" VerticalAlignment="Center">-->
-                                                        <Ellipse.Fill>
-                                                            <ImageBrush ImageSource="{Binding Creator.ThumbnailPath}"/>
-                                                        </Ellipse.Fill>
-                                                    </Ellipse>
-                                                    <TextBlock x:Name="ChannelTitle" Margin="0 0 0 0" Style="{StaticResource PlaylistItem_channelTitle}" Text="{Binding Creator.ChannelTitle}" Grid.Column="2"/>
-                                                    <!--<TextBlock x:Name="ChannelTitle" VerticalAlignment="Center" Margin="5 0 0 0" Style="{StaticResource PlaylistItem_channelTitle}" Text="{Binding Creator.ChannelTitle}" Grid.Column="2"/>-->
-                                                </StackPanel>
-                                            </Hyperlink>
-                                        </TextBlock>
-                                    </Grid>
-                                    <TextBlock Style="{StaticResource PlaylistItem_browser}" Grid.Column="5" Grid.RowSpan="3">
-                                        <Hyperlink NavigateUri="{Binding Url}">
-                                            <Image x:Name="PlaylistItem_browser" Style="{StaticResource BrowserImage_dark}"/>
+                                    <!--Thumbnail-->
+                                    <Image Grid.Column="1" Source="{Binding ThumbnailPath}" Grid.Row="1" Grid.RowSpan="2"/>
+                                    <!--Title-->
+                                    <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" Style="{StaticResource PlaylistItem_title}" Grid.Row="1" Grid.Column="3"/>
+                                    <!--Creator-->
+                                    <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left">
+                                        <Hyperlink NavigateUri="{Binding Creator.ChannelUrl}">
+                                                <TextBlock Margin="0 0 0 0" Style="{StaticResource PlaylistItem_channelTitle}" Text="{Binding Creator.ChannelTitle}" Grid.Column="2"/>
                                         </Hyperlink>
                                     </TextBlock>
-                                    
-                                    <TextBlock x:Name="VideoDescrption" Style="{StaticResource PlaylistItem_description}" Text="{Binding Path=Description, Mode=TwoWay}" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="4"/>
-                                    
-                                    <Image Style="{StaticResource PlaylistItem_expandArrow}" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="4">
-                                        <Image.InputBindings>
-                                            <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.ChangeExpandedStateCommannd, 
-                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}" />
-                                        </Image.InputBindings>
-                                    </Image>
-                                    
-                                    <!--Put the arrow outside the grid so it can move freerly-->
-                                    <Image Style="{StaticResource PlaylistItem_expandArrow}" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="4">
-                                        <Image.RenderTransform>
-                                            <ScaleTransform ScaleY="-1"/>
-                                        </Image.RenderTransform>
-                                    </Image>
-                                    <Border Style="{StaticResource PlaylistItem_separator}" Grid.Row="5" Grid.ColumnSpan="5"/>
+                                    <!--Browser icon-->
+                                    <TextBlock Style="{StaticResource PlaylistItem_browser}" Grid.Column="4" Grid.Row="1" Grid.RowSpan="3" ToolTip="Open video in a browser">
+                                        <Hyperlink NavigateUri="{Binding Url}">
+                                            <Image Style="{StaticResource BrowserImage_dark}"/>
+                                        </Hyperlink>
+                                    </TextBlock>
+                                    <!--Separator-->
+                                    <Border Style="{StaticResource PlaylistItem_separator}" Grid.Row="3" BorderThickness="0 0 0 1" Grid.ColumnSpan="5"/>
+
+                                    <Grid.InputBindings>
+                                        <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.DisplayPlaylistItemInfoCommand, 
+                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}" />
+                                    </Grid.InputBindings>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
