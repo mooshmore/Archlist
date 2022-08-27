@@ -17,6 +17,11 @@ namespace PlaylistSaver.PlaylistMethods.Models
                 playlistItem.CopyProperties(this);
         }
 
+        public bool RecoveryFailed { get; set; }
+
+        public bool SourcedFromWebArchive { get; set; }
+        public string WebArchiveLink { get; set; }
+        public int ExistingSnapshotsCount { get; set; }
         public DateTime FoundMissingDate { get; set; }
         public string RemovalReasonShort { get; set; }
         public string RemovalReasonFull { get; set; }

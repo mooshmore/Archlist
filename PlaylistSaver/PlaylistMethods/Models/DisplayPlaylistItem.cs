@@ -16,7 +16,6 @@ namespace PlaylistSaver.PlaylistMethods.Models
 {
     public class DisplayPlaylistItem : ViewModelBase
     {
-
         public DisplayPlaylistItem(PlaylistItem playlistItem, string playlistId)
         {
             Title = playlistItem.Snippet.Title;
@@ -26,7 +25,17 @@ namespace PlaylistSaver.PlaylistMethods.Models
             PlaylistId = playlistId;
 
             if (playlistItem.Snippet.Thumbnails.Medium != null)
-                ThumbnailPath = new BitmapImage(new Uri(PlaylistItemsData.GetPlaylistItemThumbnailPath(PlaylistId, playlistItem.Snippet.Thumbnails.Medium.Url)));
+            {
+                // Check if thumbnail exists and if not redownload it, this can happen when for example
+                // program will be shut down when downloading playlist items thumbnails
+                var thumbnailFile = new FileInfo(PlaylistItemsData.GetPlaylistItemThumbnailPath(PlaylistId, playlistItem.Snippet.Thumbnails.Medium.Url));
+                if (!thumbnailFile.Exists)
+                    // This is synchronous downloading, but the thing is it shouldn't happen in the first place,
+                    // so the user can wait in a few seconds in this situation.
+                    LocalHelpers.DownloadImage(playlistItem.Snippet.Thumbnails.Medium.Url, thumbnailFile.FullName);
+
+               ThumbnailPath = new BitmapImage(new Uri(thumbnailFile.FullName));
+            }
             else
                 ThumbnailPath = LocalHelpers.GetResourcesBitmapImage(@"thumbnails/missingThumbnail.jpg");
             
@@ -52,8 +61,17 @@ namespace PlaylistSaver.PlaylistMethods.Models
 
             Index = (playlistItem.Snippet.Position + 1).ToString();
 
+            // Create channel only if there is a channel Id available
             if (playlistItem.Snippet.VideoOwnerChannelId != null)
-                Creator = new DisplayChannel(playlistItem.Snippet.VideoOwnerChannelId);
+            {
+                // Items with data recovered from web archive don't have thumbnails and their channel local data
+                if (playlistItem.SourcedFromWebArchive)
+                    Creator = new DisplayChannel(playlistItem.Snippet.VideoOwnerChannelId, playlistItem.Snippet.VideoOwnerChannelTitle);
+                else
+                    Creator = new DisplayChannel(playlistItem.Snippet.VideoOwnerChannelId);
+            }
+
+            RecoveryFailed = playlistItem.RecoveryFailed;
 
             RemovalYear = playlistItem.FoundMissingDate.Year.ToString();
             RemovalDayMonth = playlistItem.FoundMissingDate.ToString("dd MMMM", new CultureInfo("en-GB"));
@@ -62,13 +80,6 @@ namespace PlaylistSaver.PlaylistMethods.Models
             RemovalReasonFull = playlistItem.RemovalReasonFull;
             RemovalThumbnail = LocalHelpers.GetResourcesBitmapImage("Symbols/RemovalRed/box_important_32px.png");
         }
-
-
-        public string RemovalDayMonth { get; }
-        public string RemovalYear { get; }
-        public string RemovalReasonShort { get; }
-        public string RemovalReasonFull { get; }
-        public BitmapImage RemovalThumbnail { get; }
 
         public string Title { get; }
 
@@ -93,7 +104,18 @@ namespace PlaylistSaver.PlaylistMethods.Models
         public string Index { get; }
         public BitmapImage ThumbnailPath { get; set; }
 
-        public bool IsExpanded { get; } = false;
-        public double DescriptionHeight { get; set; } = 0;
+        // Missing items data
+
+        public bool RecoveryFailed { get; set; } = false;
+
+        public bool WebArchiveSuccesfulRecovery { get; set; } = false;
+        public int FoundSnapshotsCount { get; set; } = 0;
+        public string WebArchiveLink { get; set; }
+
+        public string RemovalDayMonth { get; }
+        public string RemovalYear { get; }
+        public string RemovalReasonShort { get; }
+        public string RemovalReasonFull { get; }
+        public BitmapImage RemovalThumbnail { get; }
     }
 }

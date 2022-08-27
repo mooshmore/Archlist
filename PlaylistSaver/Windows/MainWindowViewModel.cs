@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ToastMessageService;
 
 namespace PlaylistSaver.Windows
 {
@@ -28,6 +29,7 @@ namespace PlaylistSaver.Windows
 
         // ! Don't change it to static or the binding won't work
         public UserProfile UserProfile => GlobalItems.UserProfile;
+        public ToastMessageService.ToastMessage ToastMessage { get; set; } = new ToastMessageService.ToastMessage();
 
         public MainWindowViewModel(NavigationStore navigationStore, NavigationStore popupNavigationStore)
         {
@@ -41,6 +43,8 @@ namespace PlaylistSaver.Windows
             GoToHomePageCommand = new NavigateCommand(_mainNavigationStore, () => new HomepageViewModel(navigationStore, popupNavigationStore));
             LogOutCommand = new AsyncRelayCommand(OAuthSystem.LogOutAsync);
             HidePopupViewCommand = new RelayCommand(HidePopupView);
+
+           //ToastMessage.Display("Coudln't download playlist Muzyka, and 50 other ones, idk what's going on");
         }
 
         public bool OverlayVisibility { get; set; } = false;

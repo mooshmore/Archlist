@@ -263,7 +263,7 @@ namespace Helpers
         public static BitmapImage GetProjectBitmapImage(string imagePath)
         {
             string appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-            Uri uriSource = new($@"/{appName};component/{imagePath}", UriKind.Relative);
+            Uri uriSource = new($@"pack://application:,,,/{appName};component/{imagePath}");
             return new BitmapImage(uriSource);
         }
 

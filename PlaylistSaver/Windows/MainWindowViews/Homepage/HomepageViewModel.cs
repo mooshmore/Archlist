@@ -33,6 +33,8 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
         public string MissingItemsText { get; set; }
         public string AllPlaylistsTitle => DisplayMissingItemsPanel ? "All other playlists" : "All playlists";
         public bool DisplayMissingItemsPanel { get; set; }
+        public bool DisplayAllItemsPanel { get; set; }
+        public bool DisplayNothingHerePanel { get; set; } = false;
         public BitmapImage MissingItemsImage { get; set; }
 
         public HomepageViewModel(NavigationStore navigationStore, NavigationStore popupNavigationStore)
@@ -46,6 +48,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
             PullPlaylistDataCommand = new RelayCommand(PullPlaylistData);
             OpenPlaylistCommand = new RelayCommand(OpenPlaylist);
             UpdateCurrentPlaylistCommand = new RelayCommand(UpdateCurrentDisplayPlaylist);
+            DownloadDataForAllPlaylistsCommand = new RelayCommand(PlaylistItemsData.PullAllPlaylistsItemsDataAsync);
 
             GlobalItems.UserProfileChanged += OnUserProfileChanged;
             MainNavigationStore = navigationStore;
@@ -105,6 +108,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
         public NavigationStore PopupNavigationStore { get; set; }
         public RelayCommand OpenPlaylistCommand { get; }
         public RelayCommand UpdateCurrentPlaylistCommand { get; }
+        public RelayCommand DownloadDataForAllPlaylistsCommand { get; }
 
         private void OpenPlaylist(object displayPlaylist)
         {
@@ -142,10 +146,15 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
             PlaylistsList = new ObservableCollection<DisplayPlaylist>(allPlaylists.OrderBy(playlist => playlist.Title));
 
             DisplayMissingItemsPanel = missingItemsPlaylistsList.Count > 0;
+            DisplayAllItemsPanel = PlaylistsList.Count > 0;
+
+            DisplayNothingHerePanel = !DisplayAllItemsPanel && !DisplayMissingItemsPanel;
 
             RaisePropertyChanged(nameof(AllPlaylistsTitle));
             RaisePropertyChanged(nameof(DisplayMissingItemsPanel));
+            RaisePropertyChanged(nameof(DisplayAllItemsPanel));
             RaisePropertyChanged(nameof(MissingItemsPlaylistsList));
+            RaisePropertyChanged(nameof(DisplayNothingHerePanel));
             RaisePropertyChanged(nameof(PlaylistsList));
         }
     }

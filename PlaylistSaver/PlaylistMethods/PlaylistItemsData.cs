@@ -14,44 +14,59 @@ using PlaylistSaver.Helpers;
 using System.Linq;
 using System.Net;
 using PlaylistSaver.PlaylistMethods.Models;
+using ToastMessageService;
+using System.Net.Http;
+using WebArchiveData;
 
 namespace PlaylistSaver.PlaylistMethods
 {
     public static class PlaylistItemsData
     {
+        public static async void PullAllPlaylistsItemsDataAsync()
+        {
+            await PullPlaylistsItemsDataAsync(Directories.PlaylistsDirectory.GetSubDirectoriesNames());
+        }
+
         /// <summary>
         /// Retrieves and saves playlists data, updates latestPlaylistItemsData file and missing items data.
         /// </summary>
         /// <param name="playlistsIds">The playlists to retrieve data for.</param>
         public static async Task PullPlaylistsItemsDataAsync(List<string> playlistsIds)
         {
-            Dictionary<string, PlaylistItemListResponse> playlistResponses = new();
-            Dictionary<string, DateTime> playlistTimestampData = new();
-
             // Don't pull playlist items if they have already been pulled in the last minute
-            for (int i = 0; i < playlistsIds.Count; i++)
-            {
-                // !uncheck this later
-                //if (File.Exists(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistsIds[i], "data", DateTime.Now.ToString("yyyy-MM-dd"), $"{DateTime.Now:HH-mm}.json")))
-                //{
-                //    // playlist already up to date!
-                //    playlistsIds.Remove(playlistsIds[i]);
-                //}
-            }
+            playlistsIds = RemoveRecentlyUpdatedItems(playlistsIds);
 
+            // Return if there are no playlists after filtering recently updated
             if (playlistsIds.Count == 0)
                 return;
 
-            // Download playlist items info for every playlist
-            foreach (var playlistId in playlistsIds)
-            {
-                playlistResponses.Add(playlistId, await RetrievePlaylistItemsAsync(playlistId));
-            }
+            // Stores playlists and their data
+            Dictionary<string, PlaylistItemListResponse> playlistResponses = await DownloadPlaylistsData(playlistsIds);
+            // Stores information about time when each playlist has been saved
+            Dictionary<string, DateTime> playlistTimestampData = new();
+
+            // Download creator channels
+            // Creator channels are downloaded first, as playlists to work properly require channels data to exist
+            await ChannelsData.PullChannelsDataAsync(playlistResponses);
 
             // Unable to source all playlists data
             if (playlistResponses.Count != playlistsIds.Count)
                 throw new NotImplementedException();
 
+            await DownloadPlaylistsThumbnails(playlistResponses);
+            SavePlaylistsData(playlistResponses, playlistTimestampData);
+
+            MissingPlaylistItemsMethods.UpdateLatestPlaylistItemsData(playlistResponses);
+
+            await ToastMessage.Loading("Finishing up...");
+            await UpdateMissingItemsDataAsync(playlistResponses, playlistTimestampData);
+            await PlaylistsData.UpdatePlaylistsDataAsync(playlistsIds);
+
+            await ToastMessage.Succes("All done!");
+        }
+
+        private static void SavePlaylistsData(Dictionary<string, PlaylistItemListResponse> playlistResponses, Dictionary<string, DateTime> playlistTimestampData)
+        {
             // Save playlist items for each playlist
             foreach (var playlist in playlistResponses)
             {
@@ -72,15 +87,22 @@ namespace PlaylistSaver.PlaylistMethods
 
                 // Create a new playlistInfo.json file and write the playlist data to it
                 File.WriteAllText(dataFile.FullName, jsonString);
+
+                ToastMessage.IncrementProgress();
             }
+        }
 
-            List<Task> thumbnailDownloads = new();
-            List<string> channelIds = new();
+        private static async Task DownloadPlaylistsThumbnails(Dictionary<string, PlaylistItemListResponse> playlistResponses)
+        {
+            await ToastMessage.ProgressToast(playlistResponses.Count, "Downloading thumbnails for", "playlists");
 
-            // Download the thumbnail for each playlist item in each playlist
-            // Download images pararelly to reduce the download time
+            // Download playlist items thumbnails
+            // Thumbnails are downloaded first before data as data requires thumbnails to work propery;
+            // Thumbnails don't have any dependencies.
             foreach (var playlist in playlistResponses)
             {
+                List<Task> thumbnailDownloads = new();
+
                 foreach (var playlistItem in playlist.Value.Items)
                 {
                     // Skip if the video is not available (is deleted)
@@ -96,25 +118,66 @@ namespace PlaylistSaver.PlaylistMethods
 
                     // Don't download the image if it already exists
                     if (!File.Exists(imagePath))
-                        // Medium quality is always available, no matter the uploaded image resolution,
-                        // as it is upscaled to the medium quality
-                        // (though other qualities might not be available based on the uploaded images resoluion)
+                    // Medium quality is always available, no matter the uploaded image resolution,
+                    // as it is upscaled to the medium quality
+                    {
                         thumbnailDownloads.Add(LocalHelpers.DownloadImageAsync(playlistItem.Snippet.Thumbnails.Medium.Url, imagePath));
 
-                    channelIds.Add(playlistItem.Snippet.VideoOwnerChannelId);
-                }
+                        // Downloading large quantities at once appears to throw errors, so
+                        // the max simultaneous count is capped at 300
+                        if (thumbnailDownloads.Count > 300)
+                        {
+                            await Task.WhenAll(thumbnailDownloads);
+                            thumbnailDownloads = new();
+                        }
+                    }
 
+                }
+                // Download thumbnails for each playlist separately as downloading all of them at once threw errors randomly
+                // when downloading large quantities
+                await Task.WhenAll(thumbnailDownloads);
+                ToastMessage.IncrementProgress();
+            }
+        }
+
+        /// <summary>
+        /// Removes
+        /// </summary>
+        /// <param name="playlistsIds"></param>
+        /// <returns></returns>
+        private static List<string> RemoveRecentlyUpdatedItems(List<string> playlistsIds)
+        {
+            int totalCount = playlistsIds.Count;
+            for (int i = 0; i < playlistsIds.Count; i++)
+            {
+                //!uncheck this later
+                if (File.Exists(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistsIds[i], "data", DateTime.Now.ToString("yyyy-MM-dd"), $"{DateTime.Now:HH-mm}.json")))
+                {
+                    // playlist already up to date!
+                    playlistsIds.Remove(playlistsIds[i]);
+                }
             }
 
-            // Download the images
-            await Task.WhenAll(thumbnailDownloads);
+            if (totalCount == 1 && playlistsIds.Count == 0)
+                ToastMessage.Succes("Playlist is already up to date!");
 
-            // Download creator channels
-            await ChannelsData.PullChannelsDataAsync(channelIds);
+            return playlistsIds;
+        }
 
-            UpdateLatestPlaylistItemsData(playlistResponses);
-            await UpdateMissingItemsDataAsync(playlistResponses, playlistTimestampData);
-            await PlaylistsData.UpdatePlaylistsDataAsync(playlistsIds);
+        private static async Task<Dictionary<string, PlaylistItemListResponse>> DownloadPlaylistsData(List<string> playlistsIds)
+        {
+            await ToastMessage.ProgressToast(playlistsIds.Count, "Downloading data", "playlists");
+
+            Dictionary<string, PlaylistItemListResponse> playlistResponses = new();
+
+            //Download playlist items info for every playlist
+            foreach (var playlistId in playlistsIds)
+            {
+                playlistResponses.Add(playlistId, await RetrievePlaylistItemsAsync(playlistId));
+                ToastMessage.IncrementProgress();
+            }
+
+            return playlistResponses;
         }
 
         /// <summary>
@@ -123,6 +186,7 @@ namespace PlaylistSaver.PlaylistMethods
         /// <param name="playlistResponses"></param>
         private static async Task UpdateMissingItemsDataAsync(Dictionary<string, PlaylistItemListResponse> playlistResponses, Dictionary<string, DateTime> playlistTimestampData)
         {
+            await ToastMessage.ProgressToast(playlistResponses.Count, "Filling missing items for", "playlists");
             foreach (var playlist in playlistResponses)
             {
                 var allMissingRecentItems = GetAllMissingItems(playlist.Key, "recent");
@@ -159,7 +223,7 @@ namespace PlaylistSaver.PlaylistMethods
                     // Override missing item data with its old data if theres one found
                     foreach (var playlistItem in missingItems)
                     {
-                        TryToReassignData(latestPlaylistItemsData, playlistItem);
+                        await MissingPlaylistItemsMethods.TryToReassignDataAsync(latestPlaylistItemsData, playlistItem);
                     }
 
 
@@ -167,7 +231,7 @@ namespace PlaylistSaver.PlaylistMethods
                     // Put in video removal reason
                     foreach (var playlistItem in missingItems)
                     {
-                        removalReasonTasks.Add(PutInRemovalReason(playlistItem));
+                        removalReasonTasks.Add(MissingPlaylistItemsMethods.PutInRemovalReason(playlistItem));
                     }
 
                     await Task.WhenAll(removalReasonTasks);
@@ -179,113 +243,10 @@ namespace PlaylistSaver.PlaylistMethods
                     missingItems.AddRange(previousMissingItems);
                     missingItemsFile.Serialize(missingItems);
                 }
+
+                ToastMessage.IncrementProgress();
             }
         }
-
-        private static async Task PutInRemovalReason(MissingPlaylistItem playlistItem)
-        {
-            using WebClient client = new();
-            // Always get removal reasons in english
-            client.Headers.Add(HttpRequestHeader.Cookie, "PREF=hl=en");
-            string htmlCode = await client.DownloadStringTaskAsync(new Uri("https://www.youtube.com/watch?v=" + playlistItem.ContentDetails.VideoId));
-            PutRemovalReason(htmlCode, playlistItem);
-        }
-
-        private static void PutRemovalReason(string htmlCode, MissingPlaylistItem playlistItem)
-        {
-            // Shorten the whole code to the part where the removal reasons are
-            string removalReasonsPart = htmlCode.TrimFromFirst("var ytInitialPlayerResponse");
-            removalReasonsPart = removalReasonsPart.TrimToFirst("</script>");
-
-            // Account closed
-            if (removalReasonsPart.Contains("This video is no longer available because the uploader has closed their YouTube account."))
-            {
-                playlistItem.RemovalReasonShort = "Account closed";
-                playlistItem.RemovalReasonFull = "Video owner has closed their Youtube account";
-            }
-            // Account terminated
-            else if (removalReasonsPart.Contains("This video is no longer available because the YouTube account associated with this video has been terminated."))
-            {
-                playlistItem.RemovalReasonShort = "Account terminated";
-                playlistItem.RemovalReasonFull = "Youtube account associated with this video has been terminated";
-            }
-            // Video private
-            else if (removalReasonsPart.Contains("Sign in if you've been granted access to this video"))
-            {
-                playlistItem.RemovalReasonShort = "Video private";
-                playlistItem.RemovalReasonFull = "This video has been set to private by the uploader";
-            }
-            // Video removed
-            else if (removalReasonsPart.Contains("This video has been removed by the uploader"))
-            {
-                playlistItem.RemovalReasonShort = "Video removed";
-                playlistItem.RemovalReasonFull = "This video has been removed by the uploader";
-            }
-            // Copyright claim
-            else if (removalReasonsPart.Contains("This video is no longer available due to a copyright claim by "))
-            {
-                // I know I shouldn't be doing this like that but I can't rly be bothered to do it better
-                string copyrightClaimer = removalReasonsPart.TrimFromFirst("claim by \"},{\"text\":\"");
-                copyrightClaimer = copyrightClaimer.TrimToFirst("\"}]}");
-
-                playlistItem.RemovalReasonShort = "Copyright claim";
-                playlistItem.RemovalReasonFull = "This video is no longer available due to a copyright claim by {copyrightClaimer}";
-            }
-            // Guidelines strike
-            else if (removalReasonsPart.Contains("This video has been removed for violating YouTube's Community Guidelines"))
-            {
-                playlistItem.RemovalReasonShort = "Guidelines strike";
-                playlistItem.RemovalReasonFull = "This video has been removed for violating YouTube's Community Guidelines";
-            }
-            else
-            // Unhandeled reason
-            {
-                playlistItem.RemovalReasonShort = "Different reason";
-                playlistItem.RemovalReasonFull = "Open video in a browser to for more information";
-            }
-        }
-
-        private static void TryToReassignData(List<PlaylistItem> latestPlaylistItemsData, PlaylistItem playlistItem)
-        {
-            if (TryToReassignData_local(latestPlaylistItemsData, playlistItem))
-                return;
-            else if (TryToReassignData_WebArchive(playlistItem))
-                return;
-            else
-                AssignDefaultData(playlistItem);
-        }
-
-        private static void AssignDefaultData(PlaylistItem playlistItem)
-        {
-            // ? Todo
-            // stuff like unknown creator etc
-            //throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Try to reassign data to the item by searching locally saved data.
-        /// </summary>
-        /// <param name="latestPlaylistItemsData"></param>
-        /// <param name="playlistItem"></param>
-        /// <returns></returns>
-        private static bool TryToReassignData_local(List<PlaylistItem> latestPlaylistItemsData, PlaylistItem playlistItem)
-        {
-            var foundItem = latestPlaylistItemsData.FirstOrDefault(item => item.ContentDetails.VideoId == playlistItem.ContentDetails.VideoId);
-            if (foundItem == null)
-                return false;
-            else
-            {
-                foundItem.CopyProperties(playlistItem);
-                return true;
-            }
-        }
-
-        private static bool TryToReassignData_WebArchive(PlaylistItem playlistItem)
-        {
-            // ? Todo
-            return false;
-        }
-
 
         private static List<MissingPlaylistItem> GetAllMissingItems(string playlistId, string itemsType)
         {
@@ -293,31 +254,6 @@ namespace PlaylistSaver.PlaylistMethods
             return missingItemsDirectory.Deserialize<List<MissingPlaylistItem>>();
         }
 
-        private static void UpdateLatestPlaylistItemsData(Dictionary<string, PlaylistItemListResponse> playlistResponses)
-        {
-            foreach (var (playlistId, response) in playlistResponses)
-            {
-                var latestItemsData = GetLatestPlaylistItemsData(playlistId);
-                var newItemsData = new List<PlaylistItem>();
-
-                foreach (var item in response.Items)
-                {
-                    // If the item has data in the response save it
-                    if (item.IsAvailable())
-                        newItemsData.Add(item);
-                    // If not get the most recent from previous saved data (if it is available)
-                    else if (latestItemsData != null)
-                    {
-                        var latestItemData = latestItemsData.FirstOrDefault(historyItem => item.ContentDetails.VideoId == historyItem.ContentDetails.VideoId);
-                        if (latestItemData != null)
-                            newItemsData.Add(latestItemData);
-                    }
-                }
-
-                // Save the data
-                SaveLatestPlaylistItemsData(playlistId, newItemsData);
-            }
-        }
 
         public static List<PlaylistItem> GetLatestPlaylistItemsData(string playlistId)
         {
@@ -394,19 +330,15 @@ namespace PlaylistSaver.PlaylistMethods
         /// </summary>
         public static string GetPlaylistItemThumbnailPath(string playlistId, string thumbnailUrl)
         {
-            DirectoryInfo playlistThumbnailDirectory = new(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistId, "thumbnails"));
-            string imageName = GetPlaylistItemThumbnailName(thumbnailUrl);
-            return Path.Combine(playlistThumbnailDirectory.FullName, imageName);
-        }
-
-        public static string GetPlaylistItemThumbnailName(string thumbnailUrl)
-        {
             // Conversion:
             // https://i.ytimg.com/vi/UI-GDOq8000/mqdefault.jpg => UI-GDOq8000/mqdefault.jpg
-            string imageName = thumbnailUrl.TrimFromFirst("vi/");
+            string thumbnailName = thumbnailUrl.TrimFrom("vi/");
 
             // UI-GDOq8000/mqdefault.jpg => UI-GDOq8000.jpg
-            return imageName.TrimToFirst("/") + ".jpg";
+            thumbnailName = thumbnailName.TrimTo("/") + ".jpg";
+
+            DirectoryInfo playlistThumbnailDirectory = new(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistId, "thumbnails"));
+            return Path.Combine(playlistThumbnailDirectory.FullName, thumbnailName);
         }
     }
 }

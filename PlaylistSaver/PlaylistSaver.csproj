@@ -11,6 +11,8 @@
     <None Remove="clientSecret.json" />
     <None Remove="Resources\Fonts\Caveat-VariableFont_wght.ttf" />
     <None Remove="Resources\Images\btn_google_signin_light_normal_web%402x.png" />
+    <None Remove="Resources\Images\Logos\WebArchive\webArchiveLogo_32px.png" />
+    <None Remove="Resources\Images\Logos\WebArchive\webArchiveLogo_removalRed_32px.png" />
     <None Remove="Resources\Images\Symbols\box_important_24px.png" />
     <None Remove="Resources\Images\Symbols\box_important_48px.png" />
     <None Remove="Resources\Images\Symbols\ok_mark_32px.png" />
@@ -30,6 +32,9 @@
     <None Remove="Resources\Images\mooshmore_thumbnail_128px.png" />
     <None Remove="Resources\Images\mooshmore_thumbnail_64px.png" />
     <None Remove="Resources\Images\no_thumbnail.jpg" />
+    <None Remove="Resources\Images\Symbols\Other\loadingImage.png" />
+    <None Remove="Resources\Images\Symbols\Other\loadingImage_18px.png" />
+    <None Remove="Resources\Images\Symbols\Other\loadingImage_64px.png" />
     <None Remove="Resources\Images\Symbols\Other\positiveGreen_ok_32px.png" />
     <None Remove="Resources\Images\Symbols\PastelRed\cancel_24px.png" />
     <None Remove="Resources\Images\Symbols\PastelRed\cancel_32px.png" />
@@ -43,6 +48,7 @@
     <None Remove="Resources\Images\Symbols\RemovalRed\box_important_32px.png" />
     <None Remove="Resources\Images\Symbols\RemovalRed\box_important_48px.png" />
     <None Remove="Resources\Images\Symbols\RemovalRed\box_important_64px.png" />
+    <None Remove="Resources\Images\Symbols\RemovalRed\database_fail_32px.png" />
     <None Remove="Resources\Images\Symbols\White\add_32px.png" />
     <None Remove="Resources\Images\Symbols\White\add_64px.png" />
     <None Remove="Resources\Images\Symbols\White\add_link_64px.png" />
@@ -109,6 +115,7 @@
     <None Remove="Resources\Fonts\Roboto-Regular.ttf" />
     <None Remove="Resources\Fonts\Roboto-Thin.ttf" />
     <None Remove="Resources\Fonts\Roboto-ThinItalic.ttf" />
+    <None Remove="Resources\Images\Thumbnails\missingProfile.jpg" />
     <None Remove="Resources\Images\Thumbnails\missingThumbnail.jpg" />
     <None Remove="Resources\Images\youtube_logo_256px.png" />
     <None Remove="Resources\Images\youtube_logo_32px.png" />
@@ -116,6 +123,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\Logos\WebArchive\webArchiveLogo_32px.png" />
+    <Resource Include="Resources\Images\Logos\WebArchive\webArchiveLogo_removalRed_32px.png" />
+    <Resource Include="Resources\Images\Symbols\Other\loadingImage_18px.png" />
+    <Resource Include="Resources\Images\Symbols\Other\loadingImage_64px.png" />
     <Resource Include="Resources\Images\Symbols\Other\positiveGreen_ok_32px.png" />
     <Resource Include="Resources\Images\Symbols\PastelRed\cancel_24px.png" />
     <Resource Include="Resources\Images\Symbols\PastelRed\cancel_32px.png" />
@@ -154,6 +165,7 @@
     <Resource Include="Resources\Images\Symbols\RemovalRed\box_important_32px.png" />
     <Resource Include="Resources\Images\Symbols\RemovalRed\box_important_48px.png" />
     <Resource Include="Resources\Images\Symbols\RemovalRed\box_important_64px.png" />
+    <Resource Include="Resources\Images\Symbols\RemovalRed\database_fail_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\add_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\add_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\add_link_64px.png" />
@@ -212,6 +224,7 @@
     <Resource Include="Resources\Images\Logos\AppCreator\mooshmore_thumbnail_1000px.png" />
     <Resource Include="Resources\Images\Logos\AppCreator\mooshmore_thumbnail_128px.png" />
     <Resource Include="Resources\Images\Logos\AppCreator\mooshmore_thumbnail_64px.png" />
+    <Resource Include="Resources\Images\Thumbnails\missingProfile.jpg" />
     <Resource Include="Resources\Images\Thumbnails\missingThumbnail.jpg" />
     <Resource Include="Resources\Images\Thumbnails\no_thumbnail.jpg" />
     <Resource Include="Resources\Fonts\Inter-VariableFont_slnt,wght.ttf">

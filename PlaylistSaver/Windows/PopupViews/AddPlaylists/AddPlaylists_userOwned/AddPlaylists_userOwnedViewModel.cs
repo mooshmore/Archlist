@@ -25,12 +25,8 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
         { 
             get
             {
-                var checkedPlaylistsCount = ReturnCheckedPlaylists().Count;
-                return checkedPlaylistsCount switch
-                {
-                    1 => "1 playlist",
-                    _ => $"{checkedPlaylistsCount} playlists",
-                };
+                int checkedPlaylistCount = ReturnCheckedPlaylists().Count;
+                return $"{checkedPlaylistCount} playlist" + (checkedPlaylistCount != 1 ? "s" : "");
             }
         }
 
@@ -51,14 +47,14 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
             CloseViewCommand = new NavigateCommand(popupNavigationStore, null);
             CheckAllPlaylistsCommand = new RelayCommand(CheckAllPlaylists);
             CheckPlaylistCommand = new RelayCommand(CheckPlaylist);
-            AddCheckedPlaylistsCommand = new AsyncRelayCommand(AddCheckedPlaylists);
+            AddCheckedPlaylistsCommand = new AsyncRelayCommand(AddCheckedPlaylistsAsync);
             PlaylistsList = new();
             this.homepageViewModel = homepageViewModel;
 
             RetrieveAndDisplayPlaylists();
         }
 
-        private async Task AddCheckedPlaylists()
+        private async Task AddCheckedPlaylistsAsync()
         {
             var checkedPlaylists = ReturnCheckedPlaylists();
             await PlaylistsData.PullPlaylistsDataAsync(checkedPlaylists);
@@ -68,6 +64,9 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
 
             // Close the window 
             CloseViewCommand.Execute(null);
+
+            List<string> addedPlaylistsIds = checkedPlaylists.Select(playlist => playlist.Id).ToList();
+            PlaylistItemsData.PullPlaylistsItemsDataAsync(addedPlaylistsIds);
         }
 
         public HomepageViewModel homepageViewModel;

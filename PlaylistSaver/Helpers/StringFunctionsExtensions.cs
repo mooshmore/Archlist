@@ -372,7 +372,7 @@ namespace System
         /// <param name="searchedValue">The first value that the text will be trimmed to.</param>
         /// <param name="includeSearchedValue">Whether to include the searched value in the returned text or not. False by default.</param>
         /// <returns>The trimmed text.</returns>
-        public static string TrimToFirst(this string text, string searchedValue, bool includeSearchedValue = false)
+        public static string TrimTo(this string text, string searchedValue, bool includeSearchedValue = false)
         {
             return includeSearchedValue
                 ? text.Substring(0, text.IndexOf(searchedValue) + searchedValue.Length)
@@ -386,7 +386,18 @@ namespace System
         /// <param name="searchedValue">The first value that the text will be trimmed to.</param>
         /// <param name="includeSearchedValue">Whether to include the searched value in the returned text or not. True by default.</param>
         /// <returns>The trimmed text.</returns>
-        public static string TrimFromFirst(this string text, string searchedValue, bool includeSearchedValue = false) => includeSearchedValue ? text[text.IndexOf(searchedValue)..] : text[(text.IndexOf(searchedValue) + searchedValue.Length)..];
+        public static string TrimFrom(this string text, string searchedValue, bool includeSearchedValue = false) => includeSearchedValue ? text[text.IndexOf(searchedValue)..] : text[(text.IndexOf(searchedValue) + searchedValue.Length)..];
+
+        #endregion
+
+        #region Trim FromTo
+
+        public static string TrimFromTo(this string text, string from, string to)
+        {
+            text = text.TrimFrom(from);
+            text = text.TrimTo(to);
+            return text;
+        }
 
         #endregion
 
@@ -419,5 +430,7 @@ namespace System
         }
 
         #endregion
+
+
     }
 }

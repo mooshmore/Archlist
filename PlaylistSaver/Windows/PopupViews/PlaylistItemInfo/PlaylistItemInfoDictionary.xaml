@@ -25,6 +25,17 @@
         <Setter Property="MinHeight" Value="25"/>
     </Style>
 
+    <Style x:Key="BrowserImage_dark" TargetType="Image" BasedOn="{StaticResource HighlightHoverImage}">
+        <Setter Property="Source" Value="{StaticResource BrowserImage}"/>
+    </Style>
+
+    <Style x:Key="PlaylistBrowser" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Height" Value="27"/>
+        <Setter Property="Margin" Value="0 2 0 0"/>
+    </Style>
+
     <Style x:Key="ItemPublishDate" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
         <Setter Property="Foreground" Value="{StaticResource Text_dimmed}"/>
         <Setter Property="FontSize" Value="15"/>
@@ -50,13 +61,25 @@
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="TextTrimming" Value="WordEllipsis"/>
-        <Setter Property="MaxWidth" Value="654"/>
+        <Setter Property="Margin" Value="0 0 40 0"/>
+    </Style>
+
+    <Style x:Key="MissingItemInfo" TargetType="TextBlock" BasedOn="{StaticResource RemovalReason}">
+        <Setter Property="Foreground" Value="{StaticResource Text_shaded}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
 
     <Style x:Key="RemovalDayMonth" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
         <Setter Property="Foreground" Value="{StaticResource Text_primary}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+
+    <Style x:Key="FoundSnapshotsText" TargetType="TextBlock" BasedOn="{StaticResource RemovalDayMonth}">
+        <Setter Property="Foreground" Value="{StaticResource Text_primary}"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="TextAlignment" Value="Right"/>
     </Style>
 
     <Style x:Key="RemovalYear" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">

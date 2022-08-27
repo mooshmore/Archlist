@@ -64,7 +64,7 @@
                         <StackPanel Style="{StaticResource PlaylistCreator}">
                             <Ellipse Height="32" Width="32" VerticalAlignment="Center">
                                 <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding DisplayedPlaylist.Creator.ThumbnailPath}"/>
+                                    <ImageBrush ImageSource="{Binding DisplayedPlaylist.Creator.Thumbnail}"/>
                                 </Ellipse.Fill>
                             </Ellipse>
                             <TextBlock  VerticalAlignment="Center" Margin="7 0 0 0" Style="{StaticResource PlaylistCreatorTitle}" Text="{Binding DisplayedPlaylist.Creator.ChannelTitle}" d:Text="PlaylistCreator"/>
@@ -225,12 +225,12 @@
                                         </TextBlock>
 
                                         <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.Row="1" Grid.RowSpan="2">
-                                            <StackPanel Orientation="Vertical" VerticalAlignment="Center" ToolTip="Item found missing date">
+                                            <StackPanel Orientation="Vertical" VerticalAlignment="Center" ToolTip="Date when the item was found missing">
                                                 <TextBlock Text="{Binding RemovalDayMonth}" Style="{StaticResource RemovalDayMonth}"/>
                                                 <TextBlock Text="{Binding RemovalYear}" Style="{StaticResource RemovalYear}"/>
                                             </StackPanel>
                                             <Image Source="{Binding RemovalThumbnail}" Style="{StaticResource RemovalImage}"/>
-                                            <TextBlock Text="{Binding RemovalReasonShort}" Style="{StaticResource RemovalReason}" ToolTip="Short removal reason"/>
+                                            <TextBlock Text="{Binding RemovalReasonShort}" Style="{StaticResource RemovalReason}"/>
                                         </StackPanel>
                                         
                                         <!--Browser icon-->

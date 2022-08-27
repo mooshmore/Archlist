@@ -27,19 +27,22 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!--Playlist control-->
+        <!--Playlist control buttons-->
         <Grid Background="{StaticResource Background_topbar}" Height="45">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal" Margin="3 6 10 6">
+                <!--Add user owned playlists-->
                 <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/Symbols/White/add_user_64px.png" Margin="3 0" ToolTip="Add your playlists">
                     <Image.InputBindings>
                         <MouseBinding Gesture="LeftClick" Command="{Binding OpenAddPlaylist_userOwnedViewCommand}"/>
                     </Image.InputBindings>
                 </Image>
+                <!--Add playlists by link-->
                 <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/Symbols/White/add_link_64px.png" Margin="3 0" ToolTip="Add playlist by link">
                     <Image.InputBindings>
                         <MouseBinding Gesture="LeftClick" Command="{Binding OpenAddPlaylist_linkCommand}" />
                     </Image.InputBindings>
                 </Image>
+                <!--Remove tracked playlists-->
                 <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/Symbols/White/cancel_64px.png" Margin="3 0" ToolTip="Remove tracked playlists">
                     <Image.InputBindings>
                         <!--<MouseBinding Gesture="LeftClick" Command="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />-->
@@ -61,15 +64,35 @@
                             </Ellipse>
                             <TextBlock Foreground="White" Margin="15 0 0 0" FontSize="45" Text="{Binding UserProfile.WelcomeGreeting}" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
-                            <Image Margin="10 0 10 0" Source="{Binding MissingItemsImage}" Height="26" VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding MissingItemsText}" FontSize="18" Foreground="{StaticResource Text_shaded}" VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <DockPanel Margin="0 20 0 0">
+                            <StackPanel Orientation="Horizontal" Visibility="{Binding Path=DisplayNothingHerePanel, Converter={StaticResource BoolToVisiblityInverted}}">
+                                <Image Margin="10 0 10 0" Source="{Binding MissingItemsImage}" Height="26" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding MissingItemsText}" FontSize="18" Foreground="{StaticResource Text_shaded}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <!--Playlists control context menu-->
+                            <Image Source="/Resources/Images/Symbols/White/more_24px.png" Behaviours:LeftClickContextMenu.IsLeftClickEnabled="True" Behaviours:LeftClickContextMenu.BindToTag="True" Style="{StaticResource ImageButton_hover}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"  Grid.Column="1" Cursor="Hand" Height="20" HorizontalAlignment="Right" Margin="0 0 25 0">
+                                <Image.ContextMenu>
+                                    <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={x:Static RelativeSource.Self}}">
+                                        <MenuItem Header="Download data for all playlists" Command="{Binding DownloadDataForAllPlaylistsCommand}">
+                                            <MenuItem.Icon>
+                                                <Image Source="/Resources/Images/Symbols/White/downloading_updates_24px.png"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </Image.ContextMenu>
+                            </Image>
+                        </DockPanel>
                     </StackPanel>
                 </Grid>
 
+                <!--Nothing here panel-->
+                <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Orientation="Vertical" Margin="0 100 0 0" Visibility="{Binding Path=DisplayNothingHerePanel, Converter={StaticResource BoolToVisiblity}}">
+                    <TextBlock Text="¯\_ ( ͡° _ʖ ͡°) _/¯ " FontSize="30" Foreground="#7e7e7e" Margin="0 0 0 20" HorizontalAlignment="Center"/>
+                    <TextBlock Text="There's nothing here!" Foreground="#7e7e7e" HorizontalAlignment="Center" FontSize="20"/>
+                    <TextBlock Text="Add some playlists by pressing the (+) buttons in the top right corner." Foreground="#6a6a6a" FontSize="16"/>
+                </StackPanel>
+                
                 <!--Missing items playlists-->
-
                 <StackPanel Margin="40 0 10 0" Visibility="{Binding Path=DisplayMissingItemsPanel, Converter={StaticResource BoolToVisiblity}}">
                     <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
                         <Image Margin="20 0 5 0" Source="/Resources/Images/Symbols/RemovalRed/box_important_32px.png" Height="24" VerticalAlignment="Center"/>
@@ -159,7 +182,7 @@
                 </StackPanel>
 
                 <!--All playlists-->
-                <StackPanel Margin="40 0 10 10">
+                <StackPanel Margin="40 0 10 10" Visibility="{Binding Path=DisplayAllItemsPanel, Converter={StaticResource BoolToVisiblity}}">
                     <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
                         <!--<Image Margin="20 0 5 0" Source="/Resources/Images/Symbols/White/video_playlist_32px.png" Height="24" VerticalAlignment="Center"/>-->
                         <Image Margin="20 0 5 0" Source="/Resources/Images/Symbols/PastelRed/video_playlist_32px.png" Height="28" VerticalAlignment="Center"/>

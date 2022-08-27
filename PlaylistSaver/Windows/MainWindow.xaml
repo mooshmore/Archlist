@@ -9,7 +9,7 @@
         xmlns:AddPlaylists_link="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link" 
         xmlns:AddPlaylists_userOwned="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned" 
         xmlns:PlaylistItemInfo="clr-namespace:PlaylistSaver.Windows.PopupViews.PlaylistItemInfo" 
-        xmlns:converters="clr-namespace:PlaylistSaver.Helpers.BindingConverters"
+        xmlns:converters="clr-namespace:PlaylistSaver.Helpers.BindingConverters" xmlns:fa="http://schemas.fontawesome.io/icons/"
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
         Background="{StaticResource Background_default_dark}"
@@ -18,9 +18,9 @@
 
     <Window.Resources>
         <ResourceDictionary>
-            <!--<ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="AddPlaylists_userOwnedDictionary.xaml"/>
-            </ResourceDictionary.MergedDictionaries>-->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Helpers/WPF/Systems/ToastMessage/ToastMessageStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisiblity"/>
             <converters:BoolToVisibilityInvertedConverter x:Key="BoolToVisiblityInverted"/>
         </ResourceDictionary>
@@ -139,7 +139,15 @@
                     </DataTemplate>
                 </ContentControl.Resources>
             </ContentControl>
+
+            <!--Toast message-->
+            <Border Style="{StaticResource ToastBorder}" Grid.ColumnSpan="5" Grid.RowSpan="5" Visibility="{Binding Path=ToastMessage.Visibility, Converter={StaticResource BoolToVisiblity}}">
+                <StackPanel Style="{StaticResource ToastPanel}" DataContext="{Binding ToastMessage}">
+                    <Image Style="{StaticResource ToastImage}" Source="{Binding Image}"/>
+                    <Image Style="{StaticResource LoadingImage}" Source="/Resources/Images/Symbols/Other/loadingImage_18px.png" Visibility="{Binding Path=ShowLoadingImage, Converter={StaticResource BoolToVisiblity}}"/>
+                    <TextBlock Style="{StaticResource ToastText}" Text="{Binding Text}"/>
+                </StackPanel>
+            </Border>
         </Grid>
-        
     </Border>
 </Window>

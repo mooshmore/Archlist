@@ -13,6 +13,11 @@ namespace PlaylistSaver.Helpers
 {
     public static class LocalHelpers
     {
+        public static string SEnding(int value)
+        {
+            return value == 1 ? "" : "s";
+        }
+
         /// <summary>
         /// Returns a Bitmap image from the given path inside of the project/Resources/Images.
         /// </summary>
@@ -40,6 +45,21 @@ namespace PlaylistSaver.Helpers
         }
 
         /// <summary>
+        /// Synchronously downloads the image to the given directory with the given name.
+        /// </summary>
+        /// <param name="thumbnailUrl">The directory where the image will be downloaded to.</param>
+        /// <param name="thumbnailPath">The path where the thumbnail will be saved.</param>
+        public static void DownloadImage(string thumbnailUrl, string thumbnailPath)
+        {
+            WebClient downloadWebClient = new();
+
+            // Image is first downloaded to a memory, and only then when it has been fully downloaded
+            // it is saved to a file.
+            var thumbnailData = downloadWebClient.DownloadData(new Uri(thumbnailUrl));
+            File.WriteAllBytes(thumbnailPath, thumbnailData);
+        }
+
+        /// <summary>
         /// Asynchronously downloads the image to the given directory with the given name.
         /// </summary>
         /// <param name="thumbnailUrl">The directory where the image will be downloaded to.</param>
@@ -47,7 +67,11 @@ namespace PlaylistSaver.Helpers
         public static async Task DownloadImageAsync(string thumbnailUrl, string thumbnailPath)
         {
             WebClient downloadWebClient = new();
-            await downloadWebClient.DownloadFileTaskAsync(new Uri(thumbnailUrl), thumbnailPath);
+
+            // Image is first downloaded to a memory, and only then when it has been fully downloaded
+            // it is saved to a file.
+            var thumbnailData = await downloadWebClient.DownloadDataTaskAsync(new Uri(thumbnailUrl));
+            File.WriteAllBytes(thumbnailPath, thumbnailData);
         }
 
         /// <summary>
@@ -57,15 +81,13 @@ namespace PlaylistSaver.Helpers
         /// <param name="thumbnailName">The name of the thumbnail to set.</param>
         public static async Task DownloadImageAsync(string thumbnailUrl, DirectoryInfo downloadDirectory, string thumbnailName)
         {
-            WebClient downloadWebClient = new();
             string thumbnailPath = Path.Combine(downloadDirectory.FullName, thumbnailName);
-            // Make sure that the file isn't locked, otherwise it won't be downloaded
-            if (!new FileInfo(thumbnailPath).IsLocked())
-                await downloadWebClient.DownloadFileTaskAsync(new Uri(thumbnailUrl), thumbnailPath);
-            else
-            {
+            WebClient downloadWebClient = new();
 
-            }
+            // Image is first downloaded to a memory, and only then when it has been fully downloaded
+            // it is saved to a file.
+            var thumbnailData = await downloadWebClient.DownloadDataTaskAsync(new Uri(thumbnailUrl));
+            File.WriteAllBytes(thumbnailPath, thumbnailData);
         }
     }
 }

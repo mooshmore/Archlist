@@ -41,7 +41,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
             CloseViewCommand = new NavigateCommand(popupNavigationStore, null);
             AddPlaylistToListCommand = new AsyncRelayCommand(AddPlaylistToList);
             RemovePlaylistFromListCommand = new RelayCommand(RemovePlaylistFromList);
-            AddPlaylistsCommand = new AsyncRelayCommand(AddPlaylists);
+            AddPlaylistsCommand = new AsyncRelayCommand(AddPlaylistsAsync);
 
             this.homepageViewModel = homepageViewModel;
         }
@@ -51,7 +51,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
         /// so that they can be previewed.
         /// </summary>
         /// <returns></returns>
-        private async Task AddPlaylists()
+        private async Task AddPlaylistsAsync()
         {
             await PlaylistsData.PullPlaylistsDataAsync(new List<Playlist>(PlaylistsList));
 
@@ -60,6 +60,9 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
 
             // Close the window 
             CloseViewCommand.Execute(null);
+
+            List<string> addedPlaylistsIds = PlaylistsList.Select(playlist => playlist.Id).ToList();
+            PlaylistItemsData.PullPlaylistsItemsDataAsync(addedPlaylistsIds);
         }
 
         private void RemovePlaylistFromList(object parameter)
@@ -106,7 +109,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
 
             // If the value is a full link trim it so that only Id is left
             if (playlistId.IndexOf("=") != -1)
-                playlistId = playlistId.TrimFromFirst("=");
+                playlistId = playlistId.TrimFrom("=");
 
             // Check if the playlist isn't already added to the list
             if (PlaylistsList.Where(p => p.Id == playlistId).ToList().Count != 0)

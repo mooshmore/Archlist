@@ -13,6 +13,8 @@ using System.Linq;
 using PlaylistSaver.UserData;
 using PlaylistSaver.ProgramData.Stores;
 using PlaylistSaver.Helpers;
+using ToastMessageService;
+using System.Net;
 
 namespace PlaylistSaver.PlaylistMethods
 {
@@ -21,36 +23,86 @@ namespace PlaylistSaver.PlaylistMethods
         /// <summary>
         /// Retrieves and saves playlists data and thumbnails.
         /// </summary>
+        public static async Task PullChannelsDataAsync(Dictionary<string, PlaylistItemListResponse> playlistResponses)
+        {
+            await ToastMessage.Loading("Downloading channels data");
+
+            List<string> channelIds = new();
+            foreach (var playlist in playlistResponses)
+            {
+                foreach (var item in playlist.Value.Items)
+                {
+                    if (item.IsAvailable())
+                        channelIds.Add(item.Snippet.VideoOwnerChannelId);
+                }
+            }
+            await PullChannelsDataAsync(channelIds);
+        }
+
+        /// <summary>
+        /// Retrieves and saves playlists data and thumbnails.
+        /// </summary>
         public static async Task PullChannelsDataAsync(List<string> channelIds)
         {
-            //? What about updating channels data for ex. on thumbnail / channel name change?
+            // Remove duplicate channels and channels that already are saved 
+            channelIds = RemoveRedundantChannels(channelIds);
 
-            // Remove duplicate channel ids from the list
-            List<string> channelsIdsList = channelIds.Distinct().ToList();
+            if (channelIds.Count == 0)
+                return;
+
+            // Get all channels with the given ids
+            var retrievedChannels = await RetrieveChannelsDataAsync(channelIds);
+
+            // A list that holds tasks of channel creations
+            List<Task> channelCreation = new();
+
+            foreach (var channel in retrievedChannels.Items)
+            {
+                // Channel data will be only created locally when all items are ready to be saved
+                // to minimize the possibility of data corruption.
+                channelCreation.Add(CreateChannelData(channel));
+
+                // Downloading large quantities at once appears to throw errors, so
+                // the max simultaneous count is capped at 300
+                if (channelCreation.Count > 50)
+                {
+                    await Task.WhenAll(channelCreation);
+                    channelCreation = new();
+                }
+            }
+
+            // Download the rest of the channels
+            await Task.WhenAll(channelCreation);
+
+            static async Task CreateChannelData(Channel channel)
+            {
+                // Downloading the image data first, and only then when it is fully downloaded
+                // saving it to the file
+                var thumbnailData = await new WebClient().DownloadDataTaskAsync(new Uri(channel.Snippet.Thumbnails.Default__.Url));
+
+                var channelDirectory = Directories.ChannelsDirectory.CreateSubdirectory(channel.Id);
+                File.WriteAllBytes(Path.Combine(channelDirectory.FullName, "channelThumbnail.jpg"), thumbnailData);
+                channelDirectory.CreateSubfile("channelInfo.json").Serialize(channel);
+            }
+        }
+
+        /// <summary>
+        /// Removes channels that repeat in the list and also channels that already have been saved.
+        /// </summary>
+        private static List<string> RemoveRedundantChannels(List<string> channelIds)
+        {
+            // Remove channels that repeat
+            channelIds.Distinct().ToList();
 
             // Remove already saved existing channel instances from the list
             List<string> savedChannels = Directories.ChannelsDirectory.GetSubDirectoriesNames();
-            channelsIdsList = channelsIdsList.RemoveCoexistingItems(savedChannels);
-
-            if (channelsIdsList.Count == 0)
-                return;
-
-            var retrievedChannels = await RetrieveChannelsDataAsync(channelsIdsList);
-
-            List<Task> thumbnailDownloads = new();
-            foreach (var channel in retrievedChannels.Items)
-            {
-                var channelDirectory = Directories.ChannelsDirectory.CreateSubdirectory(channel.Id);
-                FileInfo channelData =  channelDirectory.CreateSubfile("channelInfo.json");
-                channelData.Serialize(channel);
-
-                // In channel thumbnails all qualities are always available (image is upscaled),
-                // but only 3 are available - meduium, default and highres
-                thumbnailDownloads.Add(LocalHelpers.DownloadImageAsync(channel.Snippet.Thumbnails.Default__.Url, channelDirectory, "channelThumbnail.jpg"));
-            }
-            await Task.WhenAll(thumbnailDownloads);
+            return channelIds.RemoveCoexistingItems(savedChannels);
         }
 
+
+        /// <summary>
+        /// Reads channel information from locally saved data.
+        /// </summary>
         public static Channel ReadSavedChannelData(string channelId)
         {
             DirectoryInfo channelDirectory = Directories.ChannelsDirectory.SubDirectory(channelId);
@@ -59,7 +111,7 @@ namespace PlaylistSaver.PlaylistMethods
         }
 
         /// <summary>
-        /// Retrieves data about channels that are in the videos in the playlist.
+        /// Retrieves data about channels from YoutubeAPI that are in the videos in the playlist.
         /// </summary>
         public static async Task<ChannelListResponse> RetrieveChannelsDataAsync(List<string> channelsIdsList)
         {
@@ -68,6 +120,7 @@ namespace PlaylistSaver.PlaylistMethods
             ChannelListResponse channels = null;
 
             int channelCount = 0;
+
             foreach (string channelId in channelsIdsList)
             {
                 channelCount++;
