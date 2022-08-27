@@ -30,6 +30,18 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
             }
         }
 
+        public AddPlaylists_userOwnedViewModel(HomepageViewModel homepageViewModel)
+        {
+            CloseViewCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, null);
+            CheckAllPlaylistsCommand = new RelayCommand(CheckAllPlaylists);
+            CheckPlaylistCommand = new RelayCommand(CheckPlaylist);
+            AddCheckedPlaylistsCommand = new AsyncRelayCommand(AddCheckedPlaylistsAsync);
+            PlaylistsList = new();
+            this.homepageViewModel = homepageViewModel;
+
+            RetrieveAndDisplayPlaylists();
+        }
+
         public List<Playlist> ReturnCheckedPlaylists()
         {
             List<Playlist> checkedPlaylists = new();
@@ -40,18 +52,6 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
                     checkedPlaylists.Add(item.Item2);
             }
             return checkedPlaylists;
-        }
-
-        public AddPlaylists_userOwnedViewModel(NavigationStore popupNavigationStore, HomepageViewModel homepageViewModel)
-        {
-            CloseViewCommand = new NavigateCommand(popupNavigationStore, null);
-            CheckAllPlaylistsCommand = new RelayCommand(CheckAllPlaylists);
-            CheckPlaylistCommand = new RelayCommand(CheckPlaylist);
-            AddCheckedPlaylistsCommand = new AsyncRelayCommand(AddCheckedPlaylistsAsync);
-            PlaylistsList = new();
-            this.homepageViewModel = homepageViewModel;
-
-            RetrieveAndDisplayPlaylists();
         }
 
         private async Task AddCheckedPlaylistsAsync()

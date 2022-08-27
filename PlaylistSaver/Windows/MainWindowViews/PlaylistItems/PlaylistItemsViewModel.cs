@@ -36,9 +36,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
             }
         }
 
-        private readonly NavigationStore popupNavigationStore;
-
-        public PlaylistItemsViewModel(NavigationStore navigationStore, NavigationStore popupNavigationStore, DisplayPlaylist displayPlaylist)
+        public PlaylistItemsViewModel(DisplayPlaylist displayPlaylist)
         {
             DisplayedPlaylist = displayPlaylist;
 
@@ -58,8 +56,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
                 RaisePropertyChanged(nameof(DisplayMissingItemsPanel));
             }
 
-            ReturnToHomePageCommand = new NavigateCommand(navigationStore, () => new HomepageViewModel(navigationStore, popupNavigationStore));
-            this.popupNavigationStore = popupNavigationStore;
+            ReturnToHomePageCommand = NavigationStores.GoToHomePageCommand;
 
             DisplayDayPanelCommand = new RelayCommand(DisplayDayPanel);
             DisplayHourPanelCommand = new RelayCommand(DisplayHourPanel);
@@ -91,7 +88,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
 
         private void DisplayPlaylistItemInfo(object displayPlaylistItem)
         {
-            var navigateCommand = new NavigateCommand(popupNavigationStore, () => new PlaylistItemInfoViewModel(popupNavigationStore, (DisplayPlaylistItem)displayPlaylistItem));
+            var navigateCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new PlaylistItemInfoViewModel((DisplayPlaylistItem)displayPlaylistItem));
             navigateCommand.Execute(navigateCommand);
         }
 

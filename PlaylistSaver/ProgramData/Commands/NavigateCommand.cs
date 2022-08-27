@@ -10,10 +10,10 @@ namespace PlaylistSaver.ProgramData.Commands
 {
     public class NavigateCommand : CommandBase
     {
-        private readonly NavigationStore _navigationStore;
+        private readonly NavigationSystem _navigationStore;
         private readonly Func<ViewModelBase> _createViewModel;
 
-        public NavigateCommand(NavigationStore navigationStore, Func<ViewModelBase> createViewModel)
+        public NavigateCommand(NavigationSystem navigationStore, Func<ViewModelBase> createViewModel)
         {
             _navigationStore = navigationStore;
             _createViewModel = createViewModel;

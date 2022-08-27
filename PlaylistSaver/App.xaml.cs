@@ -31,35 +31,16 @@ namespace PlaylistSaver
         {
             // Configure and create data, files etc required by the program
             AppConfiguration.Configure();
-
-            MainNavigationStore = new NavigationStore();
-            PopupNavigationStore = new NavigationStore();
-
-            MainNavigationStore.CurrentViewModel = new HomepageViewModel(MainNavigationStore, PopupNavigationStore);
-            //PopupNavigationStore.CurrentViewModel = new AddPlaylists_linkViewModel();
+            NavigationStores.MainNavigationStore.CurrentViewModel = new HomepageViewModel();
 
             MainWindow = new MainWindow()
             {
-                DataContext = new MainWindowViewModel(MainNavigationStore, PopupNavigationStore)
+                DataContext = new MainWindowViewModel()
             };
 
-            // On first run - create userData data
-
-            //MainWindow.Show();
-
-            //MainWindow = new WelcomeScreenView()
-            //{
-            //    DataContext = new WelcomeScreenViewModel()
-            //};
-
             MainWindow.Show();
-
-
             base.OnStartup(e);
         }
-
-        private NavigationStore MainNavigationStore { get; set; }
-        private NavigationStore PopupNavigationStore { get; set; }
     }
 
 }

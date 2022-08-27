@@ -15,7 +15,7 @@ namespace ToastMessageService
             ClassInstance = this;
         }
 
-        public static ToastMessage ClassInstance { get; set; }
+        public static ToastMessage ClassInstance { get; set; } = new ToastMessage();
 
         private static List<string> DisplaysQuery { get; set; } = new();
 

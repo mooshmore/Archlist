@@ -3,7 +3,7 @@ using System;
 
 namespace PlaylistSaver.ProgramData.Stores
 {
-    public class NavigationStore
+    public class NavigationSystem
     {
         public event Action CurrentVievModelChanged;
 

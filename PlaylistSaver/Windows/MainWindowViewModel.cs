@@ -1,75 +1,37 @@
-﻿using PlaylistSaver.PlaylistMethods;
-using PlaylistSaver.ProgramData;
-using PlaylistSaver.ProgramData.Bases;
+﻿using PlaylistSaver.ProgramData.Bases;
 using PlaylistSaver.ProgramData.Commands;
 using PlaylistSaver.ProgramData.Stores;
 using PlaylistSaver.UserData;
-using PlaylistSaver.Windows.MainWindowViews;
-using PlaylistSaver.Windows.MainWindowViews.Homepage;
-using PlaylistSaver.Windows.MainWindowViews.PlaylistItems;
-using PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link;
-using PlaylistSaver.Windows.PopupViews.WelcomeScreenWindow;
 using PlaylistSaver.Windows.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using ToastMessageService;
 
 namespace PlaylistSaver.Windows
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
-        private readonly NavigationStore _mainNavigationStore;
-        private readonly NavigationStore _popupNavigationStore;
-        public ViewModelBase CurrentMainViewModel => _mainNavigationStore.CurrentViewModel;
-        public ViewModelBase CurrentPopupViewModel => _popupNavigationStore.CurrentViewModel;
-
         // ! Don't change it to static or the binding won't work
         public UserProfile UserProfile => GlobalItems.UserProfile;
-        public ToastMessageService.ToastMessage ToastMessage { get; set; } = new ToastMessageService.ToastMessage();
+        public ToastMessage ToastMessage => ToastMessage.ClassInstance;
+        public ViewModelBase CurrentMainViewModel => NavigationStores.MainNavigationStore.CurrentViewModel;
+        public ViewModelBase CurrentPopupViewModel => NavigationStores.PopupNavigationStore.CurrentViewModel;
 
-        public MainWindowViewModel(NavigationStore navigationStore, NavigationStore popupNavigationStore)
+        public MainWindowViewModel()
         {
-            _mainNavigationStore = navigationStore;
-            _popupNavigationStore = popupNavigationStore;
+            GlobalItems.UserProfileChanged += () => RaisePropertyChanged(nameof(UserProfile));
+            NavigationStores.MainNavigationStore.CurrentVievModelChanged += () => RaisePropertyChanged(nameof(CurrentMainViewModel));
+            NavigationStores.PopupNavigationStore.CurrentVievModelChanged += OnCurrentPopupViewModelChanged;
 
-            _mainNavigationStore.CurrentVievModelChanged += OnCurrentMainWindowViewModelChanged;
-            _popupNavigationStore.CurrentVievModelChanged += OnCurrentPopupViewModelChanged;
-            GlobalItems.UserProfileChanged += OnUserProfileChanged;
-
-            GoToHomePageCommand = new NavigateCommand(_mainNavigationStore, () => new HomepageViewModel(navigationStore, popupNavigationStore));
+            GoToHomePageCommand = NavigationStores.GoToHomePageCommand;
             LogOutCommand = new AsyncRelayCommand(OAuthSystem.LogOutAsync);
-            HidePopupViewCommand = new RelayCommand(HidePopupView);
-
-           //ToastMessage.Display("Coudln't download playlist Muzyka, and 50 other ones, idk what's going on");
+            HidePopupViewCommand = NavigationStores.HidePopupViewCommand;
         }
 
-        public bool OverlayVisibility { get; set; } = false;
-
-        private void HidePopupView()
-        {
-            _popupNavigationStore.CurrentViewModel = null;
-        }
-
-        private void OnCurrentMainWindowViewModelChanged()
-        {
-            RaisePropertyChanged(nameof(CurrentMainViewModel));
-        }
+        public bool OverlayVisibility => CurrentPopupViewModel != null;
 
         private void OnCurrentPopupViewModelChanged()
         {
             RaisePropertyChanged(nameof(CurrentPopupViewModel));
-            OverlayVisibility = CurrentPopupViewModel != null;
-
             RaisePropertyChanged(nameof(OverlayVisibility));
-        }
-
-        private void OnUserProfileChanged()
-        {
-            RaisePropertyChanged(nameof(UserProfile));
         }
 
         public RelayCommand HidePopupViewCommand { get; }

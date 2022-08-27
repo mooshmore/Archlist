@@ -16,7 +16,7 @@ namespace PlaylistSaver.Windows.PopupViews.PlaylistItemInfo
 {
     public class PlaylistItemInfoViewModel : ViewModelBase
     {
-        public NavigateCommand CloseViewCommand { get; }
+        public RelayCommand CloseViewCommand { get; }
         public DisplayPlaylistItem DisplayPlaylistItem { get; }
         public RelayCommand CopyTitleCommand { get; }
         public bool DisplayRemovalInfo { get; }
@@ -28,9 +28,9 @@ namespace PlaylistSaver.Windows.PopupViews.PlaylistItemInfo
         public string FoundSnapshotsText { get; } = "";
         public string WebArchiveLink { get; } = "";
 
-        public PlaylistItemInfoViewModel(NavigationStore popupNavigationStore, DisplayPlaylistItem displayPlaylist)
+        public PlaylistItemInfoViewModel(DisplayPlaylistItem displayPlaylist)
         {
-            CloseViewCommand = new NavigateCommand(popupNavigationStore, null);
+            CloseViewCommand = NavigationStores.HidePopupViewCommand;
             DisplayPlaylistItem = displayPlaylist;
             DisplayRemovalInfo = displayPlaylist.RemovalReasonShort != null;
             RaisePropertyChanged(nameof(DisplayRemovalInfo));

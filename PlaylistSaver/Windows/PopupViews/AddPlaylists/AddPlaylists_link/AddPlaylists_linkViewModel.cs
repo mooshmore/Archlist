@@ -36,9 +36,9 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
 
         public HomepageViewModel homepageViewModel;
 
-        public AddPlaylists_linkViewModel(NavigationStore popupNavigationStore, HomepageViewModel homepageViewModel)
+        public AddPlaylists_linkViewModel(HomepageViewModel homepageViewModel)
         {
-            CloseViewCommand = new NavigateCommand(popupNavigationStore, null);
+            CloseViewCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, null);
             AddPlaylistToListCommand = new AsyncRelayCommand(AddPlaylistToList);
             RemovePlaylistFromListCommand = new RelayCommand(RemovePlaylistFromList);
             AddPlaylistsCommand = new AsyncRelayCommand(AddPlaylistsAsync);

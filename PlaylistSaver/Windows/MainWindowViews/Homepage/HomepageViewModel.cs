@@ -37,22 +37,20 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
         public bool DisplayNothingHerePanel { get; set; } = false;
         public BitmapImage MissingItemsImage { get; set; }
 
-        public HomepageViewModel(NavigationStore navigationStore, NavigationStore popupNavigationStore)
+        public HomepageViewModel()
         {
             LoadPlaylists();
             OnUserProfileChanged();
             SetMissingItemsText();
 
-            OpenAddPlaylist_userOwnedViewCommand = new NavigateCommand(popupNavigationStore, () => new AddPlaylists_userOwnedViewModel(popupNavigationStore, this));
-            OpenAddPlaylist_linkCommand = new NavigateCommand(popupNavigationStore, () => new AddPlaylists_linkViewModel(popupNavigationStore, this));
+            OpenAddPlaylist_userOwnedViewCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_userOwnedViewModel(this));
+            OpenAddPlaylist_linkCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_linkViewModel(this));
             PullPlaylistDataCommand = new RelayCommand(PullPlaylistData);
             OpenPlaylistCommand = new RelayCommand(OpenPlaylist);
             UpdateCurrentPlaylistCommand = new RelayCommand(UpdateCurrentDisplayPlaylist);
             DownloadDataForAllPlaylistsCommand = new RelayCommand(PlaylistItemsData.PullAllPlaylistsItemsDataAsync);
 
             GlobalItems.UserProfileChanged += OnUserProfileChanged;
-            MainNavigationStore = navigationStore;
-            PopupNavigationStore = popupNavigationStore;
         }
 
         private void SetMissingItemsText()
@@ -104,15 +102,13 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
             RaisePropertyChanged(nameof(UserProfile));
         }
 
-        public NavigationStore MainNavigationStore { get; set; }
-        public NavigationStore PopupNavigationStore { get; set; }
         public RelayCommand OpenPlaylistCommand { get; }
         public RelayCommand UpdateCurrentPlaylistCommand { get; }
         public RelayCommand DownloadDataForAllPlaylistsCommand { get; }
 
         private void OpenPlaylist(object displayPlaylist)
         {
-            var navigateCommand = new NavigateCommand(MainNavigationStore, () => new PlaylistItemsViewModel(MainNavigationStore, PopupNavigationStore, (DisplayPlaylist)displayPlaylist));
+            var navigateCommand = new NavigateCommand(NavigationStores.MainNavigationStore, () => new PlaylistItemsViewModel((DisplayPlaylist)displayPlaylist));
             navigateCommand.Execute(displayPlaylist);
         }
 
