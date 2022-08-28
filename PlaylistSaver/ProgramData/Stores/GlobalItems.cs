@@ -13,10 +13,7 @@ namespace PlaylistSaver.ProgramData.Stores
 {
     public static class GlobalItems
     {
-        /// <remarks>
-        /// This creates a new instance every time it is called to allow downloading multiple files at once.
-        /// </remarks>
-        public static WebClient WebClient => new();
+        public static string AppVersion { get; set; } = "0.7.1 Alpha";
 
         public static event Action UserProfileChanged;
 

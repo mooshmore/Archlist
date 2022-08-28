@@ -9,6 +9,7 @@
         xmlns:AddPlaylists_link="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link" 
         xmlns:AddPlaylists_userOwned="clr-namespace:PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned" 
         xmlns:PlaylistItemInfo="clr-namespace:PlaylistSaver.Windows.PopupViews.PlaylistItemInfo" 
+        xmlns:AboutApp="clr-namespace:PlaylistSaver.Windows.MainWindowViews.AboutApp" 
         xmlns:converters="clr-namespace:PlaylistSaver.Helpers.BindingConverters" xmlns:fa="http://schemas.fontawesome.io/icons/"
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
@@ -98,12 +99,17 @@
                                 <ImageBrush ImageSource="{Binding UserProfile.PicturePath}"/>
                             </Ellipse.Fill>
                         </Ellipse>
-                        <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/Symbols/White/info_64px.png" ToolTip="App info"/>
+                        <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/Symbols/White/info_64px.png" ToolTip="App info">
+                            <Image.InputBindings>
+                                <MouseBinding Gesture="LeftClick" Command="{Binding OpenAboutPageCommand}"/>
+                            </Image.InputBindings>
+                        </Image>
                         <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/Symbols/White/settings_64px.png" ToolTip="Settings"/>
                     </StackPanel>
 
                 </Grid>
 
+                <!--Main window views-->
                 <ContentControl Content="{Binding CurrentMainViewModel}" Grid.Column="1" Grid.Row="1">
                     <ContentControl.Resources>
                         <DataTemplate DataType="{x:Type playlistItems:PlaylistItemsViewModel}">
@@ -112,6 +118,9 @@
                         <DataTemplate DataType="{x:Type homepage:HomepageViewModel}">
                             <homepage:HomepageView/>
                         </DataTemplate>
+                        <DataTemplate DataType="{x:Type AboutApp:AboutAppViewModel}">
+                            <AboutApp:AboutAppView/>
+                        </DataTemplate>
                     </ContentControl.Resources>
                 </ContentControl>
 
@@ -119,14 +128,14 @@
 
             <!--Opacity overlay grid-->
             <Grid Grid.ColumnSpan="3" Grid.RowSpan="3" Background="{StaticResource Background_default_dark}" Opacity="0.6" 
-                  Visibility="{Binding Path=OverlayVisibility, Converter={StaticResource BoolToVisiblity}}">
+                  Visibility="{Binding Path=OverlayVisibility, Converter={StaticResource BoolToVisiblity}}" d:Visibility="Collapsed">
                 <Grid.InputBindings>
                     <MouseBinding Gesture="LeftClick" Command="{Binding HidePopupViewCommand}"/>
                 </Grid.InputBindings>
             </Grid>
             
             <!--Popup Views-->
-            <ContentControl Content="{Binding CurrentPopupViewModel}" Grid.Column="1" Grid.Row="1">
+            <ContentControl Content="{Binding CurrentPopupViewModel}" Grid.Column="1" Grid.Row="1" d:Visibility="Collapsed">
                 <ContentControl.Resources>
                     <DataTemplate DataType="{x:Type AddPlaylists_link:AddPlaylists_linkViewModel}">
                         <AddPlaylists_link:AddPlaylists_linkView/>

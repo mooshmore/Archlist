@@ -1,8 +1,10 @@
 ﻿using Google.Apis.YouTube.v3.Data;
 using Helpers;
+using PlaylistSaver.Helpers;
 using PlaylistSaver.PlaylistMethods.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -146,6 +148,23 @@ namespace PlaylistSaver.PlaylistMethods
 
                 // Save the data
                 PlaylistItemsData.SaveLatestPlaylistItemsData(playlistId, newItemsData);
+            }
+        }
+
+        public static void MarkAsSeen(this DisplayPlaylist playlist) => MarkAsSeen(new List<DisplayPlaylist>() { playlist });
+
+        public static void MarkAsSeen(List<DisplayPlaylist> playlistsList)
+        {
+            foreach (var playlist in playlistsList)
+            {
+                var recentItemsFile = new FileInfo(Path.Combine(playlist.MissingItemsDirectory.FullName, "recent.json"));
+                var seenItemsFile = new FileInfo(Path.Combine(playlist.MissingItemsDirectory.FullName, "seen.json"));
+
+                var mergedItems = recentItemsFile.Deserialize<List<MissingPlaylistItem>>();
+                mergedItems.AddRange(seenItemsFile.Deserialize<List<MissingPlaylistItem>>());
+
+                recentItemsFile.Serialize(new List<MissingPlaylistItem>());
+                seenItemsFile.Serialize(mergedItems);
             }
         }
 

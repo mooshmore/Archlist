@@ -2,6 +2,7 @@
 using PlaylistSaver.ProgramData.Commands;
 using PlaylistSaver.ProgramData.Stores;
 using PlaylistSaver.UserData;
+using PlaylistSaver.Windows.MainWindowViews.AboutApp;
 using PlaylistSaver.Windows.ViewModels;
 using ToastMessageService;
 
@@ -20,10 +21,6 @@ namespace PlaylistSaver.Windows
             GlobalItems.UserProfileChanged += () => RaisePropertyChanged(nameof(UserProfile));
             NavigationStores.MainNavigationStore.CurrentVievModelChanged += () => RaisePropertyChanged(nameof(CurrentMainViewModel));
             NavigationStores.PopupNavigationStore.CurrentVievModelChanged += OnCurrentPopupViewModelChanged;
-
-            GoToHomePageCommand = NavigationStores.GoToHomePageCommand;
-            LogOutCommand = new AsyncRelayCommand(OAuthSystem.LogOutAsync);
-            HidePopupViewCommand = NavigationStores.HidePopupViewCommand;
         }
 
         public bool OverlayVisibility => CurrentPopupViewModel != null;
@@ -34,8 +31,9 @@ namespace PlaylistSaver.Windows
             RaisePropertyChanged(nameof(OverlayVisibility));
         }
 
-        public RelayCommand HidePopupViewCommand { get; }
-        public NavigateCommand GoToHomePageCommand { get; }
-        public AsyncRelayCommand LogOutCommand { get; }
+        public RelayCommand HidePopupViewCommand { get; } = NavigationStores.HidePopupViewCommand;
+        public NavigateCommand GoToHomePageCommand { get; } = NavigationStores.GoToHomePageCommand;
+        public NavigateCommand OpenAboutPageCommand { get; } = new NavigateCommand(NavigationStores.MainNavigationStore, () => new AboutAppViewModel());
+        public AsyncRelayCommand LogOutCommand { get; } = new AsyncRelayCommand(OAuthSystem.LogOutAsync);
     }
 }

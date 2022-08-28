@@ -1,5 +1,6 @@
 ﻿using Google.Apis.YouTube.v3.Data;
 using PlaylistSaver.Helpers;
+using PlaylistSaver.PlaylistMethods;
 using PlaylistSaver.PlaylistMethods.Models;
 using PlaylistSaver.ProgramData.Bases;
 using System;
@@ -65,15 +66,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
 
         private void MarkAllAsSeen()
         {
-            var recentItemsFile = new FileInfo(Path.Combine(DisplayedPlaylist.MissingItemsDirectory.FullName, "recent.json"));
-            var seenItemsFile = new FileInfo(Path.Combine(DisplayedPlaylist.MissingItemsDirectory.FullName, "seen.json"));
-
-            var mergedItems = recentItemsFile.Deserialize<List<MissingPlaylistItem>>();
-            mergedItems.AddRange(seenItemsFile.Deserialize<List<MissingPlaylistItem>>());
-
-            recentItemsFile.Serialize(new List<MissingPlaylistItem>());
-            seenItemsFile.Serialize(mergedItems);
-
+            DisplayedPlaylist.MarkAsSeen();
             MissingItemsList = new();
             SetMissingItemsInfo();
             DisplayMissingItemsPanel = false;

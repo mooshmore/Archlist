@@ -21,6 +21,7 @@ namespace PlaylistSaver.Windows.PopupViews.WelcomeScreenWindow
         }
 
         public RelayCommand LogInCommand { get; }
+        public string AppVersion => GlobalItems.AppVersion;
 
         public void OpenOAuthLoginPage()
         {

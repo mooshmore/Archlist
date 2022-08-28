@@ -29,7 +29,7 @@ namespace ToastMessageService
                 DisplaysQuery.Add(text);
 
                 // Averate to 12 characters per second
-                await Task.Delay(text.Length / 12 * 1000);
+                await WaitDisplayTimeAsync(text);
 
                 // Don't remove if there are other displays active
                 if (DisplaysQuery.Count == 1)
@@ -48,19 +48,19 @@ namespace ToastMessageService
 
             if (!BlockDissapearing)
             {
-                await Task.Delay(GetDisplayTime(text));
+                await WaitDisplayTimeAsync(text);
                 ClassInstance.Visibility = false;
             }
         }
 
-        private static int GetDisplayTime(string text)
+        private static async Task WaitDisplayTimeAsync(string text)
         {
             int displayTime = text.Length / 12 * 1000;
             // Display time to minimal of 3 seconds
-            if (displayTime < 4000)
-                return 4000;
-            else
-                return displayTime;
+            if (displayTime < 2000)
+                displayTime = 2000;
+
+            await Task.Delay(displayTime);
         }
 
         public static async Task Loading(string text)
@@ -77,7 +77,7 @@ namespace ToastMessageService
             ClassInstance.Text = text;
             ClassInstance.Visibility = true;
 
-            await Task.Delay(GetDisplayTime(text));
+            await WaitDisplayTimeAsync(text);
             ClassInstance.Visibility = false;
         }
 

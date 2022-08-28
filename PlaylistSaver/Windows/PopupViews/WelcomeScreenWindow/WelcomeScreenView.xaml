@@ -41,12 +41,8 @@
                     </Grid.RowDefinitions>
                     <StackPanel VerticalAlignment="Center">
                         <Image Source="/Resources/Images/Logos/AppLogo/appLogo_128px.png" Width="70"/>
-                        <TextBlock Style="{StaticResource AppName}">
-                        Playlist Saver
-                        </TextBlock>
-                        <TextBlock Style="{StaticResource AppVersion}">
-                        Version 2.6.7
-                        </TextBlock>
+                        <TextBlock Style="{StaticResource AppName}" Text="Playlist Saver"/>
+                        <TextBlock Style="{StaticResource AppVersion}" Text="{Binding AppVersion}"/>
                     </StackPanel>
                     <TextBlock Style="{StaticResource Welcome}" Grid.Row="1">
                     Welcome!

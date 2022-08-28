@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="PlaylistSaver.Windows.MainWindowViews.AboutApp.AboutAppView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PlaylistSaver.Windows.MainWindowViews.AboutApp" xmlns:controls="clr-namespace:PlaylistSaver.Resources.Controls"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=local:AboutAppViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800" Background="{StaticResource Background_topbar}">
+
+    <UserControl.Resources>
+        <ResourceDictionary Source="AboutAppDictionary.xaml"/>
+    </UserControl.Resources>
+
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Image Source="/Resources/Images/Logos/AppLogo/appLogo_128px.png" Width="70"/>
+        <TextBlock Style="{StaticResource AppName}" Text="Playlist Saver"/>
+        <TextBlock Style="{StaticResource AppVersion}" Text="{Binding AppVersion}" d:Text="Version 0.8.7 Alpha"/>
+
+        <TextBlock Style="{StaticResource MadeBy}" Text="Made by" Margin="0 50 0 0"/>
+        <TextBlock HorizontalAlignment="Center" Margin="0,5,0,17">
+            <Hyperlink NavigateUri="https://github.com/mooshmore">
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Height="35" Width="35">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="/Resources/Images/Logos/AppCreator/mooshmore_thumbnail_64px.png"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <TextBlock Style="{StaticResource Mooshmore}" Text="Mooshmore"/>
+                </StackPanel>
+                
+            </Hyperlink>
+            
+        </TextBlock>
+        <StackPanel Margin="0 0 0 80" Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Style="{StaticResource HighlightHoverText}">
+                <Hyperlink NavigateUri="https://github.com/mooshmore/YTPlaylistSaver">
+                    <StackPanel Style="{StaticResource BottomLink}">
+                        <Image Source="/Resources/Images/Logos/Github/github_logo_32px.png"/>
+                        <TextBlock Style="{StaticResource BottomLinkText}" Text="Project repository"/>
+                    </StackPanel>
+                </Hyperlink>
+            </TextBlock>
+            <TextBlock Style="{StaticResource HighlightHoverText}" Margin="10 0 0 0">
+                <Hyperlink NavigateUri="https://www.youtube.com/channel/UCoiOhzEdXVQCQ3conWHE3aQ">
+                    <StackPanel Style="{StaticResource BottomLink}">
+                        <Image Width="20" Source="/Resources/Images/Logos/Youtube/youtube_logo_32px.png"/>
+                        <TextBlock Style="{StaticResource BottomLinkText}" Text="Youtube channel"/>
+                    </StackPanel>
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
+
+        <TextBlock Style="{StaticResource ContactText}" Text="Have a suggestion about features? Or mayby you found a bug? Or a other weird thing?" Margin="0 0 0 15" Foreground="{StaticResource Text_shaded}"/>
+        <TextBlock Style="{StaticResource ContactText}" Text="Contact me at:" HorizontalAlignment="Center" FontSize="24"/>
+        <TextBlock HorizontalAlignment="Center" Margin="0 30">
+            <Hyperlink NavigateUri="https://discordapp.com/users/349490256304668673/">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical" Margin="0 0 19 0">
+                        <Image Source="/Resources/Images/Logos/Other/discord.png" RenderOptions.BitmapScalingMode="HighQuality" Height="60" ToolTip="Click to open Discord profile"/>
+                        <TextBlock FontSize="20" Cursor="Hand">
+                            <TextBlock.InputBindings>
+                                <MouseBinding Gesture="LeftClick" Command="{Binding CopyTextCommand}" CommandParameter="mooshmore#0763" />
+                            </TextBlock.InputBindings>
+                            
+                            <StackPanel Orientation="Horizontal" ToolTip="Click to copy Discord name">
+                                <TextBlock Text="mooshmore" Foreground="{StaticResource Text_primary}"/>
+                                <TextBlock Text="#0763" Foreground="{StaticResource Text_dimmed}"/>
+                            </StackPanel>
+                        </TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Margin="19 0 0 0" ToolTip="Click to copy mail">
+                        <StackPanel.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding CopyTextCommand}" CommandParameter="mooshmore@gmail.com" />
+                        </StackPanel.InputBindings>
+                        
+                        <Image Source="/Resources/Images/Symbols/White/mail_64px.png" RenderOptions.BitmapScalingMode="HighQuality" Height="60"/>
+                        <TextBlock Text="mooshmore@gmail.com" Foreground="{StaticResource Text_primary}" FontSize="20"/>
+                    </StackPanel>
+                </StackPanel>
+            </Hyperlink>
+        </TextBlock>
+
+        <TextBlock HorizontalAlignment="Center" Margin="0 50 0 0">
+            <Hyperlink NavigateUri="https://icons8.com">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Icons provided by" HorizontalAlignment="Center" FontSize="20" Foreground="{StaticResource Text_secondary}" Margin="0 0 0 10"/>
+                    <Image Source="/Resources/Images/Logos/Other/icons8.png" Height="50" Margin="0 0 5 0"/> 
+                </StackPanel>
+            </Hyperlink>
+        </TextBlock>
+    </StackPanel>
+    
+</UserControl>

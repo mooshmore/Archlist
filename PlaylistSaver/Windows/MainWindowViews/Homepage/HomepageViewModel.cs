@@ -36,6 +36,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
         public bool DisplayAllItemsPanel { get; set; }
         public bool DisplayNothingHerePanel { get; set; } = false;
         public BitmapImage MissingItemsImage { get; set; }
+        public RelayCommand MarkAsSeenCommand { get; }
 
         public HomepageViewModel()
         {
@@ -46,9 +47,11 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
             OpenAddPlaylist_userOwnedViewCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_userOwnedViewModel(this));
             OpenAddPlaylist_linkCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_linkViewModel(this));
             PullPlaylistDataCommand = new RelayCommand(PullPlaylistData);
+            PullPlaylistDataCommand = new RelayCommand(PullPlaylistData);
             OpenPlaylistCommand = new RelayCommand(OpenPlaylist);
             UpdateCurrentPlaylistCommand = new RelayCommand(UpdateCurrentDisplayPlaylist);
-            DownloadDataForAllPlaylistsCommand = new RelayCommand(PlaylistItemsData.PullAllPlaylistsItemsDataAsync);
+            PullAllPlaylistsCommand = new RelayCommand(PlaylistItemsData.PullAllPlaylistsItemsDataAsync);
+            MarkAsSeenCommand = new RelayCommand(MarkAsSeen);
 
             GlobalItems.UserProfileChanged += OnUserProfileChanged;
         }
@@ -97,6 +100,12 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
             CurrentDisplayPlaylist = (DisplayPlaylist)playlist;
         }
 
+        private void MarkAsSeen()
+        {
+            CurrentDisplayPlaylist.MarkAsSeen();
+            LoadPlaylists();
+        }
+
         private void OnUserProfileChanged()
         {
             RaisePropertyChanged(nameof(UserProfile));
@@ -104,7 +113,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
 
         public RelayCommand OpenPlaylistCommand { get; }
         public RelayCommand UpdateCurrentPlaylistCommand { get; }
-        public RelayCommand DownloadDataForAllPlaylistsCommand { get; }
+        public RelayCommand PullAllPlaylistsCommand { get; }
 
         private void OpenPlaylist(object displayPlaylist)
         {

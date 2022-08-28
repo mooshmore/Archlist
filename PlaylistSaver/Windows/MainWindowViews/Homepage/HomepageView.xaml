@@ -73,7 +73,7 @@
                             <Image Source="/Resources/Images/Symbols/White/more_24px.png" Behaviours:LeftClickContextMenu.IsLeftClickEnabled="True" Behaviours:LeftClickContextMenu.BindToTag="True" Style="{StaticResource ImageButton_hover}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"  Grid.Column="1" Cursor="Hand" Height="20" HorizontalAlignment="Right" Margin="0 0 25 0">
                                 <Image.ContextMenu>
                                     <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={x:Static RelativeSource.Self}}">
-                                        <MenuItem Header="Download data for all playlists" Command="{Binding DownloadDataForAllPlaylistsCommand}">
+                                        <MenuItem Header="Download data for all playlists" Command="{Binding PullAllPlaylistsCommand}">
                                             <MenuItem.Icon>
                                                 <Image Source="/Resources/Images/Symbols/White/downloading_updates_24px.png"/>
                                             </MenuItem.Icon>
@@ -158,7 +158,12 @@
                                                         <Image Source="/Resources/Images/Symbols/White/downloading_updates_24px.png"/>
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                            </ContextMenu>
+                                                <MenuItem Header="Mark as seen" Command="{Binding MarkAsSeenCommand}">
+                                                    <MenuItem.Icon>
+                                                        <Image Source="/Resources/Images/Symbols/White/done_32px.png"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                </ContextMenu>
                                         </Image.ContextMenu>
                                     </Image>
                                 </Grid>

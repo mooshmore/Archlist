@@ -5,12 +5,16 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UserSecretsId>b13a02bc-8649-4350-9ee8-f8c91439acc5</UserSecretsId>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="clientSecret.json" />
     <None Remove="Resources\Fonts\Caveat-VariableFont_wght.ttf" />
     <None Remove="Resources\Images\btn_google_signin_light_normal_web%402x.png" />
+    <None Remove="Resources\Images\Logos\Other\discord.png" />
+    <None Remove="Resources\Images\Logos\Other\discord54px.png" />
+    <None Remove="Resources\Images\Logos\Other\icons8.png" />
     <None Remove="Resources\Images\Logos\WebArchive\webArchiveLogo_32px.png" />
     <None Remove="Resources\Images\Logos\WebArchive\webArchiveLogo_removalRed_32px.png" />
     <None Remove="Resources\Images\Symbols\box_important_24px.png" />
@@ -85,12 +89,15 @@
     <None Remove="Resources\Images\Symbols\White\lock_32px.png" />
     <None Remove="Resources\Images\Symbols\White\lock_64px.png" />
     <None Remove="Resources\Images\Symbols\White\logout_64px.png" />
+    <None Remove="Resources\Images\Symbols\White\mail_64px.png" />
     <None Remove="Resources\Images\Symbols\White\maximize_button_24px.png" />
     <None Remove="Resources\Images\Symbols\White\maximize_button_64px.png" />
     <None Remove="Resources\Images\Symbols\White\more_24px.png" />
     <None Remove="Resources\Images\Symbols\White\more_32px.png" />
     <None Remove="Resources\Images\Symbols\White\more_48px.png" />
     <None Remove="Resources\Images\Symbols\White\more_64px.png" />
+    <None Remove="Resources\Images\Symbols\White\remove_image_32px.png" />
+    <None Remove="Resources\Images\Symbols\White\remove_image_64px.png" />
     <None Remove="Resources\Images\Symbols\White\restore_down_24px.png" />
     <None Remove="Resources\Images\Symbols\White\restore_down_64px.png" />
     <None Remove="Resources\Images\Symbols\White\settings_64px.png" />
@@ -123,6 +130,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\Logos\Other\discord.png" />
+    <Resource Include="Resources\Images\Logos\Other\discord54px.png" />
+    <Resource Include="Resources\Images\Logos\Other\icons8.png" />
     <Resource Include="Resources\Images\Logos\WebArchive\webArchiveLogo_32px.png" />
     <Resource Include="Resources\Images\Logos\WebArchive\webArchiveLogo_removalRed_32px.png" />
     <Resource Include="Resources\Images\Symbols\Other\loadingImage_18px.png" />
@@ -202,12 +212,15 @@
     <Resource Include="Resources\Images\Symbols\White\lock_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\lock_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\logout_64px.png" />
+    <Resource Include="Resources\Images\Symbols\White\mail_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\maximize_button_24px.png" />
     <Resource Include="Resources\Images\Symbols\White\maximize_button_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\more_24px.png" />
     <Resource Include="Resources\Images\Symbols\White\more_32px.png" />
     <Resource Include="Resources\Images\Symbols\White\more_48px.png" />
     <Resource Include="Resources\Images\Symbols\White\more_64px.png" />
+    <Resource Include="Resources\Images\Symbols\White\remove_image_32px.png" />
+    <Resource Include="Resources\Images\Symbols\White\remove_image_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\restore_down_24px.png" />
     <Resource Include="Resources\Images\Symbols\White\restore_down_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\settings_64px.png" />
@@ -274,7 +287,6 @@
   <ItemGroup>
     <Folder Include="Resources\Images\Temp\" />
     <Folder Include="Windows\MainWindowViews\AppInfo\" />
-    <Folder Include="Windows\MainWindowViews\About\" />
     <Folder Include="Windows\MainWindowViews\Settings\" />
   </ItemGroup>
 
