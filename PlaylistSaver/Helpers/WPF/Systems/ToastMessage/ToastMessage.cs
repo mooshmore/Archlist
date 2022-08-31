@@ -53,6 +53,11 @@ namespace ToastMessageService
             }
         }
 
+        public static void NotImplemented()
+        {
+            Display("Not implemented yet");
+        }
+
         private static async Task WaitDisplayTimeAsync(string text)
         {
             int displayTime = text.Length / 12 * 1000;

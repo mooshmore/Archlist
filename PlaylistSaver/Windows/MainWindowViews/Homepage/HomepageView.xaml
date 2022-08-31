@@ -37,15 +37,9 @@
                     </Image.InputBindings>
                 </Image>
                 <!--Add playlists by link-->
-                <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/Symbols/White/add_link_64px.png" Margin="3 0" ToolTip="Add playlist by link">
+                <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/Symbols/White/add_link_64px.png" Margin="3 0 10 0" ToolTip="Add playlist by link">
                     <Image.InputBindings>
                         <MouseBinding Gesture="LeftClick" Command="{Binding OpenAddPlaylist_linkCommand}" />
-                    </Image.InputBindings>
-                </Image>
-                <!--Remove tracked playlists-->
-                <Image Style="{StaticResource ImageButton_hover}" Source="/Resources/Images/Symbols/White/cancel_64px.png" Margin="3 0" ToolTip="Remove tracked playlists">
-                    <Image.InputBindings>
-                        <!--<MouseBinding Gesture="LeftClick" Command="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" />-->
                     </Image.InputBindings>
                 </Image>
             </StackPanel>
@@ -70,12 +64,12 @@
                                 <TextBlock Text="{Binding MissingItemsText}" FontSize="18" Foreground="{StaticResource Text_shaded}" VerticalAlignment="Center"/>
                             </StackPanel>
                             <!--Playlists control context menu-->
-                            <Image Source="/Resources/Images/Symbols/White/more_24px.png" Behaviours:LeftClickContextMenu.IsLeftClickEnabled="True" Behaviours:LeftClickContextMenu.BindToTag="True" Style="{StaticResource ImageButton_hover}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"  Grid.Column="1" Cursor="Hand" Height="20" HorizontalAlignment="Right" Margin="0 0 25 0">
+                            <Image Source="/Resources/Images/Symbols/White/more_64px.png" Behaviours:LeftClickContextMenu.IsLeftClickEnabled="True" Behaviours:LeftClickContextMenu.BindToTag="True" Style="{StaticResource ImageButton_hover}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"  Grid.Column="1" Cursor="Hand" Height="20" HorizontalAlignment="Right" Margin="0 0 25 0">
                                 <Image.ContextMenu>
                                     <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={x:Static RelativeSource.Self}}">
                                         <MenuItem Header="Download data for all playlists" Command="{Binding PullAllPlaylistsCommand}">
                                             <MenuItem.Icon>
-                                                <Image Source="/Resources/Images/Symbols/White/downloading_updates_24px.png"/>
+                                                <Image Source="/Resources/Images/Symbols/White/downloading_updates_64px.png"/>
                                             </MenuItem.Icon>
                                         </MenuItem>
                                     </ContextMenu>
@@ -95,7 +89,7 @@
                 <!--Missing items playlists-->
                 <StackPanel Margin="40 0 10 0" Visibility="{Binding Path=DisplayMissingItemsPanel, Converter={StaticResource BoolToVisiblity}}">
                     <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
-                        <Image Margin="20 0 5 0" Source="/Resources/Images/Symbols/RemovalRed/box_important_32px.png" Height="24" VerticalAlignment="Center"/>
+                        <Image Margin="20 0 5 0" Source="/Resources/Images/Symbols/RemovalRed/box_important_64px.png" Height="24" VerticalAlignment="Center"/>
                         <TextBlock Foreground="{StaticResource Text_primary}" FontSize="16" Text="Missing items playlists"/>
                     </StackPanel>
                     <Border Margin="20 10 0 0" BorderThickness="0 0 0 3" BorderBrush="{StaticResource Border_dark}"/>
@@ -122,13 +116,13 @@
                                             <!--Item count-->
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock FontSize="14" FontFamily="{StaticResource Inter}" Foreground="White" Text="{Binding ItemCount}"/>
-                                                <Image Source="/Resources/Images/Symbols/White/video_dots_24px.png" VerticalAlignment="Center" Margin="2 0 0 0" Height="17" />
+                                                <Image Source="/Resources/Images/Symbols/White/video_dots_64px.png" VerticalAlignment="Center" Margin="2 0 0 0" Height="17" />
                                             </StackPanel>
 
                                             <!--Missing items-->
                                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal">
                                                 <TextBlock FontSize="14" FontFamily="{StaticResource Inter}" Foreground="{StaticResource Removal_red}" Text="{Binding MissingItemsCount}"/>
-                                                <Image Source="/Resources/Images/Symbols/RemovalRed/box_important_24px.png" VerticalAlignment="Center" Margin="2 0 0 0" Height="17" />
+                                                <Image Source="/Resources/Images/Symbols/RemovalRed/box_important_64px.png" VerticalAlignment="Center" Margin="2 0 0 0" Height="17" />
                                             </StackPanel>
                                         </StackPanel>
                                     </Grid>
@@ -146,23 +140,28 @@
                                         </TextBlock.InputBindings>
                                     </TextBlock>
                                     <!--Context menu-->
-                                    <Image Source="/Resources/Images/Symbols/White/more_24px.png" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}" Behaviours:LeftClickContextMenu.IsLeftClickEnabled="True" Behaviours:LeftClickContextMenu.BindToTag="True" Style="{StaticResource ImageButton_hover}"  Grid.Column="1" Cursor="Hand" Height="20" >
+                                    <Image Source="/Resources/Images/Symbols/White/more_64px.png" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}" Behaviours:LeftClickContextMenu.IsLeftClickEnabled="True" Behaviours:LeftClickContextMenu.BindToTag="True" Style="{StaticResource ImageButton_hover}"  Grid.Column="1" Cursor="Hand" Height="20" >
                                         <Image.InputBindings>
                                             <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.UpdateCurrentPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" CommandParameter="{Binding}"/>
                                             <MouseBinding Gesture="RightClick" Command="{Binding DataContext.UpdateCurrentPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" CommandParameter="{Binding}"/>
                                         </Image.InputBindings>
                                         <Image.ContextMenu>
                                             <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={x:Static RelativeSource.Self}}">
-                                                <MenuItem Header="Download playlist data" Command="{Binding PullPlaylistDataCommand}">
-                                                    <MenuItem.Icon>
-                                                        <Image Source="/Resources/Images/Symbols/White/downloading_updates_24px.png"/>
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem Header="Mark as seen" Command="{Binding MarkAsSeenCommand}">
-                                                    <MenuItem.Icon>
-                                                        <Image Source="/Resources/Images/Symbols/White/done_32px.png"/>
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
+                                                    <MenuItem Header="Download playlist data" Command="{Binding PullPlaylistDataCommand}">
+                                                        <MenuItem.Icon>
+                                                            <Image Source="/Resources/Images/Symbols/White/downloading_updates_64px.png"/>
+                                                        </MenuItem.Icon>
+                                                    </MenuItem>
+                                                    <MenuItem Header="Mark as seen" Command="{Binding MarkAsSeenCommand}">
+                                                        <MenuItem.Icon>
+                                                            <Image Source="/Resources/Images/Symbols/White/done_64px.png"/>
+                                                        </MenuItem.Icon>
+                                                    </MenuItem>
+                                                    <MenuItem Header="Delete playlist" Command="{Binding RemovePlaylistCommand}" ToolTip="Delete locally saved playlist data. This will not delete the playlist from your Youtube account.">
+                                                        <MenuItem.Icon>
+                                                            <Image Source="/Resources/Images/Symbols/White/trash_can_64px.png"/>
+                                                        </MenuItem.Icon>
+                                                    </MenuItem>
                                                 </ContextMenu>
                                         </Image.ContextMenu>
                                     </Image>
@@ -189,8 +188,7 @@
                 <!--All playlists-->
                 <StackPanel Margin="40 0 10 10" Visibility="{Binding Path=DisplayAllItemsPanel, Converter={StaticResource BoolToVisiblity}}">
                     <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
-                        <!--<Image Margin="20 0 5 0" Source="/Resources/Images/Symbols/White/video_playlist_32px.png" Height="24" VerticalAlignment="Center"/>-->
-                        <Image Margin="20 0 5 0" Source="/Resources/Images/Symbols/PastelRed/video_playlist_32px.png" Height="28" VerticalAlignment="Center"/>
+                        <Image Margin="20 0 5 0" Source="/Resources/Images/Symbols/PastelRed/video_playlist_64px.png" Height="28" VerticalAlignment="Center"/>
                         <TextBlock Foreground="{StaticResource Text_primary}" FontSize="16" Text="{Binding AllPlaylistsTitle}" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Border Margin="20 10 0 0" BorderThickness="0 0 0 3" BorderBrush="{StaticResource Border_dark}"/>
@@ -215,7 +213,7 @@
                                     <Grid Grid.Column="1" Background="#C0393939">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <TextBlock FontSize="14" FontFamily="{StaticResource Inter}" Foreground="White" Text="{Binding ItemCount}"/>
-                                            <Image Source="/Resources/Images/Symbols/White/video_dots_24px.png" VerticalAlignment="Center" Margin="2 0 0 0" Height="17" />
+                                            <Image Source="/Resources/Images/Symbols/White/video_dots_64px.png" VerticalAlignment="Center" Margin="2 0 0 0" Height="17" />
                                         </StackPanel>
                                     </Grid>
 
@@ -232,7 +230,7 @@
                                         </TextBlock.InputBindings>
                                     </TextBlock>
                                     <!--Context menu-->
-                                    <Image Source="/Resources/Images/Symbols/White/more_24px.png" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}" Behaviours:LeftClickContextMenu.IsLeftClickEnabled="True" Behaviours:LeftClickContextMenu.BindToTag="True" Style="{StaticResource ImageButton_hover}"  Grid.Column="1" Cursor="Hand" Height="20" >
+                                    <Image Source="/Resources/Images/Symbols/White/more_64px.png" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}" Behaviours:LeftClickContextMenu.IsLeftClickEnabled="True" Behaviours:LeftClickContextMenu.BindToTag="True" Style="{StaticResource ImageButton_hover}"  Grid.Column="1" Cursor="Hand" Height="20" >
                                         <Image.InputBindings>
                                             <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.UpdateCurrentPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" CommandParameter="{Binding}"/>
                                             <MouseBinding Gesture="RightClick" Command="{Binding DataContext.UpdateCurrentPlaylistCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=UserControl}}" CommandParameter="{Binding}"/>
@@ -241,10 +239,15 @@
                                             <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={x:Static RelativeSource.Self}}">
                                                 <MenuItem Header="Download playlist data" Command="{Binding PullPlaylistDataCommand}">
                                                     <MenuItem.Icon>
-                                                        <Image Source="/Resources/Images/Symbols/White/downloading_updates_24px.png"/>
+                                                        <Image Source="/Resources/Images/Symbols/White/downloading_updates_64px.png"/>
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                            </ContextMenu>
+                                                <MenuItem Header="Remove playlist" Command="{Binding RemovePlaylistCommand}" ToolTip="Delete locally saved playlist data. This will not delete the playlist from your Youtube account.">
+                                                    <MenuItem.Icon>
+                                                            <Image Source="/Resources/Images/Symbols/White/trash_can_64px.png"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                </ContextMenu>
                                         </Image.ContextMenu>
                                     </Image>
                                 </Grid>

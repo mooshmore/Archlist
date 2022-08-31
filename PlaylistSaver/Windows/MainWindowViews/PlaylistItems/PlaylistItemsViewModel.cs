@@ -56,8 +56,6 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
                 RaisePropertyChanged(nameof(DisplayMissingItemsPanel));
             }
 
-            ReturnToHomePageCommand = NavigationStores.GoToHomePageCommand;
-
             DisplayDayPanelCommand = new RelayCommand(DisplayDayPanel);
             DisplayHourPanelCommand = new RelayCommand(DisplayHourPanel);
             ChangeDisplayedDayCommand = new RelayCommand(ChangeDisplayedDay);
@@ -92,7 +90,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
             navigateCommand.Execute(navigateCommand);
         }
 
-        public NavigateCommand ReturnToHomePageCommand { get; }
+        public NavigateCommand ReturnToHomePageCommand { get; } = NavigationStores.GoToHomePageCommand;
 
         private void LoadPlaylistItems()
         {

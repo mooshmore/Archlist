@@ -121,7 +121,9 @@ namespace PlaylistSaver.PlaylistMethods
                 string pageCode = await new HttpClient().GetStringAsync(latestRecordUrl);
                 await WebArchiveYoutube.ParseAsync(latestRecordUrl, playlistItem);
                 playlistItem.RecoveryFailed = false;
+                return true;
             }
+            return false;
         }
 
 

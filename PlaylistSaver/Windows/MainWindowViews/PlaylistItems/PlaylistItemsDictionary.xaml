@@ -44,8 +44,8 @@
         <Setter Property="Orientation" Value="Horizontal"/>
         <Setter Property="Height" Value="20"/>
     </Style>
-    
-    <Style x:Key="PlaylistPrivacyStatus_image" TargetType="Image">
+
+    <Style x:Key="PlaylistPrivacyStatus_image" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Height" Value="18"/>
     </Style>
@@ -124,8 +124,8 @@
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
     </Style>
-    
-    <Style x:Key="RemovalImage" TargetType="Image">
+
+    <Style x:Key="RemovalImage" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
         <Setter Property="Height" Value="26"/>
         <Setter Property="Margin" Value="10 0"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -177,7 +177,7 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
-    <Style x:Key="MarkAllAsSeen" TargetType="Image">
+    <Style x:Key="MarkAllAsSeen" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
         <Setter Property="Height" Value="11"/>
         <Setter Property="Margin" Value="8 0 3 0"/>
     </Style>
@@ -226,7 +226,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="PlaylistDateImage" TargetType="Image">
+    <Style x:Key="PlaylistDateImage" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Height" Value="10"/>
         <Setter Property="Source" Value="/Resources/Images/Symbols/White/expand_arrow_24px.png"/>

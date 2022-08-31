@@ -16,7 +16,7 @@ namespace PlaylistSaver.Windows.PopupViews.PlaylistItemInfo
 {
     public class PlaylistItemInfoViewModel : ViewModelBase
     {
-        public RelayCommand CloseViewCommand { get; }
+        public RelayCommand CloseViewCommand { get; } = NavigationStores.HidePopupViewCommand;
         public DisplayPlaylistItem DisplayPlaylistItem { get; }
         public RelayCommand CopyTitleCommand { get; }
         public bool DisplayRemovalInfo { get; }
@@ -30,7 +30,6 @@ namespace PlaylistSaver.Windows.PopupViews.PlaylistItemInfo
 
         public PlaylistItemInfoViewModel(DisplayPlaylistItem displayPlaylist)
         {
-            CloseViewCommand = NavigationStores.HidePopupViewCommand;
             DisplayPlaylistItem = displayPlaylist;
             DisplayRemovalInfo = displayPlaylist.RemovalReasonShort != null;
             RaisePropertyChanged(nameof(DisplayRemovalInfo));

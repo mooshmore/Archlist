@@ -78,7 +78,7 @@ namespace PlaylistSaver.PlaylistMethods.Models
 
             RemovalReasonShort = playlistItem.RemovalReasonShort;
             RemovalReasonFull = playlistItem.RemovalReasonFull;
-            RemovalThumbnail = LocalHelpers.GetResourcesBitmapImage("Symbols/RemovalRed/box_important_32px.png");
+            RemovalThumbnail = LocalHelpers.GetResourcesBitmapImage("Symbols/RemovalRed/box_important_64px.png");
         }
 
         public string Title { get; }

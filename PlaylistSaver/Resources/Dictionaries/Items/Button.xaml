@@ -68,7 +68,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="ImageButton_hover" TargetType="Image">
+    <Style x:Key="ImageButton_hover" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
         <Setter Property="Opacity" Value="0.7"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Style.Triggers>

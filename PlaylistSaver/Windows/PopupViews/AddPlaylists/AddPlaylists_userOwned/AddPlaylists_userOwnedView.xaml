@@ -80,14 +80,14 @@
                                         <StackPanel VerticalAlignment="Center">
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                                 <TextBlock VerticalAlignment="Center" FontSize="14" Text="{Binding Item2.ContentDetails.ItemCount}" HorizontalAlignment="Center" Style="{StaticResource DefaultTextblock}"/>
-                                                <Image VerticalAlignment="Center" Margin="2 0 0 0" Height="17" Source="/Resources/Images/Symbols/White/video_dots_24px.png"/>
+                                                <Image VerticalAlignment="Center" Margin="2 0 0 0" Height="17" Source="/Resources/Images/Symbols/White/video_dots_64px.png"/>
                                             </StackPanel>
                                             <Image Style="{StaticResource AddImage}" 
                                                    Visibility="{Binding Path=Item1, Converter={StaticResource BoolToVisiblityInverted}}" 
-                                                   Source="/Resources/Images/Symbols/White/add_32px.png"/>
+                                                   Source="/Resources/Images/Symbols/White/add_64px.png"/>
                                             <Image Style="{StaticResource AddImage}" 
                                                    Visibility="{Binding Path=Item1, Converter={StaticResource BoolToVisiblity}}" 
-                                                   Source="/Resources/Images/Symbols/PastelRed/ok_32px.png"/>
+                                                   Source="/Resources/Images/Symbols/PastelRed/ok_64px.png"/>
                                         </StackPanel>
                                     </Grid>
                                     <TextBlock x:Name="Title" Grid.ColumnSpan="2" TextWrapping="Wrap" TextTrimming="WordEllipsis"  Margin="5 8 5 5" FontSize="19" Grid.Row="1" Height="60" VerticalAlignment="Top"  Text="{Binding Item2.Snippet.Title}" Style="{StaticResource DefaultTextblock}"/>
@@ -114,7 +114,7 @@
             <!--Bottom panel grid-->
             <Grid Grid.Row="3">
                 <StackPanel Orientation="Horizontal" Cursor="Hand" Height="24" Margin="25 0 0 0">
-                    <Image Source="/Resources/Images/Symbols/White/done_48px.png"/>
+                    <Image Source="/Resources/Images/Symbols/White/done_64px.png"/>
                     <TextBlock Style="{StaticResource AddAllItems}">Add all items</TextBlock>
                     <StackPanel.InputBindings>
                         <MouseBinding Gesture="LeftClick" Command="{Binding CheckAllPlaylistsCommand}"/>

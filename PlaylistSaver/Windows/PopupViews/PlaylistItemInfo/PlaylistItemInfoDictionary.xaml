@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    
-    <Style x:Key="CloseWindow" TargetType="Image">
-        <Setter Property="Source" Value="/Resources/Images/Symbols/White/close_48px.png"/>
+
+    <Style x:Key="CloseWindow" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
+        <Setter Property="Source" Value="/Resources/Images/Symbols/White/close_64px.png"/>
         <Setter Property="Height" Value="32"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -88,7 +88,7 @@
         <Setter Property="HorizontalAlignment" Value="Right"/>
     </Style>
 
-    <Style x:Key="RemovalImage" TargetType="Image">
+    <Style x:Key="RemovalImage" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
         <Setter Property="Height" Value="26"/>
         <Setter Property="Margin" Value="10 0"/>
         <Setter Property="VerticalAlignment" Value="Center"/>

@@ -7,8 +7,8 @@
         <Setter Property="Background" Value="{StaticResource Background_topbar_light}"/>
     </Style>
 
-    <Style x:Key="WindowIcon" TargetType="Image">
-        <Setter Property="Source" Value="/Resources/Images/Symbols/White/add_32px.png"/>
+    <Style x:Key="WindowIcon" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
+        <Setter Property="Source" Value="/Resources/Images/Symbols/White/add_64px.png"/>
         <Setter Property="Height" Value="32"/>
         <Setter Property="Margin" Value="20 0 5 0"/>
     </Style>
@@ -18,8 +18,8 @@
         <Setter Property="FontSize" Value="20"/>
     </Style>
 
-    <Style x:Key="InfoIcon" TargetType="Image">
-        <Setter Property="Source" Value="/Resources/Images/Symbols/White/info_24px.png"/>
+    <Style x:Key="InfoIcon" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
+        <Setter Property="Source" Value="/Resources/Images/Symbols/White/info_64px.png"/>
         <Setter Property="Height" Value="20"/>
         <Setter Property="Margin" Value="23 0 5 0"/>
         <Setter Property="Opacity" Value="60"/>
@@ -31,8 +31,8 @@
         <Setter Property="Foreground" Value="{StaticResource Text_dimmed}"/>
     </Style>
 
-    <Style x:Key="CloseWindow" TargetType="Image">
-        <Setter Property="Source" Value="/Resources/Images/Symbols/White/close_48px.png"/>
+    <Style x:Key="CloseWindow" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
+        <Setter Property="Source" Value="/Resources/Images/Symbols/White/close_64px.png"/>
         <Setter Property="Height" Value="32"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -66,13 +66,13 @@
 
     <Style x:Key="AddPlaylistButton" TargetType="Image" BasedOn="{StaticResource HighlightHoverImage}">
         <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="Source" Value="/Resources/Images/Symbols/White/add_32px.png"/>
+        <Setter Property="Source" Value="/Resources/Images/Symbols/White/add_64px.png"/>
         <Setter Property="Margin" Value="10 0 0 0"/>
         <!--<Setter Property="" Value=""/>
         <Setter Property="" Value=""/>-->
     </Style>
-    
-    <Style x:Key="AddImage" TargetType="Image">
+
+    <Style x:Key="AddImage" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
         <Setter Property="Opacity" Value="0"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid,AncestorLevel=2}, Path=IsMouseOver}" Value="True">

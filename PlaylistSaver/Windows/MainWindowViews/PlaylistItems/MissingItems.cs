@@ -91,7 +91,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
             else
             {
                 MarkAllAsSeenVisibility = true;
-                MissingItemsImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/RemovalRed/box_important_32px.png");
+                MissingItemsImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/RemovalRed/box_important_64px.png");
 
                 if (MissingItemsList.Count == 1)
                     MissingItemsText = "1 missing video has been found";

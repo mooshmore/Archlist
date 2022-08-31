@@ -2,6 +2,7 @@
 using PlaylistSaver.ProgramData;
 using PlaylistSaver.ProgramData.Commands;
 using PlaylistSaver.ProgramData.Stores;
+using PlaylistSaver.UserData;
 using PlaylistSaver.Windows;
 using PlaylistSaver.Windows.MainWindowViews.Homepage;
 using PlaylistSaver.Windows.MainWindowViews.PlaylistItems;
@@ -29,6 +30,7 @@ namespace PlaylistSaver
         /// </summary>
         protected override void OnStartup(StartupEventArgs e)
         {
+
             // Configure and create data, files etc required by the program
             AppConfiguration.Configure();
             NavigationStores.MainNavigationStore.CurrentViewModel = new HomepageViewModel();
@@ -40,6 +42,7 @@ namespace PlaylistSaver
 
             MainWindow.Show();
             base.OnStartup(e);
+
         }
     }
 

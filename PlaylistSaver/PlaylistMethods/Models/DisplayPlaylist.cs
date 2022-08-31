@@ -51,9 +51,9 @@ namespace PlaylistSaver.PlaylistMethods.Models
         public string PrivacyStatus { get; private set; }
         public BitmapImage PrivacyStatusImage => PrivacyStatus switch
         {
-            "Private" => LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/lock_32px.png"),
-            "Unlisted" => LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/chain_32px.png"),
-            "Public" => LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/earth_32px.png"),
+            "Private" => LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/lock_64px.png"),
+            "Unlisted" => LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/chain_64px.png"),
+            "Public" => LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/earth_64px.png"),
             _ => null,
         };
 

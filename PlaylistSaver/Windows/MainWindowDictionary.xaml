@@ -1,0 +1,59 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="UserProfilePanel" TargetType="StackPanel">
+        <Setter Property="Margin" Value="15 0 0 50"/>
+        <Setter Property="Width" Value="200"/>
+        <Setter Property="Panel.ZIndex" Value="5"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+
+    </Style>
+
+    <Style x:Key="UserProfileButton" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#26ffffff"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="UserProfileImage" TargetType="Ellipse">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Height" Value="64"/>
+        <Setter Property="Width" Value="64"/>
+        <Setter Property="Margin" Value="0 23 0 13"/>
+    </Style>
+
+    <Style x:Key="UserProfileName" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="18"/>
+    </Style>
+
+    <Style x:Key="UserProfileMail" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{StaticResource Text_secondary}"/>
+        <Setter Property="Margin" Value="0 5 0 20"/>
+        <!--<Setter Property="" Value=""/>-->
+    </Style>
+
+    <Style x:Key="UserProfileButtonText" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+
+    <Style x:Key="UserProfileButtonImage" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="Margin" Value="20 17 10 17"/>
+    </Style>
+
+    <!--<Style x:Key="UserProfileButton" TargetType="StackPanel">
+        <Setter Property="" Value=""/>
+    </Style>
+
+    <Style x:Key="UserProfileButton" TargetType="StackPanel">
+        <Setter Property="" Value=""/>
+    </Style>-->
+</ResourceDictionary>

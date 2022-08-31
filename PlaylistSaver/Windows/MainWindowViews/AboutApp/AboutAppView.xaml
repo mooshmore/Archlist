@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:PlaylistSaver.Windows.MainWindowViews.AboutApp" xmlns:controls="clr-namespace:PlaylistSaver.Resources.Controls"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=local:AboutAppViewModel}"
-             d:DesignHeight="450" d:DesignWidth="800" Background="{StaticResource Background_topbar}">
+             d:DesignHeight="800" d:DesignWidth="1000" Background="{StaticResource Background_topbar}">
 
     <UserControl.Resources>
         <ResourceDictionary Source="AboutAppDictionary.xaml"/>
@@ -57,7 +57,7 @@
             <Hyperlink NavigateUri="https://discordapp.com/users/349490256304668673/">
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Orientation="Vertical" Margin="0 0 19 0">
-                        <Image Source="/Resources/Images/Logos/Other/discord.png" RenderOptions.BitmapScalingMode="HighQuality" Height="60" ToolTip="Click to open Discord profile"/>
+                        <Image Source="/Resources/Images/Logos/Other/discord.png" Height="60" ToolTip="Click to open Discord profile"/>
                         <TextBlock FontSize="20" Cursor="Hand">
                             <TextBlock.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding CopyTextCommand}" CommandParameter="mooshmore#0763" />
@@ -74,7 +74,7 @@
                             <MouseBinding Gesture="LeftClick" Command="{Binding CopyTextCommand}" CommandParameter="mooshmore@gmail.com" />
                         </StackPanel.InputBindings>
                         
-                        <Image Source="/Resources/Images/Symbols/White/mail_64px.png" RenderOptions.BitmapScalingMode="HighQuality" Height="60"/>
+                        <Image Source="/Resources/Images/Symbols/White/mail_64px.png" Height="60"/>
                         <TextBlock Text="mooshmore@gmail.com" Foreground="{StaticResource Text_primary}" FontSize="20"/>
                     </StackPanel>
                 </StackPanel>

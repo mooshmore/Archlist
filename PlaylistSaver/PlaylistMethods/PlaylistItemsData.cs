@@ -208,8 +208,10 @@ namespace PlaylistSaver.PlaylistMethods
                     if (alreadyExistsInRecent || alreadyExistsInSeen)
                         continue;
 
-                    var missingItem = new MissingPlaylistItem(playlistItem);
-                    missingItem.FoundMissingDate = foundMissingDate;
+                    var missingItem = new MissingPlaylistItem(playlistItem)
+                    {
+                        FoundMissingDate = foundMissingDate
+                    };
                     // Add the item to save later as it is not available and hasn't been saved yet
                     missingItems.Add(missingItem);
                 }

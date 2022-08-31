@@ -29,7 +29,7 @@
         <!--Side panel-->
         <Grid Background="{StaticResource Background_default_light}">
             <StackPanel Style="{StaticResource PlaylistBanner}" Grid.Column="0">
-                <Image Height="26" Width="26" Style="{StaticResource HighlightHoverImage}" HorizontalAlignment="Left" Source="/Resources/Images/Symbols/White/left_32px.png">
+                <Image Height="26" Width="26" Style="{StaticResource HighlightHoverImage}" HorizontalAlignment="Left" Source="/Resources/Images/Symbols/White/left_64px.png">
                     <Image.InputBindings>
                         <MouseBinding Gesture="LeftClick" Command="{Binding ReturnToHomePageCommand}"/>
                     </Image.InputBindings>
@@ -163,7 +163,7 @@
                         </StackPanel.InputBindings>
                     </StackPanel>
                     <StackPanel Style="{StaticResource HoverHighlight}" Orientation="Horizontal" Margin="12 0 0 0" VerticalAlignment="Center" Visibility="{Binding Path=MarkAllAsSeenVisibility, Converter={StaticResource BoolToVisiblity}}">
-                        <Image Style="{StaticResource MarkAllAsSeen}" Source="/Resources/Images/Symbols/White/done_24px.png" Height="22"/>
+                        <Image Style="{StaticResource MarkAllAsSeen}" Source="/Resources/Images/Symbols/White/done_64px.png" Height="22"/>
                         <TextBlock Text="Mark all as seen" Margin="0 0 3 0" Style="{StaticResource MissingItemsText}"/>
                         <StackPanel.InputBindings>
                             <MouseBinding Gesture="LeftClick" Command="{Binding MarkAllAsSeenCommand}"/>

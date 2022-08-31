@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using ToastMessageService;
 
 namespace PlaylistSaver.Windows.MainWindowViews.Homepage
 {
@@ -47,13 +48,18 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
             OpenAddPlaylist_userOwnedViewCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_userOwnedViewModel(this));
             OpenAddPlaylist_linkCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_linkViewModel(this));
             PullPlaylistDataCommand = new RelayCommand(PullPlaylistData);
-            PullPlaylistDataCommand = new RelayCommand(PullPlaylistData);
+            RemovePlaylistCommand = new RelayCommand(RemovePlaylist);
             OpenPlaylistCommand = new RelayCommand(OpenPlaylist);
             UpdateCurrentPlaylistCommand = new RelayCommand(UpdateCurrentDisplayPlaylist);
             PullAllPlaylistsCommand = new RelayCommand(PlaylistItemsData.PullAllPlaylistsItemsDataAsync);
             MarkAsSeenCommand = new RelayCommand(MarkAsSeen);
 
             GlobalItems.UserProfileChanged += OnUserProfileChanged;
+        }
+
+        private void RemovePlaylist()
+        {
+            ToastMessage.NotImplemented();
         }
 
         private void SetMissingItemsText()
@@ -79,7 +85,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
             }
             else
             {
-                MissingItemsImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/RemovalRed/box_important_32px.png");
+                MissingItemsImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/RemovalRed/box_important_64px.png");
 
                 if (missingItemsTotal == 1)
                     MissingItemsText = "1 video is missing from your 1 playlist.";
@@ -104,6 +110,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
         {
             CurrentDisplayPlaylist.MarkAsSeen();
             LoadPlaylists();
+            SetMissingItemsText();
         }
 
         private void OnUserProfileChanged()
@@ -114,6 +121,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
         public RelayCommand OpenPlaylistCommand { get; }
         public RelayCommand UpdateCurrentPlaylistCommand { get; }
         public RelayCommand PullAllPlaylistsCommand { get; }
+        public RelayCommand RemovePlaylistCommand { get; }
 
         private void OpenPlaylist(object displayPlaylist)
         {

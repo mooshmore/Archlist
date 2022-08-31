@@ -11,12 +11,12 @@
                     <FontFamily x:Key="Caveat">pack://application:,,,/Resources/Fonts/#Caveat</FontFamily>  
                 </ResourceDictionary>
                 <ResourceDictionary Source="Resources/Dictionaries/Items/Colors.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionaries/SharedDictionaries/DefaultStyles.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionaries/SharedDictionaries/GlobalStyles.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionaries/Items/Button.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionaries/Items/Scrollbar.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionaries/Items/WindowChrome.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionaries/Items/ContextMenu.xaml"/>
-                <ResourceDictionary Source="Resources/Dictionaries/SharedDictionaries/DefaultStyles.xaml"/>
-                <ResourceDictionary Source="Resources/Dictionaries/SharedDictionaries/GlobalStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
