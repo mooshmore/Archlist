@@ -75,10 +75,18 @@
         <Setter Property="HorizontalAlignment" Value="Right"/>
     </Style>
 
-    <Style x:Key="FoundSnapshotsText" TargetType="TextBlock" BasedOn="{StaticResource RemovalDayMonth}">
+    <Style x:Key="FoundSnapshotsCountText" TargetType="TextBlock" BasedOn="{StaticResource RemovalDayMonth}">
         <Setter Property="Foreground" Value="{StaticResource Text_primary}"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="TextAlignment" Value="Right"/>
+    </Style>
+
+    <Style x:Key="FoundSnapshotsText" TargetType="TextBlock" BasedOn="{StaticResource RemovalDayMonth}">
+        <Setter Property="Foreground" Value="{StaticResource Text_secondary}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
         <Setter Property="TextAlignment" Value="Right"/>
     </Style>
 

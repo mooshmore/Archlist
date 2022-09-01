@@ -43,39 +43,23 @@ namespace Helpers
         /// <returns>A List<T> with the items removed.</returns>
         public static List<T> RemoveAtTheBack<T>(this List<T> list, int amountOfItems = 1)
         {
-            // ! Nie testowaane
             for (int i = 0; i < amountOfItems; i++)
             {
-                if (list.Count == 0) break;
-                list.RemoveAt(list.Count);
+                if (list.Count == 0) 
+                    break;
+                list.RemoveAt(list.Count - 1);
             }
             return list;
         }
 
         /// <summary>
-        /// Returns all indexes where the keyword is the same as the item.
+        /// Removes the last item from the list.
         /// </summary>
-        /// <param name="keyword">The word to compare the items to.</param>
-        /// <returns>A List<int> of indexes where the keyword matches the item.</returns>
-        public static List<int> AllIndexesOf<T>(this List<T> list, string keyword)
+        public static List<T> RemoveLast<T>(this List<T> list)
         {
-            // ! Nie testowaane
-            return Enumerable.Range(0, list.Count)
-                     .Where(i => list[i].ToString() == keyword)
-                     .ToList();
-        }
-
-        /// <summary>
-        /// Returns all indexes where the item contains the keyword.
-        /// </summary>
-        /// <param name="keyword">The word to compare the items to.</param>
-        /// <returns>A List<int> of indexes where the item contains the keyword.</returns>
-        public static List<int> AllIndexesOfContains<T>(this List<T> list, string keyword)
-        {
-            // ! Nie testowaane
-            return Enumerable.Range(0, list.Count)
-                     .Where(i => list[i].ToString().Contains(keyword))
-                     .ToList();
+            if (list.Count != 0)
+                list.RemoveAt(list.Count - 1);
+            return list;
         }
 
         /// <summary>
@@ -168,6 +152,18 @@ namespace Helpers
         public static List<T> RemoveCoexistingItems<T>(this List<T> baseList, List<T> comparedList)
         {
             return baseList.Except(comparedList).ToList();
+        }
+
+        /// <summary>
+        /// Removes items from the list until the list count will reach target items count.
+        /// Items are removed from the back of the list.
+        /// </summary>
+        public static List<T> ReduceTo<T>(this List<T> list, int targetItemsCount)
+        {
+            if (targetItemsCount < list.Count)
+                list.RemoveRange(targetItemsCount, list.Count - targetItemsCount);
+
+            return list;
         }
     } 
 }

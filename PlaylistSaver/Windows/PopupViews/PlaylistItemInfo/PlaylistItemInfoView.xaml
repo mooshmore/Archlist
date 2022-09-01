@@ -121,12 +121,18 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" Width="102" Visibility="{Binding Path=DisplayFoundSnaphots, Converter={StaticResource BoolToVisiblity}}">
-                            <TextBlock Text="{Binding FoundSnapshotsText}" Style="{StaticResource FoundSnapshotsText}"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding FoundSnapshotsCountText}" Style="{StaticResource FoundSnapshotsCountText}"/>
+                                <TextBlock Text="{Binding FoundSnapshotsText}" Style="{StaticResource FoundSnapshotsText}"/>
+                            </StackPanel>
+                            <TextBlock Text="found" Style="{StaticResource FoundSnapshotsText}"/>
                         </StackPanel>
                         <StackPanel Width="54" Visibility="{Binding Path=DisplayFoundSnaphots, Converter={StaticResource BoolToVisibilityInverted}}"/>
                         <Image Grid.Column="1" Source="{Binding InfoImage}" Style="{StaticResource RemovalImage}"/>
-                        <TextBlock Grid.Column="2" Text="{Binding InfoText}" MaxHeight="60" Style="{StaticResource MissingItemInfo}">
-                            <Hyperlink NavigateUri="{Binding WebArchiveLink}"/>
+                        <TextBlock Grid.Column="2" MaxHeight="60" VerticalAlignment="Center">
+                            <Hyperlink NavigateUri="{Binding WebArchiveLink}">
+                                <TextBlock Text="{Binding InfoText}" Style="{StaticResource MissingItemInfo}"/>
+                            </Hyperlink>
                         </TextBlock>
                     </Grid>
                 </Border>

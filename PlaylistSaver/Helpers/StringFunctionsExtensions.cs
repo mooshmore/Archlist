@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace System
@@ -431,6 +432,63 @@ namespace System
 
         #endregion
 
+        #region Line count
 
+        /// <summary>
+        /// Returns number of lines by counting \n characters.
+        /// </summary>
+        public static int LineCount(this string text)
+        {
+            return text.Split('\n').Length;
+        }
+
+        #endregion
+
+        #region Split
+
+        /// <summary>
+        /// Returns number of lines by counting \n characters.
+        /// </summary>
+        public static List<string> SplitBy(this string text, Delimiter delimiter)
+        {
+            switch (delimiter)
+            {
+                case Delimiter.Linebreak:
+                    return text.Split(new string[] { "\r\n", "\r", "\n" },StringSplitOptions.None).ToList();
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public enum Delimiter
+        {
+            Linebreak
+        }
+
+        #endregion
+
+        #region Replace
+
+        /// <summary>
+        /// Replaces the given array of old values with the new values.
+        /// </summary>
+        public static string Replace(this string text, string[] oldValue, string newValue)
+        {
+            return string.Join(newValue, text.Split(oldValue, StringSplitOptions.RemoveEmptyEntries));
+        }
+
+        /// <summary>
+        /// Replaces multiple value and replacement combinations in the text at once.
+        /// </summary>
+        public static string Replace(this string text, params (string oldValue, string newValue)[] replacements)
+        {
+            foreach (var replacement in replacements)
+            {
+                text = text.Replace(replacement.oldValue, replacement.newValue);
+            }
+            return text;
+        }
+
+        #endregion
     }
 }

@@ -111,21 +111,34 @@ namespace PlaylistSaver.PlaylistMethods
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="playlistItem"></param>
+        /// <returns>True if assigning data was succesful; False if not.</returns>
         public static async Task<bool> TryToReassignData_WebArchiveAsync(MissingPlaylistItem playlistItem)
         {
-            return false;
+            string playlistItemUrl = "https://www.youtube.com/watch?v=" + playlistItem.ContentDetails.VideoId;
+            var existingSnapshotsTimestamps = await WebArchive.GetExistingSnapshots(playlistItemUrl);
 
-            string latestRecordUrl = await WebArchive.GetLatestRecord("https://www.youtube.com/watch?v=" + playlistItem.ContentDetails.VideoId);
-            if (latestRecordUrl != null)
+            if (existingSnapshotsTimestamps.snapshotsList != null)
             {
-                string pageCode = await new HttpClient().GetStringAsync(latestRecordUrl);
-                await WebArchiveYoutube.ParseAsync(latestRecordUrl, playlistItem);
-                playlistItem.RecoveryFailed = false;
-                return true;
+                playlistItem.ExistingSnapshotsCount = existingSnapshotsTimestamps.maxSnapshotsCount;
+                // Set a webarchive link to the first snapshot in case that all links fail at parsing
+                // and don't set the link
+                playlistItem.WebArchiveLink = "http://web.archive.org/web/" + existingSnapshotsTimestamps.snapshotsList[0] + "/" + playlistItemUrl;
+
+                foreach (var snapshotTimestamp in existingSnapshotsTimestamps.snapshotsList)
+                {
+                    string snapshotRequestUrl = "http://web.archive.org/web/" + snapshotTimestamp + "/" + playlistItemUrl;
+                    string pageCode = await new HttpClient().GetStringAsync(snapshotRequestUrl);
+                    if (await WebArchiveYoutube.ParseAsync(playlistItem, pageCode, snapshotRequestUrl))
+                        return true;
+                }
+                return false;
             }
             return false;
         }
-
 
         public static void UpdateLatestPlaylistItemsData(Dictionary<string, PlaylistItemListResponse> playlistResponses)
         {

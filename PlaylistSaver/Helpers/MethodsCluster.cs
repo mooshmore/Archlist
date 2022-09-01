@@ -69,6 +69,14 @@ namespace Helpers
         /// <param name="obj">The value to be checked.</param>
         /// <returns>True if the value was null or an empty string; False if not.</returns>
         public static bool IsNullOrEmpty(this object obj) => obj == null || obj.ToString() == "";
+
+        /// <summary>
+        /// Checks if the list is null or empty.
+        /// </summary>
+        /// <param name="list">The list to be checked.</param>
+        /// <returns>True if the value was null or an empty string; False if not.</returns>
+        public static bool IsNullOrEmpty<T>(this List<T> list) => list == null || list.Count == 0;
+
         /// <summary>
         /// If the value is null it returns 0; Otherwise the normal value;
         /// </summary>

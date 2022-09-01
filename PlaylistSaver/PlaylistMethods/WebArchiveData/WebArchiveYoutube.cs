@@ -12,11 +12,14 @@ namespace WebArchiveData
 {
     public static class WebArchiveYoutube
     {
-        public static async Task ParseAsync(string archiveUrl, MissingPlaylistItem playlistItem)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="playlistItem"></param>
+        /// <param name="pageCode"></param>
+        /// <returns>True if the parsing was succesful; False if not.</returns>
+        public static async Task<bool> ParseAsync(MissingPlaylistItem playlistItem, string pageCode, string pageUrl)
         {
-            playlistItem.WebArchiveLink = archiveUrl;
-            string code = await new HttpClient().GetStringAsync(archiveUrl);
-
             // Scraping data of youtube pages is very incosistent, as there were many versions
             // of pages over the years, with differently allocated data etc. so in case
             // that parsing the data throws an exception, an information will be displayed that
@@ -27,9 +30,9 @@ namespace WebArchiveData
             // and if the parsing was succesufl SourcedFromWebArchive will be set to true.
             try
             {
-                string title = code.TrimFromTo("<title>", "</title>");
-                string description = code.TrimFromTo("\"description\":{\"simpleText\":\"", "\"}");
-                string publishDateString = code.TrimFromTo("\"dateText\":{\"simpleText\":\"", "\"}");
+                string title = pageCode.TrimFromTo("<title>", "</title>").FormatText();
+                string description = pageCode.TrimFromTo("\"description\":{\"simpleText\":\"", "\"}").FormatText();
+                string publishDateString = pageCode.TrimFromTo("\"dateText\":{\"simpleText\":\"", "\"}");
 
                 // Older site versions have syntax of ex."Published on 5 May 2017",
                 // instead of the new "5 may 2017", so remove it in case it appears
@@ -39,31 +42,37 @@ namespace WebArchiveData
                 DateTime publishDate = DateTime.ParseExact(publishDateString, new string[] { "MMM d, yyyy", "MMM dd, yyyy" }, CultureInfo.InvariantCulture);
 
                 string author = "";
-                if (code.Contains("\"ownerChannelName\":\""))
-                    author = code.TrimFromTo("\"ownerChannelName\":\"", "\",");
-                else if (code.Contains("\"author\":\""))
-                    author = code.TrimFromTo("\"author\":\"", "\",");
+                if (pageCode.Contains("\"ownerChannelName\":\""))
+                    author = pageCode.TrimFromTo("\"ownerChannelName\":\"", "\",");
+                else if (pageCode.Contains("\"author\":\""))
+                    author = pageCode.TrimFromTo("\"author\":\"", "\",");
 
-                string authorId = code.TrimFromTo("\"externalChannelId\":\"", "\",");
+                string authorId = pageCode.TrimFromTo("\"externalChannelId\":\"", "\",");
 
 
-                playlistItem.Snippet.Title = title.FormatText();
-                playlistItem.Snippet.Description = description.FormatText();
+                // Assign the values only if the converting will go without errors
+                playlistItem.Snippet.Title = title;
+                playlistItem.Snippet.Description = description;
                 playlistItem.Snippet.VideoOwnerChannelTitle = author;
                 playlistItem.Snippet.VideoOwnerChannelId = authorId;
                 playlistItem.ContentDetails.VideoPublishedAt = publishDate;
 
                 playlistItem.SourcedFromWebArchive = true;
+                playlistItem.WebArchiveLink = pageUrl;
+                playlistItem.RecoveryFailed = false;
+
+                return true;
             }
             catch
             {
-                return;
+                playlistItem.RecoveryFailed = true;
+                return false;
             }
         }
 
         private static string FormatText(this string text)
         {
-            return text.Replace("&quot;", "\"").Replace("\\n", "\n");
+            return text.Replace().Replace(("\\n", "\n"), ( "\\r", "" ), ("&quot;", "\""));
         }
     }
 }

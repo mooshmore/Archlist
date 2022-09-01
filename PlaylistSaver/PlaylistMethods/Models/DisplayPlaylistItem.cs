@@ -72,6 +72,9 @@ namespace PlaylistSaver.PlaylistMethods.Models
             }
 
             RecoveryFailed = playlistItem.RecoveryFailed;
+            FoundSnapshotsCount = playlistItem.ExistingSnapshotsCount;
+            SourcedFromWebArchive = playlistItem.SourcedFromWebArchive;
+            WebArchiveLink = playlistItem.WebArchiveLink;
 
             RemovalYear = playlistItem.FoundMissingDate.Year.ToString();
             RemovalDayMonth = playlistItem.FoundMissingDate.ToString("dd MMMM", new CultureInfo("en-GB"));
@@ -108,7 +111,7 @@ namespace PlaylistSaver.PlaylistMethods.Models
 
         public bool RecoveryFailed { get; set; } = false;
 
-        public bool WebArchiveSuccesfulRecovery { get; set; } = false;
+        public bool SourcedFromWebArchive { get; set; } = false;
         public int FoundSnapshotsCount { get; set; } = 0;
         public string WebArchiveLink { get; set; }
 

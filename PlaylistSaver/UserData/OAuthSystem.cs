@@ -5,6 +5,7 @@ using Google.Apis.Util;
 using Google.Apis.YouTube.v3;
 using Newtonsoft.Json.Linq;
 using PlaylistSaver.ProgramData.Stores;
+using System;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -112,6 +113,16 @@ namespace PlaylistSaver.UserData
 
         public static void LoadSecretData()
         {
+            if (!new FileInfo("clientSecret.json").Exists)
+                throw new NotImplementedException(@"
+                    Missing a client secret file! 
+                    This file cannot be available publicly inside the repo. 
+                    If you are a recruiter or want to test out/contribute to app development, contact me at:
+                    e-mail: mooshmore@gmail.com
+                    or Discord: mooshmore#0763 (definitely quicker response here)
+                    and I will provide it to you!"
+                );
+
             JObject clientSecretFile = JObject.Parse(File.ReadAllText("clientSecret.json"));
 
             clientID = clientSecretFile.SelectToken("installed.client_id").ToString();
