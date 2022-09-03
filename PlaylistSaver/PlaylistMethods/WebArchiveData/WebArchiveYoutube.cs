@@ -47,7 +47,7 @@ namespace WebArchiveData
             // no point in restricting them
             if (snapshots.Count == 0)
                 return (null, 0);
-            else if (snapshots.Count < 10)
+            else if (snapshots.Count < 50)
             {
                 return (snapshots, maxSnapshotsCount);
             }
@@ -62,12 +62,12 @@ namespace WebArchiveData
                 previousSnapshots = new List<string>(snapshots);
                 snapshots = await GetResponses();
                 collapseFilterLevel += 2;
-            } while (snapshots.Count < 10 && collapseFilterLevel != 16);
+            } while (snapshots.Count < 50 && collapseFilterLevel != 16);
 
             List<string> snapshotTimestamps = previousSnapshots;
 
-            // Limit to 15 results
-            snapshotTimestamps.ReduceTo(15);
+            // Limit to 50 results
+            snapshotTimestamps.ReduceTo(50);
 
             // Also add one snapshot per for each year even further increase the chances
             // of finding the valid one
@@ -154,11 +154,6 @@ namespace WebArchiveData
                 playlistItem.Snippet.VideoOwnerChannelTitle = author;
                 playlistItem.Snippet.VideoOwnerChannelId = authorId;
                 playlistItem.ContentDetails.VideoPublishedAt = publishDate;
-
-                playlistItem.SourcedFromWebArchive = true;
-                playlistItem.WebArchiveLink = pageUrl;
-                playlistItem.RecoveryFailed = false;
-
                 return true;
             }
             catch
@@ -171,6 +166,10 @@ namespace WebArchiveData
         {
             if (pageCode.Contains("\"externalChannelId\":\""))
                 authorId = pageCode.TrimFromTo("\"externalChannelId\":\"", "\",");
+            else if (pageCode.Contains("\\\"externalChannelId\\\":\\\""))
+                authorId = pageCode.TrimFromTo("\\\"externalChannelId\\\":\\\"", "\\\",");
+            else if (pageCode.Contains("<meta itemprop=\"channelId\" content=\""))
+                authorId = pageCode.TrimFromTo("<meta itemprop=\"channelId\" content=\"", "\">");
             else
                 return false;
 
@@ -185,6 +184,8 @@ namespace WebArchiveData
                 publishDateString = pageCode.TrimFromTo("\\\"dateText\\\":{\\\"simpleText\\\":\\\"", "\\\"}");
             else if (pageCode.Contains("\"dateText\":{\"simpleText\":\""))
                 publishDateString = pageCode.TrimFromTo("\"dateText\":{\"simpleText\":\"", "\"}");
+            else if (pageCode.Contains(">Published on "))
+                publishDateString = pageCode.TrimFromTo(">Published on ", "<");
             else
                 return false;
 
@@ -247,7 +248,9 @@ namespace WebArchiveData
             if (pageCode.Contains("<meta name=\"title\" content=\""))
                 title = pageCode.TrimFromTo("<meta name=\"title\" content=\"", "\">").FormatText();
             else if (pageCode.Contains("<title>"))
+            {
                 title = pageCode.TrimFromTo("<title>", "</title>").FormatText();
+            }
             else
                 return false;
 
@@ -260,6 +263,19 @@ namespace WebArchiveData
                 description = pageCode.TrimFromTo("\\\"description\\\":{\\\"simpleText\\\":\\\"", "\\\"},").FormatText();
             else if (pageCode.Contains("\"description\":{\"simpleText\":\""))
                 description = pageCode.TrimFromTo("\"description\":{\"simpleText\":\"", "\"}").FormatText();
+            else if (pageCode.Contains("<meta name=\"description\" content=\""))
+                description = pageCode.TrimFromTo("<meta name=\"description\" content=\"", "\">").FormatText();
+            // <div id="watch-description-text" class=""> instead?
+            else if (pageCode.Contains("<div id=\"watch-description-text\" class=\"\">"))
+            {
+                description = pageCode.TrimFromTo("<div id=\"watch-description-text\" class=\"\">", "</div>");
+                description = description.Replace(
+                    ("</a>", ""),
+                    ("<br />", ""),
+                    ("<br/>", "\n")
+
+                    );
+            }
             else
                 return false;
 
@@ -272,6 +288,8 @@ namespace WebArchiveData
                 author = pageCode.TrimFromTo("\"ownerChannelName\":\"", "\",");
             else if (pageCode.Contains("\"author\":\""))
                 author = pageCode.TrimFromTo("\"author\":\"", "\",");
+            else if (pageCode.Contains(",\\\"author\\\":\\\""))
+                author = pageCode.TrimFromTo(",\\\"author\\\":\\\"", "\\\",");
             else
                 return false;
 
@@ -280,7 +298,7 @@ namespace WebArchiveData
 
         private static string FormatText(this string text)
         {
-            return text.Replace(("\\\\n", "\n"), ("\\n", "\n"), ( "\\r", "" ), ("&quot;", "\""), ("\\/", "/"));
+            return text.Replace(("\\\\n", "\n"), ("\\n", "\n"), ( "\\r", "" ), ("&quot;", "\""), ("\\/", "/"), ("\\\"", "\""));
         }
     }
 }

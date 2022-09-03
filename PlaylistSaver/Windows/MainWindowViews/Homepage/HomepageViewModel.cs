@@ -173,6 +173,12 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
             SetMissingItemsText();
         }
 
+        public void RefreshData()
+        {
+            LoadPlaylists();
+            SetMissingItemsText();
+        }
+
         public NavigateCommand OpenAddPlaylist_userOwnedViewCommand { get; } = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_userOwnedViewModel());
         public NavigateCommand OpenAddPlaylist_linkCommand { get; } = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_linkViewModel());
         public RelayCommand PullPlaylistDataCommand { get; }

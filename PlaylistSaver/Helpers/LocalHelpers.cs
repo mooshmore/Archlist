@@ -54,7 +54,7 @@ namespace PlaylistSaver.Helpers
         {
             // Image is first downloaded to a memory, and only then when it has been fully downloaded
             // it is saved to a file.
-            var ok = GlobalItems.HttpClient.DownloadImageAsync(thumbnailUrl, thumbnailPath);
+            var temp = GlobalItems.HttpClient.DownloadImageAsync(thumbnailUrl, thumbnailPath);
         }
 
         /// <summary>

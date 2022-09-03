@@ -64,7 +64,7 @@ namespace PlaylistSaver.Windows.PopupViews.PlaylistItemInfo
 
                 if (displayPlaylist.SourcedFromWebArchive)
                 {
-                    InfoText = "This data was recovered from a web archive and it might be incorrect or glitchy (please report if it is).\nYou can check the web archive page by yourself by clicking this text.";
+                    InfoText = "This data was recovered from a web archive, and it might be incomplete and glitchy (please report if it is).\nYou can check the web archive page by yourself by clicking this text.";
                     InfoImage = LocalHelpers.GetResourcesBitmapImage("Logos/WebArchive/webArchiveLogo_32px.png");
                 }
                 else

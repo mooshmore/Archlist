@@ -58,7 +58,9 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
             CloseViewCommand.Execute(null);
 
             List<string> addedPlaylistsIds = PlaylistsList.Select(playlist => playlist.Id).ToList();
-            PlaylistItemsData.PullPlaylistsItemsDataAsync(addedPlaylistsIds);
+            await PlaylistItemsData.PullPlaylistsItemsDataAsync(addedPlaylistsIds);
+            await Task.Delay(50);
+            HomepageViewModel.Instance.RefreshData();
         }
 
         private void RemovePlaylistFromList(object parameter)

@@ -149,9 +149,9 @@
                         </StackPanel>
                         <StackPanel Width="54" Visibility="{Binding Path=DisplayFoundSnaphots, Converter={StaticResource BoolToVisibilityInverted}}"/>
                         <Image Grid.Column="1" Source="{Binding InfoImage}" Style="{StaticResource RemovalImage}"/>
-                        <TextBlock Grid.Column="2" MaxHeight="60" VerticalAlignment="Center">
+                        <TextBlock Grid.Column="2" MaxHeight="60" VerticalAlignment="Center" >
                             <Hyperlink NavigateUri="{Binding WebArchiveLink}">
-                                <TextBlock Text="{Binding InfoText}" Style="{StaticResource MissingItemInfo}"/>
+                                <TextBlock Text="{Binding InfoText}" Style="{StaticResource MissingItemInfo}" FontSize="13.5"/>
                             </Hyperlink>
                         </TextBlock>
                     </Grid>
@@ -164,10 +164,11 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Style="{StaticResource Description}" Text="Description"/>
+                    <!--This needs to have this weird stack panel set up to scollviewer and text wrapping work properly, don't touch this-->
                     <StackPanel Grid.Row="1">
-                        <ScrollViewer Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}" VerticalScrollBarVisibility="Visible">
+                        <ScrollViewer Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=StackPanel}}" VerticalScrollBarVisibility="Visible">
                             <StackPanel>
-                                <controls:SelectableTextBlock Grid.Column="0" Style="{StaticResource ItemDescription}" Text="{Binding DisplayPlaylistItem.Description}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
+                                <controls:SelectableTextBlock Grid.Column="0" Style="{StaticResource ItemDescription}" Text="{Binding DisplayPlaylistItem.Description}"/>
                             </StackPanel>
                         </ScrollViewer>
                     </StackPanel>

@@ -68,6 +68,13 @@
 
     <!--PlaylistItem-->
 
+    <Style x:Key="PlaylistItem_index" TargetType="TextBlock">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource Text_faded}"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
     <Style x:Key="PlaylistItem_title" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="15"/>
@@ -84,6 +91,8 @@
 
     <Style x:Key="PlaylistItem_channelTitle" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
         <Setter Property="Foreground" Value="{StaticResource Text_dimmed}"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     
     <Style x:Key="SeparatorBorder_light" TargetType="Border">
@@ -98,6 +107,7 @@
 
     <Style x:Key="PlaylistItem_separator" TargetType="Border" BasedOn="{StaticResource SeparatorBorder_dark}">
         <Setter Property="Margin" Value="40 10 0 0"/>
+        <Setter Property="BorderThickness" Value="0 0 0 1"/>
     </Style>
 
     <Style x:Key="PlaylistItem_browser" TargetType="TextBlock">

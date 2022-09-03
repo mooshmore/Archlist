@@ -17,6 +17,7 @@ using PlaylistSaver.PlaylistMethods.Models;
 using ToastMessageService;
 using System.Net.Http;
 using WebArchiveData;
+using System.Diagnostics;
 
 namespace PlaylistSaver.PlaylistMethods
 {
@@ -63,6 +64,7 @@ namespace PlaylistSaver.PlaylistMethods
             await PlaylistsData.UpdatePlaylistsDataAsync(playlistsIds);
 
             await ToastMessage.Succes("All done!");
+            Debug.WriteLine("All done!");
         }
 
         private static void SavePlaylistsData(Dictionary<string, PlaylistItemListResponse> playlistResponses, Dictionary<string, DateTime> playlistTimestampData)
@@ -186,7 +188,7 @@ namespace PlaylistSaver.PlaylistMethods
         /// <param name="playlistResponses"></param>
         private static async Task UpdateMissingItemsDataAsync(Dictionary<string, PlaylistItemListResponse> playlistResponses, Dictionary<string, DateTime> playlistTimestampData)
         {
-            await ToastMessage.ProgressToast(playlistResponses.Count, "Filling missing items for", "playlists");
+            await ToastMessage.ProgressToast(playlistResponses.Count, "Filling missing items for", "playlists\nThis can take a long time.");
             foreach (var playlist in playlistResponses)
             {
                 var allMissingRecentItems = GetAllMissingItems(playlist.Key, "recent");

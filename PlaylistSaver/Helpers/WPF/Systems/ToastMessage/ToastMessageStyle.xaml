@@ -51,5 +51,6 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Margin" Value="6 0 0 0"/>
+        <Setter Property="TextAlignment" Value="Center"/>
     </Style>
 </ResourceDictionary>

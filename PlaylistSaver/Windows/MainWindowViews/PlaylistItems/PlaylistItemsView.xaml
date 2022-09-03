@@ -212,19 +212,16 @@
                                         </Grid.RowDefinitions>
 
                                         <!--Index-->
-                                        <TextBlock Text="{Binding Index}" Grid.RowSpan="5" Foreground="{StaticResource Text_faded}" HorizontalAlignment="Center" FontSize="14" VerticalAlignment="Center" />
+                                        <TextBlock  Grid.RowSpan="5" Text="{Binding Index}" Style="{StaticResource PlaylistItem_index}"/>
                                         <!--Thumbnail-->
-                                        <Image Grid.Column="1" Source="{Binding ThumbnailPath}" Grid.Row="1" Grid.RowSpan="2"/>
+                                        <Image Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Source="{Binding ThumbnailPath}" />
                                         <!--Title-->
                                         <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding Title}" ToolTip="{Binding Title}" Style="{StaticResource PlaylistItem_title}" />
                                         <!--Creator-->
-                                        <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left">
-                                            <Hyperlink NavigateUri="{Binding Creator.ChannelUrl}">
-                                                <TextBlock Margin="0 0 0 0" Style="{StaticResource PlaylistItem_channelTitle}" Text="{Binding Creator.ChannelTitle}" Grid.Column="2"/>
-                                            </Hyperlink>
-                                        </TextBlock>
+                                        <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding Creator.ChannelTitle}" Style="{StaticResource PlaylistItem_channelTitle}"/>
 
-                                        <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.Row="1" Grid.RowSpan="2">
+
+                                        <StackPanel Grid.Column="4" Grid.Row="1" Grid.RowSpan="2" Orientation="Horizontal" >
                                             <StackPanel Orientation="Vertical" VerticalAlignment="Center" ToolTip="Date when the item was found missing">
                                                 <TextBlock Text="{Binding RemovalDayMonth}" Style="{StaticResource RemovalDayMonth}"/>
                                                 <TextBlock Text="{Binding RemovalYear}" Style="{StaticResource RemovalYear}"/>
@@ -234,13 +231,13 @@
                                         </StackPanel>
                                         
                                         <!--Browser icon-->
-                                        <TextBlock Style="{StaticResource PlaylistItem_browser}" ToolTip="Open video in a browser" Grid.Column="5" Grid.Row="1" Grid.RowSpan="3">
+                                        <TextBlock Grid.Column="5" Grid.Row="1" Grid.RowSpan="3" Style="{StaticResource PlaylistItem_browser}" ToolTip="Open video in a browser" >
                                             <Hyperlink NavigateUri="{Binding Url}">
                                                 <Image Style="{StaticResource BrowserImage_dark}"/>
                                             </Hyperlink>
                                         </TextBlock>
                                         <!--Separator-->
-                                        <Border Style="{StaticResource PlaylistItem_separator}" Grid.Row="3" BorderThickness="0 0 0 1" Grid.ColumnSpan="5"/>
+                                        <Border Grid.Row="3" Grid.ColumnSpan="5" Style="{StaticResource PlaylistItem_separator}" />
 
                                         <Grid.InputBindings>
                                             <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.DisplayPlaylistItemInfoCommand, 
@@ -286,27 +283,23 @@
                                         <!--2: Border-->
                                         <RowDefinition Height="13"/>
                                     </Grid.RowDefinitions>
-    
+
                                     <!--Index-->
-                                    <TextBlock Text="{Binding Index}" Grid.RowSpan="5" Foreground="{StaticResource Text_faded}" HorizontalAlignment="Center" FontSize="14" VerticalAlignment="Center" />
+                                    <TextBlock Grid.RowSpan="5" Text="{Binding Index}" Style="{StaticResource PlaylistItem_index}"/>
                                     <!--Thumbnail-->
-                                    <Image Grid.Column="1" Source="{Binding ThumbnailPath}" Grid.Row="1" Grid.RowSpan="2"/>
+                                    <Image Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Source="{Binding ThumbnailPath}" />
                                     <!--Title-->
-                                    <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" Style="{StaticResource PlaylistItem_title}" Grid.Row="1" Grid.Column="3"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding Title}" Style="{StaticResource PlaylistItem_title}" ToolTip="{Binding Title}"/>
                                     <!--Creator-->
-                                    <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Left">
-                                        <Hyperlink NavigateUri="{Binding Creator.ChannelUrl}">
-                                                <TextBlock Margin="0 0 0 0" Style="{StaticResource PlaylistItem_channelTitle}" Text="{Binding Creator.ChannelTitle}" Grid.Column="2"/>
-                                        </Hyperlink>
-                                    </TextBlock>
+                                    <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding Creator.ChannelTitle}" Style="{StaticResource PlaylistItem_channelTitle}"/>
                                     <!--Browser icon-->
-                                    <TextBlock Style="{StaticResource PlaylistItem_browser}" Grid.Column="4" Grid.Row="1" Grid.RowSpan="3" ToolTip="Open video in a browser">
+                                    <TextBlock Grid.Column="4" Grid.Row="1" Grid.RowSpan="3" Style="{StaticResource PlaylistItem_browser}" ToolTip="Open video in a browser">
                                         <Hyperlink NavigateUri="{Binding Url}">
                                             <Image Style="{StaticResource BrowserImage_dark}"/>
                                         </Hyperlink>
                                     </TextBlock>
                                     <!--Separator-->
-                                    <Border Style="{StaticResource PlaylistItem_separator}" Grid.Row="3" BorderThickness="0 0 0 1" Grid.ColumnSpan="5"/>
+                                    <Border Grid.Row="3" Grid.ColumnSpan="5" Style="{StaticResource PlaylistItem_separator}"/>
 
                                     <Grid.InputBindings>
                                         <MouseBinding Gesture="LeftClick" Command="{Binding DataContext.DisplayPlaylistItemInfoCommand, 

@@ -65,7 +65,9 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
             CloseViewCommand.Execute(null);
 
             List<string> addedPlaylistsIds = checkedPlaylists.Select(playlist => playlist.Id).ToList();
-            PlaylistItemsData.PullPlaylistsItemsDataAsync(addedPlaylistsIds);
+            await PlaylistItemsData.PullPlaylistsItemsDataAsync(addedPlaylistsIds);
+            await Task.Delay(50);
+            HomepageViewModel.Instance.RefreshData();
         }
 
         public RelayCommand CheckAllPlaylistsCommand { get; }
