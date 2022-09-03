@@ -30,8 +30,6 @@
     </Style>
 
     <Style x:Key="PlaylistBrowser" TargetType="TextBlock">
-        <Setter Property="HorizontalAlignment" Value="Right"/>
-        <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="Height" Value="27"/>
         <Setter Property="Margin" Value="0 2 0 0"/>
     </Style>

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Helpers
@@ -517,6 +519,49 @@ namespace Helpers
         /// Removes all of the data from the given TimeSpan? but the hours and minutes.
         /// </summary>
         public static TimeSpan? Flatten(this TimeSpan? timeSpan) => timeSpan == null ? null : (TimeSpan?)$"{timeSpan.ToTimeFormat()}".ToTimeSpan();
+
+        #endregion
+
+        #region DateTime parsers
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dateString"></param>
+        /// <returns>The converted DateTime if the conversion was succesful; Null if it was not.</returns>
+        public static DateTime? ParseExactAnyCultureDate(string dateString, string[] patterns)
+        {
+            // Source: https://stackoverflow.com/a/40894251/16765400
+            try
+            {
+                // Extreamely cursed and slow this is.
+                // Use it only if you have to you will.
+                var allCultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
+
+                var results = allCultures.Select(culture =>
+                {
+                    DateTime result;
+                    return DateTime.TryParseExact(
+                        dateString,
+                        patterns,
+                        culture,
+                        DateTimeStyles.None,
+                        out result
+                    ) ? result : default(DateTime?);
+                })
+                .Where(d => d != null)
+                .GroupBy(d => d)
+                .OrderByDescending(g => g.Count());
+                if (results.Count() == 0)
+                    return null;
+                else
+                    return results.FirstOrDefault().Key;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         #endregion
     }

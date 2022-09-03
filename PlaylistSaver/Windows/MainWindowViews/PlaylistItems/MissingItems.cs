@@ -41,7 +41,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.PlaylistItems
             RaisePropertyChanged(nameof(DisplayNothingHere));
         }
 
-        private string CurrentlyDisplayedItems = "seen";
+        private string CurrentlyDisplayedItems = "recent";
 
         private void SeePreviousItems()
         {

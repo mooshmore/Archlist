@@ -13,6 +13,8 @@ namespace PlaylistSaver.ProgramData.Stores
 {
     public static class GlobalItems
     {
+        public static HttpClient HttpClient { get; } = new HttpClient();
+
         public static string AppVersion { get; set; } = "0.7.1 Alpha";
 
         public static event Action UserProfileChanged;

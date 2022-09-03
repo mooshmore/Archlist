@@ -490,5 +490,25 @@ namespace System
         }
 
         #endregion
+
+        #region Index of digit
+
+        /// <summary>
+        /// Returns the index of the first digit in the string.
+        /// </summary>
+        public static int FirstIndexOfDigit(this string text)
+        {
+            return text.IndexOfAny("0123456789".ToCharArray());
+        }
+
+        /// <summary>
+        /// Returns the last index of the first digit in the string.
+        /// </summary>
+        public static int LastIndexOfDigit(this string text)
+        {
+            return text.LastIndexOfAny("0123456789".ToCharArray());
+        }
+
+        #endregion
     }
 }

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using ToastMessageService;
 
 namespace PlaylistSaver.Windows.PopupViews.PlaylistItemInfo
 {
@@ -29,12 +30,17 @@ namespace PlaylistSaver.Windows.PopupViews.PlaylistItemInfo
         public string FoundSnapshotsCountText { get; } = "";
         public string WebArchiveLink { get; } = "";
 
+        public string YoutubeSearchLink { get; } = "";
+
+
         public PlaylistItemInfoViewModel(DisplayPlaylistItem displayPlaylist)
         {
             DisplayPlaylistItem = displayPlaylist;
             DisplayRemovalInfo = displayPlaylist.RemovalReasonShort != null;
             RaisePropertyChanged(nameof(DisplayRemovalInfo));
             CopyTitleCommand = new RelayCommand(() => System.Windows.Clipboard.SetText(DisplayPlaylistItem.Title));
+            YoutubeSearchLink = "https://www.youtube.com/results?search_query=" + System.Net.WebUtility.UrlEncode(displayPlaylist.Title);
+            CopyIDCommand = new RelayCommand(CopyID);
 
             if (displayPlaylist.RecoveryFailed && displayPlaylist.FoundSnapshotsCount == 0)
             {
@@ -49,6 +55,11 @@ namespace PlaylistSaver.Windows.PopupViews.PlaylistItemInfo
                 DisplayFoundSnaphots = true;
                 FoundSnapshotsText = $" Snapshot{LocalHelpers.SEnding(displayPlaylist.FoundSnapshotsCount)}";
                 FoundSnapshotsCountText = displayPlaylist.FoundSnapshotsCount.ToString();
+                if (displayPlaylist.FoundSnapshotsCount == 99)
+                    FoundSnapshotsCountText = "99+";
+                else
+                    FoundSnapshotsCountText = displayPlaylist.FoundSnapshotsCount.ToString();
+
                 WebArchiveLink = displayPlaylist.WebArchiveLink;
 
                 if (displayPlaylist.SourcedFromWebArchive)
@@ -62,6 +73,14 @@ namespace PlaylistSaver.Windows.PopupViews.PlaylistItemInfo
                     InfoImage = LocalHelpers.GetResourcesBitmapImage("Logos/WebArchive/webArchiveLogo_removalRed_32px.png");
                 }
             }
+        }
+
+        public RelayCommand CopyIDCommand { get; }
+
+        public void CopyID()
+        {
+            System.Windows.Clipboard.SetText(DisplayPlaylistItem.Id);
+            ToastMessage.Display("ID copied!");
         }
     }
 }

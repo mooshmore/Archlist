@@ -3,9 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace Helpers
 {
@@ -14,6 +18,35 @@ namespace Helpers
     /// </summary>
     public static class MethodsCluster
     {
+        public static async Task DownloadImageAsync(this HttpClient client, string uri, string filePath)
+        {
+            byte[] fileBytes = await client.GetByteArrayAsync(uri);
+            File.WriteAllBytes(filePath, fileBytes);
+
+        }
+
+        public static async Task DownloadFileTaskAsync(this HttpClient client, string uri, string filePath)
+        {
+            string data = await client.DownloadStringTaskAsync(uri);
+            File.WriteAllText(filePath, data);
+        }
+
+        public static async Task<byte[]> DownloadBytesTaskAsync(this HttpClient client, string uri)
+        {
+            return await client.GetByteArrayAsync(uri);
+        }
+
+        public static async Task<string> DownloadStringTaskAsync(this HttpClient client, string uri)
+        {
+            string text;
+            using (var stream = await client.GetStreamAsync(uri))
+            {
+                StreamReader reader = new StreamReader(stream);
+                text = reader.ReadToEnd();
+            }
+            return text;
+        }
+
         /// <summary>
         /// Extension for 'Object' that copies the properties to a destination object.
         /// </summary>

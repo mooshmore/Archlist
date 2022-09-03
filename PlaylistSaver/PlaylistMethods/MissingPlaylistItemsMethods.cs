@@ -2,8 +2,10 @@
 using Helpers;
 using PlaylistSaver.Helpers;
 using PlaylistSaver.PlaylistMethods.Models;
+using PlaylistSaver.ProgramData.Stores;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -21,11 +23,23 @@ namespace PlaylistSaver.PlaylistMethods
     {
         public static async Task PutInRemovalReason(MissingPlaylistItem playlistItem)
         {
-            using WebClient client = new();
-            // Always get removal reasons in english
-            client.Headers.Add(HttpRequestHeader.Cookie, "PREF=hl=en");
-            string htmlCode = await client.DownloadStringTaskAsync(new Uri("https://www.youtube.com/watch?v=" + playlistItem.ContentDetails.VideoId));
-            PutRemovalReason(htmlCode, playlistItem);
+            using (var handler = new HttpClientHandler { UseCookies = false })
+            {
+                var baseAddress = new Uri("https://www.youtube.com/watch?v=" + playlistItem.ContentDetails.VideoId);
+                var message = new HttpRequestMessage(HttpMethod.Get, baseAddress);
+                //// Always get removal reasons in english
+                message.Headers.Add("Cookie", "PREF=hl=en");
+
+                var result = await GlobalItems.HttpClient.SendAsync(message);
+                var pageCode = await result.Content.ReadAsStringAsync();
+
+                PutRemovalReason(pageCode, playlistItem);
+            }
+
+            //GlobalItems.HttpClient.Headers.Add(HttpRequestHeader.Cookie, "PREF=hl=en");
+            //string htmlCode = await GlobalItems.HttpClient.DownloadStringTaskAsync("https://www.youtube.com/watch?v=" + playlistItem.ContentDetails.VideoId);
+            //PutRemovalReason(htmlCode, playlistItem);
+            //GlobalItems.WebClient.Headers.Remove("PREF=hl=en");
         }
 
         public static void PutRemovalReason(string htmlCode, MissingPlaylistItem playlistItem)
@@ -118,8 +132,9 @@ namespace PlaylistSaver.PlaylistMethods
         /// <returns>True if assigning data was succesful; False if not.</returns>
         public static async Task<bool> TryToReassignData_WebArchiveAsync(MissingPlaylistItem playlistItem)
         {
+
             string playlistItemUrl = "https://www.youtube.com/watch?v=" + playlistItem.ContentDetails.VideoId;
-            var existingSnapshotsTimestamps = await WebArchive.GetExistingSnapshots(playlistItemUrl);
+            var existingSnapshotsTimestamps = await WebArchiveYoutube.GetExistingSnapshots(playlistItemUrl);
 
             if (existingSnapshotsTimestamps.snapshotsList != null)
             {
@@ -127,11 +142,15 @@ namespace PlaylistSaver.PlaylistMethods
                 // Set a webarchive link to the first snapshot in case that all links fail at parsing
                 // and don't set the link
                 playlistItem.WebArchiveLink = "http://web.archive.org/web/" + existingSnapshotsTimestamps.snapshotsList[0] + "/" + playlistItemUrl;
+                playlistItem.RecoveryFailed = true;
 
                 foreach (var snapshotTimestamp in existingSnapshotsTimestamps.snapshotsList)
                 {
                     string snapshotRequestUrl = "http://web.archive.org/web/" + snapshotTimestamp + "/" + playlistItemUrl;
-                    string pageCode = await new HttpClient().GetStringAsync(snapshotRequestUrl);
+                    Debug.WriteLine($"Requesting snapshot: {snapshotRequestUrl}");
+                    // Beware that web archive responses can be awfully slow, taking even up to a minute
+                    string pageCode = await GlobalItems.HttpClient.GetStringAsync(snapshotRequestUrl);
+                    Debug.WriteLine("Done");
                     if (await WebArchiveYoutube.ParseAsync(playlistItem, pageCode, snapshotRequestUrl))
                         return true;
                 }

@@ -78,7 +78,7 @@ namespace PlaylistSaver.PlaylistMethods
             {
                 // Downloading the image data first, and only then when it is fully downloaded
                 // saving it to the file
-                var thumbnailData = await new WebClient().DownloadDataTaskAsync(new Uri(channel.Snippet.Thumbnails.Default__.Url));
+                var thumbnailData = await GlobalItems.HttpClient.DownloadBytesTaskAsync(channel.Snippet.Thumbnails.Default__.Url);
 
                 var channelDirectory = Directories.ChannelsDirectory.CreateSubdirectory(channel.Id);
                 File.WriteAllBytes(Path.Combine(channelDirectory.FullName, "channelThumbnail.jpg"), thumbnailData);

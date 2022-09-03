@@ -39,22 +39,24 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
         public BitmapImage MissingItemsImage { get; set; }
         public RelayCommand MarkAsSeenCommand { get; }
 
+        public static HomepageViewModel Instance { get; set; }
+
         public HomepageViewModel()
         {
             LoadPlaylists();
             OnUserProfileChanged();
             SetMissingItemsText();
 
-            OpenAddPlaylist_userOwnedViewCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_userOwnedViewModel(this));
-            OpenAddPlaylist_linkCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_linkViewModel(this));
             PullPlaylistDataCommand = new RelayCommand(PullPlaylistData);
             RemovePlaylistCommand = new RelayCommand(RemovePlaylist);
             OpenPlaylistCommand = new RelayCommand(OpenPlaylist);
             UpdateCurrentPlaylistCommand = new RelayCommand(UpdateCurrentDisplayPlaylist);
-            PullAllPlaylistsCommand = new RelayCommand(PlaylistItemsData.PullAllPlaylistsItemsDataAsync);
+            PullAllPlaylistsCommand = new AsyncRelayCommand(PullAllPlaylistsData);
             MarkAsSeenCommand = new RelayCommand(MarkAsSeen);
 
             GlobalItems.UserProfileChanged += OnUserProfileChanged;
+
+            Instance = this;
         }
 
         private void RemovePlaylist()
@@ -120,7 +122,7 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
 
         public RelayCommand OpenPlaylistCommand { get; }
         public RelayCommand UpdateCurrentPlaylistCommand { get; }
-        public RelayCommand PullAllPlaylistsCommand { get; }
+        public AsyncRelayCommand PullAllPlaylistsCommand { get; }
         public RelayCommand RemovePlaylistCommand { get; }
 
         private void OpenPlaylist(object displayPlaylist)
@@ -131,11 +133,48 @@ namespace PlaylistSaver.Windows.MainWindowViews.Homepage
 
         private void PullPlaylistData()
         {
-            PlaylistItemsData.PullPlaylistsItemsDataAsync(CurrentDisplayPlaylist.Id.CreateNewList());
+            // There is some real fuckery with wpf here.
+            // I mean, excuse me my language, but this is making me go mad.
+
+            // This method is called by clicking a option in a menu item of the playlist.
+            // To open the menu, you have to click on the image.
+            // When you click on the image, a UpdateCurrentDisplayPlaylist method is triggered and CurrentDisplayPlaylist is set.
+            // So, fuckin wpf, explain it to me, how is it possible to click the image and click the menu option,
+            // without triggering the UpdateCurrentDisplayPlaylist method? I will actually go fucking mad.
+
+            // And, its not relying on the user clicking the menu and the option ultra fast, its just random
+            // and will trigger randomly to fuck up your day.
+
+            // Anyways, no matter how much I'll curse on wpf, shit won't fix itself, so this will check first
+            // if the CurrentDisplayPlaylist is null (aka if the Update method has triggered) and
+            // display a message to open the menu again when the Update method somehow hasn't triggered.
+
+            // It isn't a fix or even a workaround the problem, but I have really no idea how to fix it,
+            // so this at least won't crash the program.
+
+            // Fortunatelly this happens very rarely, so it shouldn't be that much of a pain.
+            if (CurrentDisplayPlaylist == null)
+            {
+                ToastMessage.Display("A rare error occured, please open the side menu again and try again.");
+            }
+            else
+            {
+                PlaylistItemsData.PullPlaylistsItemsDataAsync(CurrentDisplayPlaylist.Id.CreateNewList());
+                LoadPlaylists();
+                SetMissingItemsText();
+            }
+
         }
 
-        public NavigateCommand OpenAddPlaylist_userOwnedViewCommand { get; }
-        public NavigateCommand OpenAddPlaylist_linkCommand { get; }
+        private async Task PullAllPlaylistsData()
+        {
+            await PlaylistItemsData.PullAllPlaylistsItemsDataAsync();
+            LoadPlaylists();
+            SetMissingItemsText();
+        }
+
+        public NavigateCommand OpenAddPlaylist_userOwnedViewCommand { get; } = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_userOwnedViewModel());
+        public NavigateCommand OpenAddPlaylist_linkCommand { get; } = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_linkViewModel());
         public RelayCommand PullPlaylistDataCommand { get; }
 
 

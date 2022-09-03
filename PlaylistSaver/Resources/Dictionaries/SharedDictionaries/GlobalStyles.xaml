@@ -23,7 +23,28 @@
             </EventTrigger>
         </Style.Triggers>
     </Style>
-
+    
+    <Style x:Key="HighlightHoverImage_dimmed" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
+        <Setter Property="Opacity" Value="0.6"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Image.MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.9" Duration="0:0:0.20" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Image.MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.6" Duration="0:0:0.20" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+    
     <Style x:Key="HighlightHoverImage_dark" TargetType="Image" BasedOn="{StaticResource DefaultImage}">
         <Setter Property="Opacity" Value="0.5"/>
         <Setter Property="Cursor" Value="Hand"/>

@@ -72,7 +72,6 @@ namespace PlaylistSaver.Resources.Behaviours
 
         private static void OnMouseLeftButtonUp(object sender, RoutedEventArgs e)
         {
-            Debug.Print("OnMouseLeftButtonUp");
             if (sender is FrameworkElement fe)
             {
                 // if we use binding in our context menu, then it's DataContext won't be set when we show the menu on left click

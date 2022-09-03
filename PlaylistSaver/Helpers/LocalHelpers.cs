@@ -1,5 +1,6 @@
 ﻿using Helpers;
 using Newtonsoft.Json;
+using PlaylistSaver.ProgramData.Stores;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -51,12 +52,9 @@ namespace PlaylistSaver.Helpers
         /// <param name="thumbnailPath">The path where the thumbnail will be saved.</param>
         public static void DownloadImage(string thumbnailUrl, string thumbnailPath)
         {
-            WebClient downloadWebClient = new();
-
             // Image is first downloaded to a memory, and only then when it has been fully downloaded
             // it is saved to a file.
-            var thumbnailData = downloadWebClient.DownloadData(new Uri(thumbnailUrl));
-            File.WriteAllBytes(thumbnailPath, thumbnailData);
+            var ok = GlobalItems.HttpClient.DownloadImageAsync(thumbnailUrl, thumbnailPath);
         }
 
         /// <summary>
@@ -66,12 +64,9 @@ namespace PlaylistSaver.Helpers
         /// <param name="thumbnailPath">The path where the thumbnail will be saved.</param>
         public static async Task DownloadImageAsync(string thumbnailUrl, string thumbnailPath)
         {
-            WebClient downloadWebClient = new();
-
             // Image is first downloaded to a memory, and only then when it has been fully downloaded
             // it is saved to a file.
-            var thumbnailData = await downloadWebClient.DownloadDataTaskAsync(new Uri(thumbnailUrl));
-            File.WriteAllBytes(thumbnailPath, thumbnailData);
+            await GlobalItems.HttpClient.DownloadImageAsync(thumbnailUrl, thumbnailPath);
         }
 
         /// <summary>
@@ -82,12 +77,10 @@ namespace PlaylistSaver.Helpers
         public static async Task DownloadImageAsync(string thumbnailUrl, DirectoryInfo downloadDirectory, string thumbnailName)
         {
             string thumbnailPath = Path.Combine(downloadDirectory.FullName, thumbnailName);
-            WebClient downloadWebClient = new();
 
             // Image is first downloaded to a memory, and only then when it has been fully downloaded
             // it is saved to a file.
-            var thumbnailData = await downloadWebClient.DownloadDataTaskAsync(new Uri(thumbnailUrl));
-            File.WriteAllBytes(thumbnailPath, thumbnailData);
+            await GlobalItems.HttpClient.DownloadImageAsync(thumbnailUrl, thumbnailPath);
         }
     }
 }

@@ -34,16 +34,12 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
             }
         }
 
-        public HomepageViewModel homepageViewModel;
-
-        public AddPlaylists_linkViewModel(HomepageViewModel homepageViewModel)
+        public AddPlaylists_linkViewModel()
         {
             CloseViewCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, null);
             AddPlaylistToListCommand = new AsyncRelayCommand(AddPlaylistToList);
             RemovePlaylistFromListCommand = new RelayCommand(RemovePlaylistFromList);
             AddPlaylistsCommand = new AsyncRelayCommand(AddPlaylistsAsync);
-
-            this.homepageViewModel = homepageViewModel;
         }
 
         /// <summary>
@@ -56,7 +52,7 @@ namespace PlaylistSaver.Windows.PopupViews.AddPlaylists.AddPlaylists_link
             await PlaylistsData.PullPlaylistsDataAsync(new List<Playlist>(PlaylistsList));
 
             // Refresh the homepage to display newly added playlists
-            homepageViewModel.LoadPlaylists();
+            HomepageViewModel.Instance.LoadPlaylists();
 
             // Close the window 
             CloseViewCommand.Execute(null);
