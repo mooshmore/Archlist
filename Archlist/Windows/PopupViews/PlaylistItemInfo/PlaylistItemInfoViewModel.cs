@@ -73,6 +73,12 @@ namespace Archlist.Windows.PopupViews.PlaylistItemInfo
                     InfoImage = LocalHelpers.GetResourcesBitmapImage("Logos/WebArchive/webArchiveLogo_removalRed_32px.png");
                 }
             }
+            else if (!displayPlaylist.RemovalReasonShort.IsNullOrEmpty())
+            {
+                DisplayInfoPanel = true;
+                InfoText = "This data was recovered from the local archive. It should be fully correct (please report if it isn't).";
+                InfoImage = LocalHelpers.GetResourcesBitmapImage("Symbols/White/database_import_64px.png");
+            }
         }
 
         public RelayCommand CopyIDCommand { get; }

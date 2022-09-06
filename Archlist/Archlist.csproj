@@ -9,17 +9,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Resources\Images\Temp\**" />
+    <Compile Remove="Windows\MainWindowViews\AppInfo\**" />
+    <Compile Remove="Windows\MainWindowViews\Settings\**" />
+    <EmbeddedResource Remove="Resources\Images\Temp\**" />
+    <EmbeddedResource Remove="Windows\MainWindowViews\AppInfo\**" />
+    <EmbeddedResource Remove="Windows\MainWindowViews\Settings\**" />
+    <None Remove="Resources\Images\Temp\**" />
+    <None Remove="Windows\MainWindowViews\AppInfo\**" />
+    <None Remove="Windows\MainWindowViews\Settings\**" />
+    <Page Remove="Resources\Images\Temp\**" />
+    <Page Remove="Windows\MainWindowViews\AppInfo\**" />
+    <Page Remove="Windows\MainWindowViews\Settings\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="clientSecret.json" />
     <None Remove="Resources\Fonts\Caveat-VariableFont_wght.ttf" />
     <None Remove="Resources\Images\btn_google_signin_light_normal_web%402x.png" />
+    <None Remove="Resources\Images\Logos\AppLogo\appLogo.png" />
     <None Remove="Resources\Images\Logos\AppLogo\appLogo_100.png" />
     <None Remove="Resources\Images\Logos\AppLogo\appLogo_60.png" />
-    <None Remove="Resources\Images\Logos\AppLogo\appLogo_70.png" />
-    <None Remove="Resources\Images\Logos\AppLogo\appLogo_80.png" />
     <None Remove="Resources\Images\Logos\AppLogo\.png" />
     <None Remove="Resources\Images\Logos\AppLogo\appLogo_90.png" />
     <None Remove="Resources\Images\Logos\Other\discord.png" />
-    <None Remove="Resources\Images\Logos\Other\discord54px.png" />
     <None Remove="Resources\Images\Logos\Other\icons8.png" />
     <None Remove="Resources\Images\Logos\WebArchive\webArchiveLogo_32px.png" />
     <None Remove="Resources\Images\Logos\WebArchive\webArchiveLogo_removalRed_32px.png" />
@@ -30,7 +43,6 @@
     <None Remove="Resources\Images\Logos\AppLogo\logo_32px.png" />
     <None Remove="Resources\Images\Logos\AppLogo\logo_48px.png" />
     <None Remove="Resources\Images\Logos\AppLogo\logo_64px.png" />
-    <None Remove="Resources\Images\Logos\Github\github_logo_32px.png" />
     <None Remove="Resources\Images\logo_256px.png" />
     <None Remove="Resources\Images\mooshmore_thumbnail.png" />
     <None Remove="Resources\Images\mooshmore_thumbnail_1000px.png" />
@@ -55,6 +67,7 @@
     <None Remove="Resources\Images\Symbols\White\chain_64px.png" />
     <None Remove="Resources\Images\Symbols\White\close_64px.png" />
     <None Remove="Resources\Images\Symbols\White\copy_32px.png" />
+    <None Remove="Resources\Images\Symbols\White\database_import_64px.png" />
     <None Remove="Resources\Images\Symbols\White\delete_trash_64px.png" />
     <None Remove="Resources\Images\Symbols\White\done_64px.png" />
     <None Remove="Resources\Images\Symbols\White\downloading_updates_64px.png" />
@@ -99,10 +112,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Images\Logos\AppLogo\appLogo_70.png" />
-    <Resource Include="Resources\Images\Logos\AppLogo\appLogo_80.png" />
+    <Resource Include="Resources\Images\Logos\AppLogo\appLogo.png" />
     <Resource Include="Resources\Images\Logos\Other\discord.png" />
-    <Resource Include="Resources\Images\Logos\Other\discord54px.png" />
     <Resource Include="Resources\Images\Logos\Other\icons8.png" />
     <Resource Include="Resources\Images\Logos\WebArchive\webArchiveLogo_32px.png" />
     <Resource Include="Resources\Images\Logos\WebArchive\webArchiveLogo_removalRed_32px.png" />
@@ -142,6 +153,7 @@
     <Resource Include="Resources\Images\Symbols\White\chain_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\close_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\copy_32px.png" />
+    <Resource Include="Resources\Images\Symbols\White\database_import_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\delete_trash_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\done_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\downloading_updates_64px.png" />
@@ -164,15 +176,11 @@
     <Resource Include="Resources\Images\Symbols\White\video_dots_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\video_playlist_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\web_64px.png" />
-    <Resource Include="Resources\Images\Thumbnails\btn_google_signin_light_normal_web%402x.png" />
-    <Resource Include="Resources\Images\Logos\Github\github_logo_120px.png" />
-    <Resource Include="Resources\Images\Logos\Github\github_logo_32px.png" />
-    <Resource Include="Resources\Images\Logos\AppCreator\mooshmore_thumbnail_1000px.png" />
+    <Resource Include="Resources\Images\Thumbnails\google_signin.png" />
+    <Resource Include="Resources\Images\Logos\Other\github_logo_32px.png" />
     <Resource Include="Resources\Images\Logos\AppCreator\mooshmore_thumbnail_128px.png" />
-    <Resource Include="Resources\Images\Logos\AppCreator\mooshmore_thumbnail_64px.png" />
     <Resource Include="Resources\Images\Thumbnails\missingProfile.jpg" />
     <Resource Include="Resources\Images\Thumbnails\missingThumbnail.jpg" />
-    <Resource Include="Resources\Images\Thumbnails\no_thumbnail.jpg" />
     <Resource Include="Resources\Fonts\Inter-VariableFont_slnt,wght.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -212,15 +220,7 @@
     <Resource Include="Resources\Fonts\Roboto-ThinItalic.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\Logos\Youtube\youtube_logo_256px.png" />
-    <Resource Include="Resources\Images\Logos\Youtube\youtube_logo_32px.png" />
-    <Resource Include="Resources\Images\Logos\Youtube\youtube_logo_64px.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resources\Images\Temp\" />
-    <Folder Include="Windows\MainWindowViews\AppInfo\" />
-    <Folder Include="Windows\MainWindowViews\Settings\" />
+    <Resource Include="Resources\Images\Logos\Other\youtube_logo_64px.png" />
   </ItemGroup>
 
   <ItemGroup>

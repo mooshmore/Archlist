@@ -203,8 +203,8 @@ namespace Archlist.PlaylistMethods
                     if (playlistItem.IsAvailable())
                         continue;
 
-                    bool alreadyExistsInRecent = allMissingRecentItems.Select(item => item.Snippet.ResourceId.VideoId).Any();
-                    bool alreadyExistsInSeen = allMissingSeenItems.Select(item => item.Snippet.ResourceId.VideoId).Any();
+                    bool alreadyExistsInRecent = allMissingRecentItems.Exists(item => item.Snippet.ResourceId.VideoId == playlistItem.Snippet.ResourceId.VideoId);
+                    bool alreadyExistsInSeen = allMissingSeenItems.Exists(item => item.Snippet.ResourceId.VideoId == playlistItem.Snippet.ResourceId.VideoId);
 
                     // Skip if the item has already been added to one of the missing lists
                     if (alreadyExistsInRecent || alreadyExistsInSeen)

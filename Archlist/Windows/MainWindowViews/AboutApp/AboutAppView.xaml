@@ -13,7 +13,7 @@
     </UserControl.Resources>
 
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Image Source="/Resources/Images/Logos/AppLogo/appLogo_80.png" Width="70"/>
+        <Image Source="/Resources/Images/Logos/AppLogo/appLogo.png" Width="70"/>
         <TextBlock Style="{StaticResource AppName}" Text="Archlist"/>
         <TextBlock Style="{StaticResource AppVersion}" Text="{Binding AppVersion}" d:Text="Version 0.8.7 Alpha"/>
 
@@ -23,7 +23,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Ellipse Height="35" Width="35">
                         <Ellipse.Fill>
-                            <ImageBrush ImageSource="/Resources/Images/Logos/AppCreator/mooshmore_thumbnail_64px.png"/>
+                            <ImageBrush ImageSource="/Resources/Images/Logos/AppCreator/mooshmore_thumbnail_128px.png"/>
                         </Ellipse.Fill>
                     </Ellipse>
                     <TextBlock Style="{StaticResource Mooshmore}" Text="Mooshmore"/>
@@ -36,7 +36,7 @@
             <TextBlock Style="{StaticResource HighlightHoverText}">
                 <Hyperlink NavigateUri="https://github.com/mooshmore/YTArchlist">
                     <StackPanel Style="{StaticResource BottomLink}">
-                        <Image Source="/Resources/Images/Logos/Github/github_logo_32px.png"/>
+                        <Image Source="/Resources/Images/Logos/Other/github_logo_32px.png"/>
                         <TextBlock Style="{StaticResource BottomLinkText}" Text="Project repository"/>
                     </StackPanel>
                 </Hyperlink>
@@ -44,7 +44,7 @@
             <TextBlock Style="{StaticResource HighlightHoverText}" Margin="10 0 0 0">
                 <Hyperlink NavigateUri="https://www.youtube.com/channel/UCoiOhzEdXVQCQ3conWHE3aQ">
                     <StackPanel Style="{StaticResource BottomLink}">
-                        <Image Width="20" Source="/Resources/Images/Logos/Youtube/youtube_logo_32px.png"/>
+                        <Image Width="20" Source="/Resources/Images/Logos/Other/youtube_logo_64px.png"/>
                         <TextBlock Style="{StaticResource BottomLinkText}" Text="Youtube channel"/>
                     </StackPanel>
                 </Hyperlink>
