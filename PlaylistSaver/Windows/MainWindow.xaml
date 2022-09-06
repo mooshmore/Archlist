@@ -86,7 +86,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel Margin="0 35">
-                        <Image Cursor="Hand" Source="/Resources/Images/Logos/AppLogo/appLogo_64px.png" Width="40" ToolTip="Home page">
+                        <Image Cursor="Hand" Source="/Resources/Images/Logos/AppLogo/appLogo_80.png" Width="40" ToolTip="Home page">
                             <Image.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding GoToHomePageCommand}"/>
                             </Image.InputBindings>

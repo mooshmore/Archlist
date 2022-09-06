@@ -13,8 +13,8 @@
     </UserControl.Resources>
 
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Image Source="/Resources/Images/Logos/AppLogo/appLogo_128px.png" Width="70"/>
-        <TextBlock Style="{StaticResource AppName}" Text="Playlist Saver"/>
+        <Image Source="/Resources/Images/Logos/AppLogo/appLogo_80.png" Width="70"/>
+        <TextBlock Style="{StaticResource AppName}" Text="Archlist"/>
         <TextBlock Style="{StaticResource AppVersion}" Text="{Binding AppVersion}" d:Text="Version 0.8.7 Alpha"/>
 
         <TextBlock Style="{StaticResource MadeBy}" Text="Made by" Margin="0 50 0 0"/>

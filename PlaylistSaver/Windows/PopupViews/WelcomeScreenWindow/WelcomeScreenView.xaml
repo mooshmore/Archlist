@@ -40,8 +40,8 @@
                         <RowDefinition Height="200"/>
                     </Grid.RowDefinitions>
                     <StackPanel VerticalAlignment="Center">
-                        <Image Source="/Resources/Images/Logos/AppLogo/appLogo_128px.png" Width="70"/>
-                        <TextBlock Style="{StaticResource AppName}" Text="Playlist Saver"/>
+                        <Image Source="/Resources/Images/Logos/AppLogo/appLogo_80.png" Width="60"/>
+                        <TextBlock Style="{StaticResource AppName}" Text="Archlist"/>
                         <TextBlock Style="{StaticResource AppVersion}" Text="{Binding AppVersion}"/>
                     </StackPanel>
                     <TextBlock Style="{StaticResource Welcome}" Grid.Row="1">
