@@ -1,3 +1,3 @@
-# YTPlaylistSaver
+# YTArchlist
 
 Work in progress
