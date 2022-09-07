@@ -52,6 +52,13 @@ namespace Archlist
                 welcomeScreen.Activate();
             }
 
+            //MainWindow = new MainWindow()
+            //{
+            //    DataContext = new MainWindowViewModel()
+            //};
+
+            //MainWindow.Show();
+
             base.OnStartup(e);
         }
     }
