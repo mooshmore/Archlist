@@ -15,7 +15,7 @@
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
         <Image Source="/Resources/Images/Logos/AppLogo/appLogo.png" Width="70"/>
         <TextBlock Style="{StaticResource AppName}" Text="Archlist"/>
-        <TextBlock Style="{StaticResource AppVersion}" Text="{Binding AppVersion}" d:Text="Version 0.8.7 Alpha"/>
+        <TextBlock Style="{StaticResource AppVersion}" Text="{Binding AppVersion}" d:Text="v 0.8.7 Alpha"/>
 
         <TextBlock Style="{StaticResource MadeBy}" Text="Made by" Margin="0 50 0 0"/>
         <TextBlock HorizontalAlignment="Center" Margin="0,5,0,17">

@@ -52,6 +52,8 @@ namespace Archlist.UserData
 
             await CreateUserProfileAsync();
             await ToastMessage.Hide();
+            Settings.WasPreviouslyLoggedIn = true;
+            Settings.SettingsInstance.Save();
         }
         
         private async static Task CreateUserProfileAsync()

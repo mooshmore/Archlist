@@ -1,4 +1,5 @@
-﻿using Archlist.Windows.ViewModels;
+﻿using Archlist.Windows.MainWindowViews.Homepage;
+using Archlist.Windows.ViewModels;
 using System;
 
 namespace Archlist.ProgramData.Stores

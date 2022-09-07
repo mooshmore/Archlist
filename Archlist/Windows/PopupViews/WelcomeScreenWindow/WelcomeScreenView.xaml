@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Archlist.Windows.PopupViews.WelcomeScreenWindow"
-        xmlns:wpfloadinganimation="clr-namespace:WpfLoadingAnimation;assembly=WpfLoadingAnimation"
+        xmlns:wpfloadinganimation="clr-namespace:WpfLoadingAnimation;assembly=WpfLoadingAnimation" xmlns:converters="clr-namespace:Archlist.Helpers.BindingConverters"
         mc:Ignorable="d"
         Title="WelcomeScreenView"
         Height="500" Width="830"
@@ -17,7 +17,14 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        <ResourceDictionary Source="WelcomeScreenDictionary.xaml"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="WelcomeScreenDictionary.xaml"/>
+
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisiblity"/>
+            <converters:BoolToVisibilityInvertedConverter x:Key="BoolToVisiblityInverted"/>
+        </ResourceDictionary>
     </Window.Resources>
 
     <!--Add the WindowChrome object-->
@@ -32,7 +39,7 @@
 
     <Border x:Name="ChromeBorder">
         <StackPanel Orientation="Horizontal">
-            <Border Height="500" Width="555" Background="{StaticResource Background_default_dark}"  BorderThickness="0" CornerRadius="16 0 0 16">
+            <Border Height="500" Width="555" Background="#1f1f1f"  BorderThickness="0" CornerRadius="16 0 0 16">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="200"/>
@@ -93,7 +100,7 @@
                     </StackPanel>
                 </Grid>
             </Border>
-            <Border Height="500" Width="275" Background="{StaticResource Background_topbar_light}"  BorderThickness="0" CornerRadius="0 16 16 0">
+            <Border Height="500" Width="275" Background="#2f2f2f"  BorderThickness="0" CornerRadius="0 16 16 0">
                 <Grid Height="500"  Width="275">
                     <Button Style="{StaticResource CloseButtonStyle_noHover}" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Close"
                                 Command="{x:Static SystemCommands.CloseWindowCommand}" Margin="220 0 0 460"/>
@@ -104,7 +111,6 @@
                                 <MouseBinding Gesture="LeftClick" Command="{Binding LogInCommand}" CommandParameter="ok"/>
                             </Image.InputBindings>
                         </Image>
-                        <wpfloadinganimation:CircularAnimation Width="30" Margin="0 5 0 0" Fill="#CD3A3F"/>
                         <TextBlock Style="{StaticResource LoginDisclaimer}">
                             Information about your account and its data won’t be stored, everything is saved locally on your computer.
                         </TextBlock>

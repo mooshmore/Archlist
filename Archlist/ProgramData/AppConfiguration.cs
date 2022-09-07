@@ -20,8 +20,6 @@ namespace Archlist.ProgramData
             // Retrieve clientID and clientSecret from Json file
             OAuthSystem.LoadSecretData();
 
-            OAuthSystem.LogInAsync();
-
             SetDefaultJsonSettings();
             CreateFileStructure();
             Settings.SettingsInstance.Read();

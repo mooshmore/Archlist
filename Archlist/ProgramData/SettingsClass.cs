@@ -19,10 +19,10 @@ namespace Archlist
         /// <summary>
         /// Defines a quality at which thumbnails will be downloaded.
         /// </summary>
-        public static bool FirstAppRun
+        public static bool WasPreviouslyLoggedIn
         {
-            get => SettingsInstance.firstAppRun;
-            set => SettingsInstance.firstAppRun = value;
+            get => SettingsInstance.wasPreviouslyLoggedIn;
+            set => SettingsInstance.wasPreviouslyLoggedIn = value;
         }
     }
 
@@ -41,13 +41,15 @@ namespace Archlist
             if (settingsFile.Exists && !settingsFile.IsEmpty())
             {
                 // Read the settings from the file
-                settingsFile.Deserialize<SettingsClass>();
+                var savedSettings = settingsFile.Deserialize<SettingsClass>();
+
+                this.wasPreviouslyLoggedIn = savedSettings.wasPreviouslyLoggedIn;
             }
             // If file doesn't exist create it and set the default settings
             else
             {
                 Directories.MainDirectory.CreateSubfile("settings.json");
-                firstAppRun = true;
+                wasPreviouslyLoggedIn = false;
             }
 
             // Save the settings in case that the file was missing some properties
@@ -62,6 +64,6 @@ namespace Archlist
             File.WriteAllText(Directories.MainDirectory.SubFile("settings.json").FullName, jsonString);
         }
 
-        public bool firstAppRun;
+        public bool wasPreviouslyLoggedIn;
     }
 }
