@@ -41,7 +41,7 @@ namespace Helpers
             string text;
             using (var stream = await client.GetStreamAsync(uri))
             {
-                StreamReader reader = new StreamReader(stream);
+                StreamReader reader = new(stream);
                 text = reader.ReadToEnd();
             }
             return text;

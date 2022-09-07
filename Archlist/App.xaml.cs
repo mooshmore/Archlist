@@ -1,23 +1,10 @@
-﻿using Archlist.PlaylistMethods;
-using Archlist.ProgramData;
-using Archlist.ProgramData.Commands;
+﻿using Archlist.ProgramData;
 using Archlist.ProgramData.Stores;
 using Archlist.UserData;
 using Archlist.Windows;
 using Archlist.Windows.MainWindowViews.Homepage;
-using Archlist.Windows.MainWindowViews.PlaylistItems;
-using Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_link;
 using Archlist.Windows.PopupViews.WelcomeScreenWindow;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Archlist
 {
@@ -38,26 +25,20 @@ namespace Archlist
 
             if (Settings.WasPreviouslyLoggedIn)
             {
-                OAuthSystem.LogInAsync();
                 new MainWindow()
                 {
                     DataContext = new MainWindowViewModel()
                 }.Show();
+                OAuthSystem.LogInAsync();
             }
             else
             {
                 var welcomeScreen = new WelcomeScreenView();
+                // Yesh I know this is illegal in mvvm
                 welcomeScreen.DataContext = new WelcomeScreenViewModel(welcomeScreen);
                 welcomeScreen.Show();
                 welcomeScreen.Activate();
             }
-
-            //MainWindow = new MainWindow()
-            //{
-            //    DataContext = new MainWindowViewModel()
-            //};
-
-            //MainWindow.Show();
 
             base.OnStartup(e);
         }

@@ -151,12 +151,7 @@ namespace Archlist.PlaylistMethods
                     // Beware that web archive responses can be awfully slow, taking even up to a minute
                     string pageCode = await GlobalItems.HttpClient.GetStringAsync(snapshotRequestUrl);
 
-                    if (snapshotRequestUrl == "http://web.archive.org/web/20190110024731/https://www.youtube.com/watch?v=8oOF5A0wd4Q")
-                    {
-
-                    }
-
-                    if (await WebArchiveYoutube.ParseAsync(playlistItem, pageCode, snapshotRequestUrl))
+                    if (await WebArchiveYoutube.ParseAsync(playlistItem, pageCode))
                     {
                         Debug.WriteLine("Done");
 

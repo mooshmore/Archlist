@@ -34,8 +34,8 @@ namespace Archlist.PlaylistMethods
         /// <param name="playlistsIds">The playlists to retrieve data for.</param>
         public static async Task PullPlaylistsItemsDataAsync(List<string> playlistsIds)
         {
-            //// Don't pull playlist items if they have already been pulled in the last minute
-            //playlistsIds = RemoveRecentlyUpdatedItems(playlistsIds);
+            // Don't pull playlist items if they have already been pulled in the last minute
+            playlistsIds = RemoveRecentlyUpdatedItems(playlistsIds);
 
             // Return if there are no playlists after filtering recently updated
             if (playlistsIds.Count == 0)

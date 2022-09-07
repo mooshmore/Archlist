@@ -451,13 +451,11 @@ namespace System
         /// </summary>
         public static List<string> SplitBy(this string text, Delimiter delimiter)
         {
-            switch (delimiter)
+            return delimiter switch
             {
-                case Delimiter.Linebreak:
-                    return text.Split(new string[] { "\r\n", "\r", "\n" },StringSplitOptions.None).ToList();
-                default:
-                    throw new NotImplementedException();
-            }
+                Delimiter.Linebreak => text.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList(),
+                _ => throw new NotImplementedException(),
+            };
         }
 
         public enum Delimiter

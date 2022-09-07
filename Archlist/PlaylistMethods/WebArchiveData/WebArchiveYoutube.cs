@@ -106,7 +106,7 @@ namespace WebArchiveData
         /// <param name="playlistItem"></param>
         /// <param name="pageCode"></param>
         /// <returns>True if the parsing was succesful; False if not.</returns>
-        public static async Task<bool> ParseAsync(MissingPlaylistItem playlistItem, string pageCode, string pageUrl)
+        public static async Task<bool> ParseAsync(MissingPlaylistItem playlistItem, string pageCode)
         {
             // Scraping data of youtube pages is very incosistent, because:
             //   - there were many versions of youtube page over the years, with differently allocated fields
@@ -127,7 +127,7 @@ namespace WebArchiveData
             // and if the parsing was succesufl SourcedFromWebArchive will be set to true.
             try
             {
-                DateTime publishDate = new DateTime();
+                DateTime publishDate = new();
                 if (!ScrapeDate(pageCode, ref publishDate))
                     return false;
 

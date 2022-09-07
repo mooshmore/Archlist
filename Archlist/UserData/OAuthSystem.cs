@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Archlist.Helpers;
 using ToastMessageService;
+using System.Reflection;
 
 namespace Archlist.UserData
 {
@@ -122,7 +123,13 @@ namespace Archlist.UserData
 
         public static void LoadSecretData()
         {
-            if (!new FileInfo("clientSecret.json").Exists)
+
+            JObject clientSecretFile;
+
+            // App publish version path
+            if (File.Exists(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), @"clientSecret.json")))
+                clientSecretFile = JObject.Parse(File.ReadAllText(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), @"clientSecret.json")));
+            else
                 throw new NotImplementedException(@"
                     Missing a client secret file! 
                     This file cannot be available publicly inside the repo. 
@@ -131,8 +138,6 @@ namespace Archlist.UserData
                     or Discord: mooshmore#0763 (definitely quicker response here)
                     and I will provide it to you!"
                 );
-
-            JObject clientSecretFile = JObject.Parse(File.ReadAllText("clientSecret.json"));
 
             clientID = clientSecretFile.SelectToken("installed.client_id").ToString();
             clientSecret = clientSecretFile.SelectToken("installed.client_secret").ToString();
