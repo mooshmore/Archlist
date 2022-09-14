@@ -13,6 +13,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Helpers;
+using System.Diagnostics;
+using ToastMessageService;
 
 namespace Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
 {
@@ -38,7 +41,7 @@ namespace Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
             AddCheckedPlaylistsCommand = new AsyncRelayCommand(AddCheckedPlaylistsAsync);
             PlaylistsList = new();
 
-            RetrieveAndDisplayPlaylists();
+            RetrieveAndDisplayPlaylistsAsync();
         }
 
         public List<Playlist> ReturnCheckedPlaylists()
@@ -58,16 +61,14 @@ namespace Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
             var checkedPlaylists = ReturnCheckedPlaylists();
             await PlaylistsData.PullPlaylistsDataAsync(checkedPlaylists);
 
-            // Refresh the homepage to display newly added playlists
-            HomepageViewModel.Instance.LoadPlaylists();
-
             // Close the window 
             CloseViewCommand.Execute(null);
 
             List<string> addedPlaylistsIds = checkedPlaylists.Select(playlist => playlist.Id).ToList();
             await PlaylistItemsData.PullPlaylistsItemsDataAsync(addedPlaylistsIds);
             await Task.Delay(50);
-            HomepageViewModel.Instance.RefreshData();
+            // Refresh the homepage to display newly added playlists
+            HomepageViewModel.Instance.RefreshDisplayedPlaylistsData();
         }
 
         public RelayCommand CheckAllPlaylistsCommand { get; }
@@ -108,20 +109,35 @@ namespace Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
         }
 
 
-        public async Task RetrieveAndDisplayPlaylists()
+        public async Task RetrieveAndDisplayPlaylistsAsync()
         {
+            ToastMessage.Loading("Loading playlists");
+
             var playlists = await PlaylistsData.RetrieveUserOwnedPlaylistsDataAsync();
 
             // Convert the response to a list and sort the list alphabetically by playlist title
-            List<Playlist> playlistsList  = new(playlists.Items);
+            List<Playlist> playlistsList = new(playlists.Items);
             playlistsList = playlistsList.OrderBy(playlist => playlist.Snippet.Title).ToList();
+
+            var existingPlaylistIdsDirectories = Directories.AllPlaylistsDirectory.GetSubDirectoriesNames();
 
             foreach (var playlist in playlistsList)
             {
-                PlaylistsList.Add(new Tuple<bool, Playlist> (false, playlist));
+                // Don't display playlists that already are tracked
+                if (!existingPlaylistIdsDirectories.Contains(playlist.Id))
+                    PlaylistsList.Add(new Tuple<bool, Playlist> (false, playlist));
             }
+
+            if (PlaylistsList.Count == 0)
+            {
+                DisplayNothingHere = true;
+                RaisePropertyChanged(nameof(DisplayNothingHere));
+            }
+
+            ToastMessage.Hide();
         }
 
+        public bool DisplayNothingHere { get; set; } = false;
         public ICommand CloseViewCommand { get; }
     }
 }

@@ -2,7 +2,6 @@
 using Archlist.Helpers;
 using Archlist.PlaylistMethods;
 using Archlist.PlaylistMethods.Models;
-using Archlist.ProgramData;
 using Archlist.ProgramData.Bases;
 using Archlist.ProgramData.Commands;
 using Archlist.ProgramData.Stores;
@@ -11,15 +10,13 @@ using Archlist.Windows.MainWindowViews.PlaylistItems;
 using Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_link;
 using Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned;
 using Archlist.Windows.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using ToastMessageService;
+using System.Threading.Tasks;
+using System;
 
 namespace Archlist.Windows.MainWindowViews.Homepage
 {
@@ -27,41 +24,41 @@ namespace Archlist.Windows.MainWindowViews.Homepage
     {
         public ObservableCollection<DisplayPlaylist> PlaylistsList { get; set; }
         public ObservableCollection<DisplayPlaylist> MissingItemsPlaylistsList { get; set; }
+        public ObservableCollection<DisplayPlaylist> UnavailablePlaylistsList { get; set; }
+
         public bool DisplayMissingItemsPlaylistsList { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Setting the property as static will make the binding not work.")]
         public UserProfile UserProfile => GlobalItems.UserProfile;
+
         public string MissingItemsText { get; set; }
         public string AllPlaylistsTitle => DisplayMissingItemsPanel ? "All other playlists" : "All playlists";
         public bool DisplayMissingItemsPanel { get; set; }
         public bool DisplayAllItemsPanel { get; set; }
+        public bool DisplayUnavailableItemsPanel { get; set; }
         public bool DisplayNothingHerePanel { get; set; } = false;
         public BitmapImage MissingItemsImage { get; set; }
-        public RelayCommand MarkAsSeenCommand { get; }
 
         public static HomepageViewModel Instance { get; set; }
 
         public HomepageViewModel()
         {
-            LoadPlaylists();
             OnUserProfileChanged();
-            SetMissingItemsText();
+            RefreshDisplayedPlaylistsData();
 
-            PullPlaylistDataCommand = new RelayCommand(PullPlaylistData);
+            PullPlaylistDataCommand = new AsyncRelayCommand(PullPlaylistData);
             RemovePlaylistCommand = new RelayCommand(RemovePlaylist);
             OpenPlaylistCommand = new RelayCommand(OpenPlaylist);
             UpdateCurrentPlaylistCommand = new RelayCommand(UpdateCurrentDisplayPlaylist);
             PullAllPlaylistsCommand = new AsyncRelayCommand(PullAllPlaylistsData);
             MarkAsSeenCommand = new RelayCommand(MarkAsSeen);
+            MarkAllAsSeenCommand = new RelayCommand(MarkAllAsSeen);
+            RemoveAllPlaylistsCommand = new RelayCommand(RemoveAllPlaylists);
+            CheckPlaylistAvailabilityCommand = new AsyncRelayCommand(CheckPlaylistAvailability);
 
             GlobalItems.UserProfileChanged += OnUserProfileChanged;
 
             Instance = this;
-        }
-
-        private void RemovePlaylist()
-        {
-            ToastMessage.NotImplemented();
         }
 
         private void SetMissingItemsText()
@@ -101,19 +98,6 @@ namespace Archlist.Windows.MainWindowViews.Homepage
             RaisePropertyChanged(nameof(MissingItemsImage));
         }
 
-        public DisplayPlaylist CurrentDisplayPlaylist { get; set; }
-
-        public void UpdateCurrentDisplayPlaylist(object playlist)
-        {
-            CurrentDisplayPlaylist = (DisplayPlaylist)playlist;
-        }
-
-        private void MarkAsSeen()
-        {
-            CurrentDisplayPlaylist.MarkAsSeen();
-            LoadPlaylists();
-            SetMissingItemsText();
-        }
 
         private void OnUserProfileChanged()
         {
@@ -122,8 +106,6 @@ namespace Archlist.Windows.MainWindowViews.Homepage
 
         public RelayCommand OpenPlaylistCommand { get; }
         public RelayCommand UpdateCurrentPlaylistCommand { get; }
-        public AsyncRelayCommand PullAllPlaylistsCommand { get; }
-        public RelayCommand RemovePlaylistCommand { get; }
 
         private void OpenPlaylist(object displayPlaylist)
         {
@@ -131,89 +113,58 @@ namespace Archlist.Windows.MainWindowViews.Homepage
             navigateCommand.Execute(displayPlaylist);
         }
 
-        private void PullPlaylistData()
-        {
-            // There is some real fuckery with wpf here.
-            // I mean, excuse me my language, but this is making me go mad.
-
-            // This method is called by clicking a option in a menu item of the playlist.
-            // To open the menu, you have to click on the image.
-            // When you click on the image, a UpdateCurrentDisplayPlaylist method is triggered and CurrentDisplayPlaylist is set.
-            // So, fuckin wpf, explain it to me, how is it possible to click the image and click the menu option,
-            // without triggering the UpdateCurrentDisplayPlaylist method? I will actually go fucking mad.
-
-            // And, its not relying on the user clicking the menu and the option ultra fast, its just random
-            // and will trigger randomly to fuck up your day.
-
-            // Anyways, no matter how much I'll curse on wpf, shit won't fix itself, so this will check first
-            // if the CurrentDisplayPlaylist is null (aka if the Update method has triggered) and
-            // display a message to open the menu again when the Update method somehow hasn't triggered.
-
-            // It isn't a fix or even a workaround the problem, but I have really no idea how to fix it,
-            // so this at least won't crash the program.
-
-            // Fortunatelly this happens very rarely, so it shouldn't be that much of a pain.
-            if (CurrentDisplayPlaylist == null)
-            {
-                ToastMessage.Display("A rare error occured, please open the side menu again and try again.");
-            }
-            else
-            {
-                PlaylistItemsData.PullPlaylistsItemsDataAsync(CurrentDisplayPlaylist.Id.CreateNewList());
-                LoadPlaylists();
-                SetMissingItemsText();
-            }
-
-        }
-
-        private async Task PullAllPlaylistsData()
-        {
-            await PlaylistItemsData.PullAllPlaylistsItemsDataAsync();
-            LoadPlaylists();
-            SetMissingItemsText();
-        }
-
-        public void RefreshData()
-        {
-            LoadPlaylists();
-            SetMissingItemsText();
-        }
-
         public NavigateCommand OpenAddPlaylist_userOwnedViewCommand { get; } = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_userOwnedViewModel());
         public NavigateCommand OpenAddPlaylist_linkCommand { get; } = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_linkViewModel());
-        public RelayCommand PullPlaylistDataCommand { get; }
 
+        public void RefreshDisplayedPlaylistsData()
+        {
+            LoadPlaylists();
+            SetMissingItemsText();
+        }
 
         public void LoadPlaylists()
         {
             PlaylistsList = new();
             MissingItemsPlaylistsList = new();
-
-            var youtubePlaylistsList = PlaylistsData.ReadSavedPlaylists();
-            List<DisplayPlaylist> allPlaylists = new();
-            foreach (var playlistItem in youtubePlaylistsList)
-            {
-                allPlaylists.Add(new DisplayPlaylist(playlistItem));
-            }
+            List<DisplayPlaylist> allPlaylists = ReadPlaylists(false);
+            List<DisplayPlaylist> unavailablePlaylists = ReadPlaylists(true);
 
             // Separate playlists with missing items and other playlists
             var missingItemsPlaylistsList = allPlaylists.Where(playlist => playlist.MissingItemsCount > 0).ToList();
             missingItemsPlaylistsList.ForEach(item => allPlaylists.Remove(item));
 
-            MissingItemsPlaylistsList = new ObservableCollection<DisplayPlaylist>(missingItemsPlaylistsList.OrderBy(playlist => playlist.Title));
             PlaylistsList = new ObservableCollection<DisplayPlaylist>(allPlaylists.OrderBy(playlist => playlist.Title));
+            MissingItemsPlaylistsList = new ObservableCollection<DisplayPlaylist>(missingItemsPlaylistsList.OrderBy(playlist => playlist.Title));
+            UnavailablePlaylistsList = new ObservableCollection<DisplayPlaylist>(unavailablePlaylists.OrderBy(playlist => playlist.Title));
 
             DisplayMissingItemsPanel = missingItemsPlaylistsList.Count > 0;
+            DisplayUnavailableItemsPanel = unavailablePlaylists.Count > 0;
             DisplayAllItemsPanel = PlaylistsList.Count > 0;
 
             DisplayNothingHerePanel = !DisplayAllItemsPanel && !DisplayMissingItemsPanel;
 
             RaisePropertyChanged(nameof(AllPlaylistsTitle));
             RaisePropertyChanged(nameof(DisplayMissingItemsPanel));
+            RaisePropertyChanged(nameof(DisplayUnavailableItemsPanel));
             RaisePropertyChanged(nameof(DisplayAllItemsPanel));
-            RaisePropertyChanged(nameof(MissingItemsPlaylistsList));
             RaisePropertyChanged(nameof(DisplayNothingHerePanel));
+
             RaisePropertyChanged(nameof(PlaylistsList));
+            RaisePropertyChanged(nameof(MissingItemsPlaylistsList));
+            RaisePropertyChanged(nameof(UnavailablePlaylistsList));
+        }
+
+        private static List<DisplayPlaylist> ReadPlaylists(bool readUnavailablePlaylists)
+        {
+            List<DisplayPlaylist> allPlaylists = new();
+            var youtubePlaylistsList = PlaylistsData.ReadSavedPlaylists(readUnavailablePlaylists);
+
+            foreach (var playlistItem in youtubePlaylistsList)
+            {
+                allPlaylists.Add(new DisplayPlaylist(playlistItem, readUnavailablePlaylists));
+            }
+
+            return allPlaylists;
         }
     }
 }

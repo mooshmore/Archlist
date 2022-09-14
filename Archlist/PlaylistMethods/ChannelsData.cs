@@ -25,7 +25,7 @@ namespace Archlist.PlaylistMethods
         /// </summary>
         public static async Task PullChannelsDataAsync(Dictionary<string, PlaylistItemListResponse> playlistResponses)
         {
-            await ToastMessage.Loading("Downloading channels data");
+            ToastMessage.Loading("Downloading channels data");
 
             List<string> channelIds = new();
             foreach (var playlist in playlistResponses)
@@ -163,6 +163,16 @@ namespace Archlist.PlaylistMethods
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns current users channel.
+        /// </summary>
+        public static async Task<Channel> GetCurrentUserChannelAsync()
+        {
+            ChannelsResource.ListRequest channelListRequest = OAuthSystem.YoutubeService.Channels.List(part: "snippet");
+            channelListRequest.Mine = true;
+            return (await channelListRequest.ExecuteAsync()).Items[0];
         }
     }
 }

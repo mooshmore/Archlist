@@ -18,6 +18,9 @@ namespace Archlist
         /// </summary>
         protected override void OnStartup(StartupEventArgs e)
         {
+            // Release command:
+            // dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained true /p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true
+
             // Configure and create data, files etc required by the program
             AppConfiguration.Configure();
             NavigationStores.MainNavigationStore.CurrentViewModel = new HomepageViewModel();
@@ -34,7 +37,7 @@ namespace Archlist
             else
             {
                 var welcomeScreen = new WelcomeScreenView();
-                // Yesh I know this is illegal in mvvm
+                // Yesh I know this is illegal terms of mvvm
                 welcomeScreen.DataContext = new WelcomeScreenViewModel(welcomeScreen);
                 welcomeScreen.Show();
                 welcomeScreen.Activate();

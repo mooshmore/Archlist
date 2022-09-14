@@ -51,16 +51,14 @@ namespace Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_link
         {
             await PlaylistsData.PullPlaylistsDataAsync(new List<Playlist>(PlaylistsList));
 
-            // Refresh the homepage to display newly added playlists
-            HomepageViewModel.Instance.LoadPlaylists();
-
             // Close the window 
             CloseViewCommand.Execute(null);
 
             List<string> addedPlaylistsIds = PlaylistsList.Select(playlist => playlist.Id).ToList();
             await PlaylistItemsData.PullPlaylistsItemsDataAsync(addedPlaylistsIds);
             await Task.Delay(50);
-            HomepageViewModel.Instance.RefreshData();
+            // Refresh the homepage to display newly added playlists
+            HomepageViewModel.Instance.RefreshDisplayedPlaylistsData();
         }
 
         private void RemovePlaylistFromList(object parameter)
@@ -117,7 +115,7 @@ namespace Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_link
             }
 
             // Check if the playlist isn't already being tracked
-            foreach (var playlistDirectory in Directories.PlaylistsDirectory.GetDirectories())
+            foreach (var playlistDirectory in Directories.AllPlaylistsDirectory.GetDirectories())
             {
                 if (playlistDirectory.Name == playlistId)
                 {

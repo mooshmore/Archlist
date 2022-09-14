@@ -18,6 +18,8 @@ using ToastMessageService;
 using System.Net.Http;
 using WebArchiveData;
 using System.Diagnostics;
+using Archlist.PlaylistMethods.Playlists;
+using Archlist.PlaylistMethods.PlaylistItems.MissingPlaylistItemsMethods;
 
 namespace Archlist.PlaylistMethods
 {
@@ -25,7 +27,7 @@ namespace Archlist.PlaylistMethods
     {
         public static async Task PullAllPlaylistsItemsDataAsync()
         {
-            await PullPlaylistsItemsDataAsync(Directories.PlaylistsDirectory.GetSubDirectoriesNames());
+            await PullPlaylistsItemsDataAsync(Directories.AllPlaylistsDirectory.GetSubDirectoriesNames());
         }
 
         /// <summary>
@@ -35,14 +37,28 @@ namespace Archlist.PlaylistMethods
         public static async Task PullPlaylistsItemsDataAsync(List<string> playlistsIds)
         {
             // Don't pull playlist items if they have already been pulled in the last minute
-            playlistsIds = RemoveRecentlyUpdatedItems(playlistsIds);
+            //playlistsIds = RemoveRecentlyUpdatedItems(playlistsIds);
+
+            var returnedPlaylists = await MissingPlaylistsData.UpdateUnavailablePlaylists();
+            foreach (var playlist in returnedPlaylists.Items)
+            {
+                playlistsIds.Add(playlist.Id);
+            }
+
+            var result = await MissingPlaylistsData.GetUnavailablePlaylistsAsync(playlistsIds);
+            playlistsIds = result.playlistsIds;
+            List<Playlist> deletedPlaylists = result.deletedPlaylists;
+            List<Playlist> privatePlaylists = result.privatePlaylists;
 
             // Return if there are no playlists after filtering recently updated
             if (playlistsIds.Count == 0)
+            {
+                MissingPlaylistsData.HandleUnavailablePlaylistsAsync(deletedPlaylists, privatePlaylists, returnedPlaylists);
                 return;
+            }
 
             // Stores playlists and their data
-            Dictionary<string, PlaylistItemListResponse> playlistResponses = await DownloadPlaylistsData(playlistsIds);
+            Dictionary<string, PlaylistItemListResponse> playlistResponses = await DownloadPlaylistsItemsData(playlistsIds);
             // Stores information about time when each playlist has been saved
             Dictionary<string, DateTime> playlistTimestampData = new();
 
@@ -54,25 +70,27 @@ namespace Archlist.PlaylistMethods
             if (playlistResponses.Count != playlistsIds.Count)
                 throw new NotImplementedException();
 
-            await DownloadPlaylistsThumbnails(playlistResponses);
-            SavePlaylistsData(playlistResponses, playlistTimestampData);
+            await DownloadPlaylistItemsThumbnails(playlistResponses);
+            SavePlaylistItemsData(playlistResponses, playlistTimestampData);
 
-            MissingPlaylistItemsMethods.UpdateLatestPlaylistItemsData(playlistResponses);
+            UpdateLatestPlaylistItemsData(playlistResponses);
 
-            await ToastMessage.Loading("Finishing up...");
+            ToastMessage.Loading("Finishing up...");
             await UpdateMissingItemsDataAsync(playlistResponses, playlistTimestampData);
             await PlaylistsData.UpdatePlaylistsDataAsync(playlistsIds);
 
-            await ToastMessage.Succes("All done!");
+            MissingPlaylistsData.HandleUnavailablePlaylistsAsync(deletedPlaylists, privatePlaylists, returnedPlaylists);
+
+            ToastMessage.Succes("All done!");
             Debug.WriteLine("All done!");
         }
 
-        private static void SavePlaylistsData(Dictionary<string, PlaylistItemListResponse> playlistResponses, Dictionary<string, DateTime> playlistTimestampData)
+        private static void SavePlaylistItemsData(Dictionary<string, PlaylistItemListResponse> playlistResponses, Dictionary<string, DateTime> playlistTimestampData)
         {
             // Save playlist items for each playlist
             foreach (var playlist in playlistResponses)
             {
-                var playlistDataDirectoryPath = Path.Combine(Directories.PlaylistsDirectory.FullName, playlist.Key, "data");
+                var playlistDataDirectoryPath = Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlist.Key, "data");
 
                 DateTime currentDateTime = DateTime.Now;
                 string currentDate = currentDateTime.ToString("yyyy-MM-dd");
@@ -94,7 +112,7 @@ namespace Archlist.PlaylistMethods
             }
         }
 
-        private static async Task DownloadPlaylistsThumbnails(Dictionary<string, PlaylistItemListResponse> playlistResponses)
+        private static async Task DownloadPlaylistItemsThumbnails(Dictionary<string, PlaylistItemListResponse> playlistResponses)
         {
             await ToastMessage.ProgressToast(playlistResponses.Count, "Downloading thumbnails for", "playlists");
 
@@ -142,18 +160,13 @@ namespace Archlist.PlaylistMethods
             }
         }
 
-        /// <summary>
-        /// Removes
-        /// </summary>
-        /// <param name="playlistsIds"></param>
-        /// <returns></returns>
         private static List<string> RemoveRecentlyUpdatedItems(List<string> playlistsIds)
         {
             int totalCount = playlistsIds.Count;
             for (int i = 0; i < playlistsIds.Count; i++)
             {
                 //!uncheck this later
-                if (File.Exists(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistsIds[i], "data", DateTime.Now.ToString("yyyy-MM-dd"), $"{DateTime.Now:HH-mm}.json")))
+                if (File.Exists(Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlistsIds[i], "data", DateTime.Now.ToString("yyyy-MM-dd"), $"{DateTime.Now:HH-mm}.json")))
                 {
                     // playlist already up to date!
                     playlistsIds.Remove(playlistsIds[i]);
@@ -166,7 +179,7 @@ namespace Archlist.PlaylistMethods
             return playlistsIds;
         }
 
-        private static async Task<Dictionary<string, PlaylistItemListResponse>> DownloadPlaylistsData(List<string> playlistsIds)
+        private static async Task<Dictionary<string, PlaylistItemListResponse>> DownloadPlaylistsItemsData(List<string> playlistsIds)
         {
             await ToastMessage.ProgressToast(playlistsIds.Count, "Downloading data", "playlists");
 
@@ -185,7 +198,6 @@ namespace Archlist.PlaylistMethods
         /// <summary>
         /// Puts missing items into the missing items data directories.
         /// </summary>
-        /// <param name="playlistResponses"></param>
         private static async Task UpdateMissingItemsDataAsync(Dictionary<string, PlaylistItemListResponse> playlistResponses, Dictionary<string, DateTime> playlistTimestampData)
         {
             await ToastMessage.ProgressToast(playlistResponses.Count, "Filling missing items for", "playlists\nThis can take a long time.");
@@ -221,31 +233,10 @@ namespace Archlist.PlaylistMethods
                 // Fill out missing items data and save them if there are any
                 if (missingItems.Count > 0)
                 {
-                    // Create latest playlist item data once and pass it as argument to save processing time
-                    var latestPlaylistItemsData = GetLatestPlaylistItemsData(playlist.Key);
+                    await DataReassign.ReassignData(playlist, missingItems);
+                    await RemovalReasons.SetRemovalReasons(missingItems);
 
-                    // Override missing item data with its old data if theres one found
-                    foreach (var playlistItem in missingItems)
-                    {
-                        await MissingPlaylistItemsMethods.TryToReassignDataAsync(latestPlaylistItemsData, playlistItem);
-                    }
-
-
-                    List<Task> removalReasonTasks = new();
-                    // Put in video removal reason
-                    foreach (var playlistItem in missingItems)
-                    {
-                        removalReasonTasks.Add(MissingPlaylistItemsMethods.PutInRemovalReason(playlistItem));
-                    }
-
-                    await Task.WhenAll(removalReasonTasks);
-
-                    // Save missing items data
-                    var missingItemsFile = new FileInfo(Path.Combine(Directories.PlaylistsDirectory.FullName, playlist.Key, "missingItems", "recent.json"));
-                    var previousMissingItems = missingItemsFile.Deserialize<List<MissingPlaylistItem>>();
-                    // Merge previously missing recent items with the new ones
-                    missingItems.AddRange(previousMissingItems);
-                    missingItemsFile.Serialize(missingItems);
+                    MissingPlaylistItemsData.SaveMissingItemsData(playlist, missingItems);
                 }
 
                 ToastMessage.IncrementProgress();
@@ -254,20 +245,44 @@ namespace Archlist.PlaylistMethods
 
         private static List<MissingPlaylistItem> GetAllMissingItems(string playlistId, string itemsType)
         {
-            var missingItemsDirectory = new FileInfo(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistId, "missingItems", $"{itemsType}.json"));
+            var missingItemsDirectory = new FileInfo(Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlistId, "missingItems", $"{itemsType}.json"));
             return missingItemsDirectory.Deserialize<List<MissingPlaylistItem>>();
         }
+        public static void UpdateLatestPlaylistItemsData(Dictionary<string, PlaylistItemListResponse> playlistResponses)
+        {
+            foreach (var (playlistId, response) in playlistResponses)
+            {
+                var latestItemsData = PlaylistItemsData.GetLatestPlaylistItemsData(playlistId);
+                var newItemsData = new List<PlaylistItem>();
 
+                foreach (var item in response.Items)
+                {
+                    // If the item has data in the response save it
+                    if (item.IsAvailable())
+                        newItemsData.Add(item);
+                    // If not get the most recent from previous saved data (if it is available)
+                    else if (latestItemsData != null)
+                    {
+                        var latestItemData = latestItemsData.FirstOrDefault(historyItem => item.ContentDetails.VideoId == historyItem.ContentDetails.VideoId);
+                        if (latestItemData != null)
+                            newItemsData.Add(latestItemData);
+                    }
+                }
+
+                // Save the data
+                PlaylistItemsData.SaveLatestPlaylistItemsData(playlistId, newItemsData);
+            }
+        }
 
         public static List<PlaylistItem> GetLatestPlaylistItemsData(string playlistId)
         {
-            var latestPlaylistItemsDataFile = new FileInfo(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistId, "missingItems", "latestPlaylistItemsData.json"));
+            var latestPlaylistItemsDataFile = new FileInfo(Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlistId, "missingItems", "latestPlaylistItemsData.json"));
             return latestPlaylistItemsDataFile.Deserialize<List<PlaylistItem>>();
         }
 
         public static void SaveLatestPlaylistItemsData(string playlistId, List<PlaylistItem> response)
         {
-            var latestPlaylistItemsDataFile = new FileInfo(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistId, "missingItems", "latestPlaylistItemsData.json"));
+            var latestPlaylistItemsDataFile = new FileInfo(Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlistId, "missingItems", "latestPlaylistItemsData.json"));
             latestPlaylistItemsDataFile.Serialize(response);
         }
 
@@ -288,14 +303,14 @@ namespace Archlist.PlaylistMethods
         /// <returns>The playlist in </returns>
         public static async Task<PlaylistItemListResponse> RetrievePlaylistItemsAsync(string playlistId)
         {
-            PlaylistItemListResponse playlist = await GetPlaylistAsync(playlistId);
+            PlaylistItemListResponse playlist = await GetPlaylistItemsAsync(playlistId);
 
             string nextPageToken = playlist.NextPageToken;
             // Only 50 items can be retrieved with a single api call per page- 
             // repeat the method until the last page is returned
             while (nextPageToken != null)
             {
-                PlaylistItemListResponse nextPage = await GetPlaylistAsync(playlistId, nextPageToken);
+                PlaylistItemListResponse nextPage = await GetPlaylistItemsAsync(playlistId, nextPageToken);
                 nextPageToken = nextPage.NextPageToken;
 
                 // Add the items from the new page to the main object
@@ -308,31 +323,29 @@ namespace Archlist.PlaylistMethods
             return playlist;
         }
 
+
         /// <summary>
         /// Sends a api request to retrieve the information about items in the playlist.
         /// </summary>
         /// <param name="playlistId">The Id of the playlist to retrieve.</param>
         /// <param name="nextPageToken">The next page token. If not passed the method will send a request without one.</param>
-        /// <returns>.Succes - if the request returned with a succes; .Playlist - the retrieved playlist items info (null if failed).</returns>
-        private static async Task<PlaylistItemListResponse> GetPlaylistAsync(string playlistId, string nextPageToken = null)
+        public static async Task<PlaylistItemListResponse> GetPlaylistItemsAsync(string playlistId, string nextPageToken = null)
         {
             YouTubeService youtubeService = OAuthSystem.YoutubeService;
 
             PlaylistItemsResource.ListRequest request = youtubeService.PlaylistItems.List(part: "contentDetails,id,snippet,status");
             request.PlaylistId = playlistId;
             request.MaxResults = 50;
+            request.PageToken = nextPageToken;
 
-            if (nextPageToken != null)
-                request.PageToken = nextPageToken;
-
-            PlaylistItemListResponse response = await request.ExecuteAsync();
-            return response;
+            return await request.ExecuteAsync();
         }
+
 
         /// <summary>
         /// Returns a thumbnail from the given playlistId directory with the given url.
         /// </summary>
-        public static string GetPlaylistItemThumbnailPath(string playlistId, string thumbnailUrl)
+        public static string GetPlaylistItemThumbnailPath(string playlistId, string thumbnailUrl, bool playlistIsUnavailable = false)
         {
             // Conversion:
             // https://i.ytimg.com/vi/UI-GDOq8000/mqdefault.jpg => UI-GDOq8000/mqdefault.jpg
@@ -341,8 +354,29 @@ namespace Archlist.PlaylistMethods
             // UI-GDOq8000/mqdefault.jpg => UI-GDOq8000.jpg
             thumbnailName = thumbnailName.TrimTo("/") + ".jpg";
 
-            DirectoryInfo playlistThumbnailDirectory = new(Path.Combine(Directories.PlaylistsDirectory.FullName, playlistId, "thumbnails"));
+            DirectoryInfo playlistThumbnailDirectory;
+
+            if (playlistIsUnavailable)
+                playlistThumbnailDirectory = new(Path.Combine(Directories.UnavailablePlaylistsDirectory.FullName, playlistId, "thumbnails"));
+            else
+                playlistThumbnailDirectory = new(Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlistId, "thumbnails"));
+
             return Path.Combine(playlistThumbnailDirectory.FullName, thumbnailName);
+        }
+
+
+        public static void MarkAsSeen(this DisplayPlaylist playlist) => MarkAsSeen(new List<DisplayPlaylist>() { playlist });
+
+        public static void MarkAsSeen(List<DisplayPlaylist> playlistsList)
+        {
+            foreach (var playlist in playlistsList)
+            {
+                var mergedItems = playlist.RecentMissingItemsFile.Deserialize<List<MissingPlaylistItem>>();
+                mergedItems.AddRange(playlist.SeenMissingItemsFile.Deserialize<List<MissingPlaylistItem>>());
+
+                playlist.RecentMissingItemsFile.Serialize(new List<MissingPlaylistItem>());
+                playlist.SeenMissingItemsFile.Serialize(mergedItems);
+            }
         }
     }
 }

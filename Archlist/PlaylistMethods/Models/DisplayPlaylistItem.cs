@@ -16,7 +16,7 @@ namespace Archlist.PlaylistMethods.Models
 {
     public class DisplayPlaylistItem : ViewModelBase
     {
-        public DisplayPlaylistItem(PlaylistItem playlistItem, string playlistId)
+        public DisplayPlaylistItem(PlaylistItem playlistItem, string playlistId, bool playlistIsUnavailable)
         {
             Title = playlistItem.Snippet.Title;
             Description = playlistItem.Snippet.Description;
@@ -28,7 +28,7 @@ namespace Archlist.PlaylistMethods.Models
             {
                 // Check if thumbnail exists and if not redownload it, this can happen when for example
                 // program will be shut down when downloading playlist items thumbnails
-                var thumbnailFile = new FileInfo(PlaylistItemsData.GetPlaylistItemThumbnailPath(PlaylistId, playlistItem.Snippet.Thumbnails.Medium.Url));
+                var thumbnailFile = new FileInfo(PlaylistItemsData.GetPlaylistItemThumbnailPath(PlaylistId, playlistItem.Snippet.Thumbnails.Medium.Url, playlistIsUnavailable));
                 if (!thumbnailFile.Exists)
                     // This is synchronous downloading, but the thing is it shouldn't happen in the first place,
                     // so the user can wait in a few seconds in this situation.
@@ -45,7 +45,7 @@ namespace Archlist.PlaylistMethods.Models
                 Creator = new DisplayChannel(playlistItem.Snippet.VideoOwnerChannelId);
         }
 
-        public DisplayPlaylistItem(MissingPlaylistItem playlistItem, string playlistId)
+        public DisplayPlaylistItem(MissingPlaylistItem playlistItem, string playlistId, bool playlistIsUnavailable)
         {
             Title = playlistItem.Snippet.Title;
             Description = playlistItem.Snippet.Description;
@@ -55,7 +55,7 @@ namespace Archlist.PlaylistMethods.Models
             PlaylistId = playlistId;
 
             if (playlistItem.Snippet.Thumbnails.Medium != null)
-                ThumbnailPath = new BitmapImage(new Uri(PlaylistItemsData.GetPlaylistItemThumbnailPath(PlaylistId, playlistItem.Snippet.Thumbnails.Medium.Url)));
+                ThumbnailPath = new BitmapImage(new Uri(PlaylistItemsData.GetPlaylistItemThumbnailPath(PlaylistId, playlistItem.Snippet.Thumbnails.Medium.Url, playlistIsUnavailable)));
             else
                 ThumbnailPath = LocalHelpers.GetResourcesBitmapImage(@"thumbnails/missingThumbnail.jpg");
 

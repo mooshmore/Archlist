@@ -57,8 +57,11 @@ namespace Archlist.ProgramData
             string roamingPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             Directories.MainDirectory = Directory.CreateDirectory(Path.Combine(roamingPath, "Archlist_ms"));
             Directories.ChannelsDirectory = Directories.MainDirectory.CreateSubdirectory("channels");
+
             Directories.PlaylistsDirectory = Directories.MainDirectory.CreateSubdirectory("playlists");
-            Directories.UserDataDirectory = Directories.MainDirectory.CreateSubdirectory("userData");
+            Directories.AllPlaylistsDirectory = Directories.PlaylistsDirectory.CreateSubdirectory("allPlaylists");
+            Directories.UnavailablePlaylistsDirectory = Directories.PlaylistsDirectory.CreateSubdirectory("removedPlaylists");
+            Directories.UsersDataDirectory = Directories.MainDirectory.CreateSubdirectory("userData");
         }
 
     }

@@ -26,19 +26,37 @@ namespace Archlist.PlaylistMethods
         /// Reads all saved playlists under AppData\Roaming\Moosh_Archlist\playlists, 
         /// and returns them in form of a Playlist list.
         /// </summary>
-        public static List<Playlist> ReadSavedPlaylists()
+        public static List<Playlist> ReadSavedPlaylists(bool readUnavailablePlaylists = false)
         {
+            DirectoryInfo playlistsDirectory;
+
+            if (readUnavailablePlaylists)
+                playlistsDirectory = Directories.UnavailablePlaylistsDirectory;
+            else
+                playlistsDirectory = Directories.AllPlaylistsDirectory;
+
             List<Playlist> playlistList = new();
-            foreach (DirectoryInfo playlistDirectory in Directories.PlaylistsDirectory.GetDirectories())
+            foreach (DirectoryInfo playlistDirectory in playlistsDirectory.GetDirectories())
             {
                 string playlistID = playlistDirectory.Name;
-                string playlistInfoPath = Path.Combine(Directories.PlaylistsDirectory.FullName, playlistID, "playlistInfo.json");
+                string playlistInfoPath = Path.Combine(playlistsDirectory.FullName, playlistID, "playlistInfo.json");
                 FileInfo playlistFile = new(playlistInfoPath);
 
                 Playlist playlist = playlistFile.Deserialize<Playlist>();
                 playlistList.Add(playlist);
             }
             return playlistList;
+        }
+
+        public static Playlist ReadPlaylistData(string playlistId)
+        {
+            string playlistFilePath = Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlistId, "playlistInfo.json");
+            FileInfo playlistFile = new FileInfo(playlistFilePath);
+
+            if (playlistFile.Exists)
+                return new FileInfo(playlistFilePath).Deserialize<Playlist>();
+            else
+                return null;
         }
 
         /// <summary>
@@ -104,7 +122,6 @@ namespace Archlist.PlaylistMethods
                     currentPlaylistsList = "";
                 }
             }
-
             // Convert the default google plyalist class to a one used in the program
             return playlists;
 
@@ -117,8 +134,6 @@ namespace Archlist.PlaylistMethods
 
                 PlaylistListResponse currentPlaylistListResponse;
                 currentPlaylistListResponse = await playlistListRequest.ExecuteAsync();
-
-                //! Handling errors kinda should be here
 
                 // Assign the object on the first run
                 if (playlists == null)
@@ -141,7 +156,7 @@ namespace Archlist.PlaylistMethods
 
             foreach (var playlist in playlistsList.Items)
             {
-                var playlistDirectory = new DirectoryInfo(Path.Combine(Directories.PlaylistsDirectory.FullName, playlist.Id));
+                var playlistDirectory = new DirectoryInfo(Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlist.Id));
 
                 // Write the new data to the file
                 var playlistInfoFile = new FileInfo(Path.Combine(playlistDirectory.FullName, "playlistInfo.json"));
@@ -172,7 +187,7 @@ namespace Archlist.PlaylistMethods
 
             foreach (var playlist in distinctedPlaylists)
             {
-                var playlistDirectory = Directories.PlaylistsDirectory.CreateSubdirectory(playlist.Id);
+                var playlistDirectory = Directories.AllPlaylistsDirectory.CreateSubdirectory(playlist.Id);
                 playlistDirectory.CreateSubdirectory("data");
                 playlistDirectory.CreateSubdirectory("thumbnails");
 
@@ -204,5 +219,11 @@ namespace Archlist.PlaylistMethods
             // Download creator channels
             await ChannelsData.PullChannelsDataAsync(distinctedPlaylists.Select(obj => obj.Snippet.ChannelId).ToList());
         }
+    }
+
+    public enum MissingItemsType
+    {
+        Recent,
+        Seen
     }
 }

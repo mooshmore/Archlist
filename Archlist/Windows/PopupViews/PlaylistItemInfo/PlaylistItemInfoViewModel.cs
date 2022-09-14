@@ -38,7 +38,7 @@ namespace Archlist.Windows.PopupViews.PlaylistItemInfo
             DisplayPlaylistItem = displayPlaylist;
             DisplayRemovalInfo = displayPlaylist.RemovalReasonShort != null;
             RaisePropertyChanged(nameof(DisplayRemovalInfo));
-            CopyTitleCommand = new RelayCommand(() => System.Windows.Clipboard.SetText(DisplayPlaylistItem.Title));
+            CopyTitleCommand = new RelayCommand(CopyTitle);
             YoutubeSearchLink = "https://www.youtube.com/results?search_query=" + System.Net.WebUtility.UrlEncode(displayPlaylist.Title);
             CopyIDCommand = new RelayCommand(CopyID);
 
@@ -81,9 +81,15 @@ namespace Archlist.Windows.PopupViews.PlaylistItemInfo
             }
         }
 
+        private void CopyTitle()
+        {
+            System.Windows.Clipboard.SetText(DisplayPlaylistItem.Title);
+            ToastMessage.Display("Title copied!");
+        }
+
         public RelayCommand CopyIDCommand { get; }
 
-        public void CopyID()
+        private void CopyID()
         {
             System.Windows.Clipboard.SetText(DisplayPlaylistItem.Id);
             ToastMessage.Display("ID copied!");

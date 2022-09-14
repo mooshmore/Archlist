@@ -11,6 +11,57 @@ namespace Helpers
     public static class DirectoryExtensions
     {
         /// <summary>
+        /// Creates a file inside of the given directory with the given name.
+        /// </summary>
+        public static void WriteAllText(this FileInfo file, string text)
+        {
+            File.WriteAllText(file.FullName, text);
+        }
+
+        /// <summary>
+        /// Creates a file inside of the given directory with the given name.
+        /// </summary>
+        public static FileInfo CreateSubFile(DirectoryInfo directory, string fileName)
+        {
+            string filePath = Path.Combine(directory.FullName, fileName);
+            File.Create(filePath);
+            return new FileInfo(filePath);
+        }
+
+        /// <summary>
+        /// Creates a WriteableBitmap image from the given path to image.
+        /// </summary>
+        public static WriteableBitmap CreateWriteableBitmap(string path)
+        {
+            Uri imageUri = new(path);
+            BitmapImage bitmapImage = new(imageUri);
+            return new WriteableBitmap(bitmapImage);
+        }
+
+        /// <summary>
+        /// Removes all files and folders from the given directory.
+        /// </summary>
+        public static void ClearDirectory(this DirectoryInfo directory)
+        {
+            foreach (FileInfo file in directory.EnumerateFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in directory.EnumerateDirectories())
+            {
+                dir.Delete(true);
+            }
+        }
+
+        /// <summary>
+        /// Removes the directory with the given name and all of its contents.
+        /// </summary>
+        public static void RemoveDirectory(this DirectoryInfo directoryInfo, string directoryName)
+        {
+            new DirectoryInfo(Path.Combine(directoryInfo.FullName, directoryName)).Delete(true);
+        }
+
+        /// <summary>
         /// Returns the last created file inside of the given directory.
         /// </summary>
         /// <returns>The last created file if one exists; Otherwise null.</returns>

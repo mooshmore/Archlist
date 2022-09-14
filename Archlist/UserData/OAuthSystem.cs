@@ -13,6 +13,10 @@ using System.Threading.Tasks;
 using Archlist.Helpers;
 using ToastMessageService;
 using System.Reflection;
+using System.Diagnostics;
+using Helpers;
+using Archlist.PlaylistMethods;
+using System.Collections.Generic;
 
 namespace Archlist.UserData
 {
@@ -31,20 +35,25 @@ namespace Archlist.UserData
             ToastMessage.Loading("Logging in");
 
             // Log in the user
-            credentials = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                new ClientSecrets
-                {
-                    ClientId = clientID,
-                    ClientSecret = clientSecret
-                },
-                scopes, user: "user", CancellationToken.None).Result;
+            // This for some reason throws exception System.ObjectDisposedException.
+            // I don't know why, but it works, so I don't ask.
+            Debug.WriteLine("Known exception at LogInAsync() :");
+
+            credentials = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+            new ClientSecrets
+            {
+                ClientId = clientID,
+                ClientSecret = clientSecret
+            },
+            scopes, user: "user", CancellationToken.None);
 
             // Refresh the token if it has expired
             if (credentials.Token.IsExpired(SystemClock.Default))
+                // GoogleWebAuthorizationBroker.ReauthorizeAsync ?
                 await credentials.RefreshTokenAsync(CancellationToken.None);
 
             // Create youtube service instance with retrieved user cridentials & data
-            YoutubeService = new Google.Apis.YouTube.v3.YouTubeService(new BaseClientService.Initializer()
+            YoutubeService = new YouTubeService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credentials
             });
@@ -59,27 +68,21 @@ namespace Archlist.UserData
         
         private async static Task CreateUserProfileAsync()
         {
-            string currentUserProfileData = await GetUserProfileDataAsync();
-            UserProfile currentUserProfile = new(currentUserProfileData);
+            string userProfileString = await GetUserProfileDataAsync();
+            string currentUserChannelId = (await ChannelsData.GetCurrentUserChannelAsync()).Id;
 
-            // If there exists user profile that has been used previously check if
-            // it was the same profile as currently
-            if (SavedUserProfileExists())
-            {
-                string previousUserProfileData = ReadSavedUserProfileDataAsync();
-                UserProfile previousUserProfile = new(previousUserProfileData);
+            // Add a channelId to the user profile data
+            JObject userProfileData = JObject.Parse(userProfileString);
+            userProfileData["channelId"] = currentUserChannelId;
 
-                // Check if the account is the same as previous account by checking the email
-                if (currentUserProfile.Email != previousUserProfile.Email)
-                {
-
-                }
-            }
+            UserProfile currentUserProfile = new(userProfileData, currentUserChannelId);
 
             // Save the data into the file
-            File.WriteAllText(Path.Combine(Directories.UserDataDirectory.FullName, "userProfile.json"), currentUserProfileData);
-            await LocalHelpers.DownloadImageAsync(currentUserProfile.PictureURL, Path.Combine(Directories.UserDataDirectory.FullName, "userPicture.jpg"));
+            DirectoryInfo userDataDirectory = Directories.UsersDataDirectory.CreateSubdirectory(currentUserProfile.ID);
+            FileInfo userDataFile = userDataDirectory.CreateSubfile("userProfile.json");
+            userDataFile.WriteAllText(userProfileData.ToString());
 
+            await LocalHelpers.DownloadImageAsync(currentUserProfile.PictureURL, Path.Combine(userDataDirectory.FullName, "userPicture.jpg"));
             GlobalItems.UserProfile = currentUserProfile;
         }
 
@@ -99,26 +102,39 @@ namespace Archlist.UserData
                 return await userinfoResponseReader.ReadToEndAsync();
         }
 
-        private static string ReadSavedUserProfileDataAsync()
+        public static List<UserProfile> ReadSavedUserProfiles()
         {
-            return File.ReadAllText(Path.Combine(Directories.UserDataDirectory.FullName, "userProfile.json"));
+            List<UserProfile> userProfiles = new();
+            foreach (var userDirectory in Directories.UsersDataDirectory.GetDirectories())
+            {
+                FileInfo userDataFile = new FileInfo(Path.Combine(userDirectory.FullName, "userProfile.json"));
+                JObject userData = JObject.Parse(userDataFile.ReadAllText());
+                userProfiles.Add(new UserProfile(userData));
+            }
+            return userProfiles;
+        }
+
+        private static string ReadSavedUserProfileData()
+        {
+            return File.ReadAllText(Path.Combine(Directories.UsersDataDirectory.FullName, "userProfile.json"));
         }
 
         private static bool SavedUserProfileExists()
         {
-            return File.Exists(Path.Combine(Directories.UserDataDirectory.FullName, "userProfile.json"));
+            return File.Exists(Path.Combine(Directories.UsersDataDirectory.FullName, "userProfile.json"));
         }
 
         public static async Task SwitchAccountAsync()
         {
             await GoogleWebAuthorizationBroker.ReauthorizeAsync(credentials, CancellationToken.None);
+            await CreateUserProfileAsync();
         }
 
-        public static async Task<bool> LogOutAsync()
+        public static async Task LogOutAsync()
         {
-            //bool response = Task.Run(async () => LogOut().Result).Result;
+            await credentials.RevokeTokenAsync(CancellationToken.None);
             ToastMessage.Display("Logged out!");
-            return await credentials.RevokeTokenAsync(CancellationToken.None);
+            return;
         }
 
         public static void LoadSecretData()

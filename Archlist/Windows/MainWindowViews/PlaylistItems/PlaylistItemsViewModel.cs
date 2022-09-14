@@ -46,7 +46,7 @@ namespace Archlist.Windows.MainWindowViews.PlaylistItems
             LoadSavedDays();
             LoadSavedHours();
             LoadPlaylistItems();
-            LoadMissingItems("recent");
+            LoadMissingItems(MissingItemsType.Recent);
             SetMissingItemsInfo();
             SetLastUpdateTime();
 
@@ -112,7 +112,7 @@ namespace Archlist.Windows.MainWindowViews.PlaylistItems
             {
                 // ! Don't add videos that are unavailable
                 if (PlaylistItemsData.IsAvailable(playlistItem))
-                    PlaylistsItemsList.Add(new DisplayPlaylistItem(playlistItem, DisplayedPlaylist.Id));
+                    PlaylistsItemsList.Add(new DisplayPlaylistItem(playlistItem, DisplayedPlaylist.Id, DisplayedPlaylist.IsUnavailable));
             }
         }
     }

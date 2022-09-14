@@ -18,17 +18,17 @@ namespace Archlist.Windows.PopupViews.WelcomeScreenWindow
     {
         public WelcomeScreenViewModel(Window window)
         {
-            LogInCommand = new RelayCommand(LogIn);
+            LogInCommand = new AsyncRelayCommand(LogIn);
             Window = window;
         }
 
-        public RelayCommand LogInCommand { get; }
+        public AsyncRelayCommand LogInCommand { get; }
         public Window Window { get; }
         public string AppVersion => GlobalItems.AppVersion;
 
-        public void LogIn()
+        public async Task LogIn()
         {
-            OAuthSystem.LogInAsync();
+            await OAuthSystem.LogInAsync();
 
             // And yeah, I know that this isn't mvvm and I'm kinda cheating here,
             // but I just wanna finish this app and I have no clue and time to figure out

@@ -28,34 +28,38 @@ namespace Archlist.Windows.MainWindowViews.PlaylistItems
         public string SeePreviousItemsText { get; set; } = "See all previous missing items";
         public bool DisplayNothingHere { get; set; }
 
-        private void LoadMissingItems(string itemsType)
+        private void LoadMissingItems(MissingItemsType itemsType)
         {
-            var missingItemsFile = new FileInfo(Path.Combine(DisplayedPlaylist.MissingItemsDirectory.FullName, $"{itemsType}.json"));
-            var missingItems = missingItemsFile.Deserialize<List<MissingPlaylistItem>>();
+            List<MissingPlaylistItem> missingItems = null;
+
+            if (itemsType == MissingItemsType.Recent)
+                missingItems = DisplayedPlaylist.RecentMissingItemsFile.Deserialize<List<MissingPlaylistItem>>();
+            else 
+                missingItems = DisplayedPlaylist.SeenMissingItemsFile.Deserialize<List<MissingPlaylistItem>>();
 
             MissingItemsList = new();
-            missingItems.ForEach(item => MissingItemsList.Add(new DisplayPlaylistItem(item, DisplayedPlaylist.Id)));
+            missingItems.ForEach(item => MissingItemsList.Add(new DisplayPlaylistItem(item, DisplayedPlaylist.Id, DisplayedPlaylist.IsUnavailable)));
 
             DisplayNothingHere = MissingItemsList.Count == 0;
             RaisePropertyChanged(nameof(MissingItemsList));
             RaisePropertyChanged(nameof(DisplayNothingHere));
         }
 
-        private string CurrentlyDisplayedItems = "recent";
+        private MissingItemsType CurrentlyDisplayedItems = MissingItemsType.Recent;
 
         private void SeePreviousItems()
         {
-            if (CurrentlyDisplayedItems == "seen")
+            if (CurrentlyDisplayedItems == MissingItemsType.Seen)
             {
-                LoadMissingItems("recent");
-                CurrentlyDisplayedItems = "recent";
+                LoadMissingItems(MissingItemsType.Recent);
+                CurrentlyDisplayedItems = MissingItemsType.Recent;
                 SeePreviousItemsText = "See all previous missing items";
 
             }
             else
             {
-                LoadMissingItems("seen");
-                CurrentlyDisplayedItems = "seen";
+                LoadMissingItems(MissingItemsType.Seen);
+                CurrentlyDisplayedItems = MissingItemsType.Seen;
                 SeePreviousItemsText = "See recent missing items";
             }
 
@@ -86,7 +90,7 @@ namespace Archlist.Windows.MainWindowViews.PlaylistItems
             {
                 MarkAllAsSeenVisibility = false;
                 MissingItemsImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/Other/positiveGreen_ok_32px.png");
-                MissingItemsText = "No missing videos have been found";
+                MissingItemsText = "No recent missing videos have been found";
             }
             else
             {

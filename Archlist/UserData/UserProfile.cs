@@ -8,19 +8,30 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using Archlist.Helpers;
+using Archlist.PlaylistMethods;
 
 namespace Archlist.UserData
 {
     public class UserProfile
     {
-        public UserProfile(string userProfileData)
+        public UserProfile(JObject userProfileData, string channelID)
         {
-            JObject userProfileObject = JObject.Parse(userProfileData);
+            ID = userProfileData.SelectToken("sub").ToString();
+            ChannelID = channelID;
 
-            Name = userProfileObject.SelectToken("name").ToString();
-            Email = userProfileObject.SelectToken("email").ToString();
-            PictureURL = userProfileObject.SelectToken("picture").ToString();
+            Name = userProfileData.SelectToken("name").ToString();
 
+            Email = userProfileData.SelectToken("email").ToString();
+            // If user has a different channel on a single youtube account his email will be
+            // auto generated and not worth displaying, so a "Youtube channel" is displayed instead
+            if (Email.EndsWith("@pages.plusgoogle.com"))
+                DisplayEmail = "Youtube channel";
+            else
+                DisplayEmail = userProfileData.SelectToken("email").ToString();
+
+            PictureURL = userProfileData.SelectToken("picture").ToString();
 
             List<string> greetings = new()
             {
@@ -46,12 +57,56 @@ namespace Archlist.UserData
             WelcomeGreeting = greetings.Random();
         }
 
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string PictureURL { get; set; }
+        public UserProfile(JObject userProfileData)
+        {
+            ID = userProfileData.SelectToken("sub").ToString();
+            ChannelID = userProfileData.SelectToken("channelId").ToString();
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Setting the property as static will make the binding not work.")]
-        public string PicturePath => Path.Combine(Directories.UserDataDirectory.FullName, "userPicture.jpg");
-        public string WelcomeGreeting { get; set; }
+            Name = userProfileData.SelectToken("name").ToString();
+
+            Email = userProfileData.SelectToken("email").ToString();
+            // If user has a different channel on a single youtube account his email will be
+            // auto generated and not worth displaying, so a "Youtube channel" is displayed instead
+            if (Email.EndsWith("@pages.plusgoogle.com"))
+                DisplayEmail = "Youtube channel";
+            else
+                DisplayEmail = userProfileData.SelectToken("email").ToString();
+
+            PictureURL = userProfileData.SelectToken("picture").ToString();
+
+            List<string> greetings = new()
+            {
+                $"Hiya, {Name}",
+                $"Hey there, {Name}",
+                $"Sup, {Name}",
+                $"Hello there, general {Name}",
+                $"Hi there, {Name}",
+                $"Howdy, {Name}",
+                $"Ahoy, {Name}",
+                "What’s cookin’, good lookin’?",
+                "Hey there, hot stuff",
+                $"So… we meet at last, {Name}",
+                $"Greetings, {Name}.",
+                $"What does a horse eat? Hayyyyyyy.",
+                $"Ello, matey.",
+                $"Ghostbusters, watccha want?",
+                $"I thought I would never see you again, {Name}",
+                $"Howdy-doody, {Name}",
+                $"Konnichiwa, {Name} - San (◕‿◕✿)"
+            };
+
+            WelcomeGreeting = greetings.Random();
+        }
+
+        public string ID { get; }
+        public string ChannelID { get; }
+        public string Name { get; }
+        public string Email { get; }
+        public string DisplayEmail { get; }
+        public string PictureURL { get; }
+        public WriteableBitmap Picture => DirectoryExtensions.CreateWriteableBitmap(Path.Combine(UserProfileDirectory.FullName, "userPicture.jpg"));
+        public string WelcomeGreeting { get; }
+
+        public DirectoryInfo UserProfileDirectory => new DirectoryInfo(Path.Combine(Directories.UsersDataDirectory.FullName, ID));
     }
 }

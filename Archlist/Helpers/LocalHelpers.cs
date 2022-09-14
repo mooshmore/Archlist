@@ -14,6 +14,12 @@ namespace Archlist.Helpers
 {
     public static class LocalHelpers
     {
+        /// <summary>
+        /// Returns "s" if the value isn't equal to 1.
+        /// Usage: People{LocalHelpers.SEnding(people.Count)}"
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string SEnding(int value)
         {
             return value == 1 ? "" : "s";

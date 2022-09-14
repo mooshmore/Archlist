@@ -87,4 +87,26 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="LightTextButton" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Background" Value="#25ffffff"/>
+        <Setter Property="Opacity" Value="0.7"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Image.MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.20" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Image.MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.7" Duration="0:0:0.20" />
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

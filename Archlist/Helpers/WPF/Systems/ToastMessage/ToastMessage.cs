@@ -1,4 +1,5 @@
-﻿using Archlist.Windows.ViewModels;
+﻿using Archlist.ProgramData.Bases;
+using Archlist.Windows.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,13 @@ namespace ToastMessageService
 {
     public class ToastMessage : ViewModelBase
     {
+        public static ToastMessage ClassInstance { get; set; } = new ToastMessage();
+
         public ToastMessage()
         {
             ClassInstance = this;
+            ButtonPressedCommand = new RelayCommand(ButtonPressed);
         }
-
-        public static ToastMessage ClassInstance { get; set; } = new ToastMessage();
 
         private static List<string> DisplaysQuery { get; set; } = new();
 
@@ -24,6 +26,18 @@ namespace ToastMessageService
             ClassInstance.Text = text;
             ClassInstance.Visibility = true;
             await Task.Delay(50);
+
+            // The whole displays query is here because of a scenario:
+            // Toast messages by default can get piled up on each other, so for example:
+
+            // 1: Toast message "1" is displayed with a delay of 3000ms
+            // 2: 2000ms later, a Toast message "2" is displayed with a delay of 3000ms
+
+            // And normally, you would want the toast message "2" to dissapear in 3000ms,
+            // but the thing is a hide delay from the first message is still active,
+            // so it will hide the "2" message in a 1000ms.
+            // The DisplaysQuery will prevent that and only hide stuff if it is the only
+            // message in queue.
             if (dissapear)
             {
                 DisplaysQuery.Add(text);
@@ -40,22 +54,50 @@ namespace ToastMessageService
 
         }
 
-        public static async Task ProgressSucces(string text)
-        {
-            ClassInstance.ShowLoadingImage = false;
-            ClassInstance.Text = text;
-            ClassInstance.Visibility = true;
+        public RelayCommand ButtonPressedCommand { get; }
 
-            if (!BlockDissapearing)
+        public static void InformationDialog(string text)
+        {
+            InformationMessagesQueue.Add(text);
+            // If there is nothing in the queue display the item straight away
+            if (InformationMessagesQueue.Count == 1)
             {
-                await WaitDisplayTimeAsync(text);
-                ClassInstance.Visibility = false;
+                ResetAndSetText(InformationMessagesQueue[0]);
+                ClassInstance.DisplayButton = true;
             }
         }
 
-        public static void NotImplemented()
+        public static List<string> InformationMessagesQueue { get; set; } = new();
+
+        private void ButtonPressed()
         {
-            Display("Not implemented yet");
+            InformationMessagesQueue.RemoveAt(0);
+
+            if (InformationMessagesQueue.Count != 0)
+            {
+                ResetAndSetText(InformationMessagesQueue[0]);
+                ClassInstance.DisplayButton = true;
+            }
+            else
+                ClassInstance.Visibility = false;
+        }
+
+        private static void ResetAndSetText(string text)
+        {
+            ClassInstance.DisplayButton = false;
+            ClassInstance.ShowLoadingImage = false;
+            ClassInstance.AdditionalInfoVisibility = false;
+            ClassInstance.Visibility = true;
+
+            if (text.Contains("';'"))
+            {
+                ClassInstance.Text = text.TrimTo("';'");
+                ClassInstance.AdditionalInfoVisibility = true;
+                ClassInstance.AdditionalInfoText = text.TrimFrom("';'");
+            }
+            else
+                ClassInstance.Text = text;
+
         }
 
         private static async Task WaitDisplayTimeAsync(string text)
@@ -68,33 +110,77 @@ namespace ToastMessageService
             await Task.Delay(displayTime);
         }
 
-        public static async Task Loading(string text)
+        private static async Task WaitHideDisplayTimeAsync(string text)
         {
-            ClassInstance.Text = text;
-            ClassInstance.Visibility = true;
-            ClassInstance.ShowLoadingImage = true;
-            await Task.Delay(50);
+            await WaitDisplayTimeAsync(text);
+            ClassInstance.Visibility = false;
         }
+
 
         public static async Task Hide()
         {
+            if (InformationMessagesQueue.Count != 0)
+                return;
+
             ClassInstance.Text = "";
             ClassInstance.Visibility = false;
             ClassInstance.ShowLoadingImage = false;
         }
 
+        #region Default styles
+
         public static async Task Succes(string text)
         {
-            ClassInstance.ShowLoadingImage = false;
-            ClassInstance.Text = text;
-            ClassInstance.Visibility = true;
+            if (InformationMessagesQueue.Count != 0)
+                return;
 
-            await WaitDisplayTimeAsync(text);
-            ClassInstance.Visibility = false;
+            ResetAndSetText(text);
+            await WaitHideDisplayTimeAsync(text);
         }
+
+        public static async Task Warning(string text)
+        {
+            if (InformationMessagesQueue.Count != 0)
+                return;
+
+            ResetAndSetText(text);
+            await WaitHideDisplayTimeAsync(text);
+        }
+
+
+        public static void Loading(string text)
+        {
+            if (InformationMessagesQueue.Count != 0)
+                return;
+
+            ResetAndSetText(text);
+            ClassInstance.ShowLoadingImage = true;
+        }
+
+        public static void Information(string text)
+        {
+            if (InformationMessagesQueue.Count != 0)
+                return;
+
+            ResetAndSetText(text);
+            ClassInstance.ShowLoadingImage = true;
+        }
+
+
+        public static void NotImplemented()
+        {
+            Display("Not implemented yet");
+        }
+
+        #endregion
+
+        #region Progress toast
 
         public static async Task ProgressToast(int totalCount, string frontText, string backText = "", bool displaySucces = false, string succesText = "")
         {
+            if (InformationMessagesQueue.Count != 0)
+                return;
+
             ProgressCounter = 0;
             TotalCount = totalCount;
             FrontText = frontText + " ";
@@ -110,13 +196,17 @@ namespace ToastMessageService
 
         public static void ForceEndProgressToast()
         {
+            if (InformationMessagesQueue.Count != 0)
+                return;
+
             ClassInstance.Text = "";
             ClassInstance.Visibility = false;
         }
 
         public static void IncrementProgress()
         {
-            // Suboperations!
+            if (InformationMessagesQueue.Count != 0)
+                return;
 
             ProgressCounter++;
             ClassInstance.Text = $"{FrontText}{ProgressCounter + 1} of {TotalCount}{BackText}";
@@ -132,6 +222,22 @@ namespace ToastMessageService
             }
         }
 
+        public static async Task ProgressSucces(string text)
+        {
+            if (InformationMessagesQueue.Count != 0)
+                return;
+
+            ResetAndSetText(text);
+
+            if (!BlockDissapearing)
+            {
+                await WaitDisplayTimeAsync(text);
+                ClassInstance.Visibility = false;
+            }
+        }
+
+        #endregion
+
         private static bool BlockDissapearing { get; set; }
         private static int TotalCount { get; set; }
         private static string FrontText { get; set; }
@@ -139,6 +245,28 @@ namespace ToastMessageService
         private static string SuccesText { get; set; }
         private static bool DisplaySucces { get; set; }
         private static int ProgressCounter { get; set; }
+
+        private string _additionalInfoText;
+        public string AdditionalInfoText
+        {
+            get => _additionalInfoText;
+            set
+            {
+                _additionalInfoText = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _additionalInfoVisibility = false;
+        public bool AdditionalInfoVisibility
+        {
+            get => _additionalInfoVisibility;
+            set
+            {
+                _additionalInfoVisibility = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private string _text;
         public string Text
@@ -151,10 +279,21 @@ namespace ToastMessageService
             }
         }
 
+        private string _informationButtonText = "Ok";
+        public string InformationButtonText
+        {
+            get => _informationButtonText;
+            set
+            {
+                _informationButtonText = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool _showLoadingImage = false;
         public bool ShowLoadingImage
-        { 
-            get => _showLoadingImage; 
+        {
+            get => _showLoadingImage;
             set
             {
                 _showLoadingImage = value;
@@ -173,7 +312,20 @@ namespace ToastMessageService
             }
         }
 
+        private bool _displayButton = false;
+
+        public bool DisplayButton
+        {
+            get => _displayButton;
+            set
+            {
+                _displayButton = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool _visibility = false;
+
         public bool Visibility
         {
             get => _visibility;

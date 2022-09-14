@@ -16,7 +16,7 @@ namespace Archlist.PlaylistMethods.Models
 {
     public class DisplayPlaylist
     {
-        public DisplayPlaylist(Playlist playlist)
+        public DisplayPlaylist(Playlist playlist, bool isUnavailable = false)
         {
             Title = playlist.Snippet.Title;
             Description = playlist.Snippet.Description;
@@ -24,29 +24,35 @@ namespace Archlist.PlaylistMethods.Models
             ItemCount = playlist.ContentDetails.ItemCount.ToString();
             Url = "https://www.youtube.com/playlist?list=" + playlist.Id;
             PrivacyStatus = playlist.Status.PrivacyStatus.CapitalizeFirst();
-
             Creator = new DisplayChannel(playlist.Snippet.ChannelId);
-            MissingItemsCount = GetMissingItemsCount();
+            IsUnavailable = isUnavailable;
+
+            if (isUnavailable)
+                PlaylistDirectory = new DirectoryInfo(Path.Combine(Directories.UnavailablePlaylistsDirectory.FullName, Id));
+            else
+                PlaylistDirectory = new DirectoryInfo(Path.Combine(Directories.AllPlaylistsDirectory.FullName, Id));
+
+            MissingItemsCount = GetRecentMissingItemsCount();
+            DisplayMissingItems = MissingItemsCount > 0;
 
             // Convert to a WriteableBitmap so that the image won't be locked by a process
-            Uri imageUri = new(Path.Combine(Directories.PlaylistsDirectory.FullName, Id, "playlistThumbnail.jpg"));
-            BitmapImage bitmapImage = new(imageUri);
-            ThumbnailPath = new WriteableBitmap(bitmapImage);
+            ThumbnailPath = DirectoryExtensions.CreateWriteableBitmap(Path.Combine(PlaylistDirectory.FullName, "playlistThumbnail.jpg"));
         }
 
-        public int GetMissingItemsCount()
-        {
-            var missingItemsFile = new FileInfo(Path.Combine(MissingItemsDirectory.FullName, "recent.json"));
-            return missingItemsFile.Deserialize<List<MissingPlaylistItem>>().Count;
-        }
+        /// <summary>
+        /// Returns 
+        /// </summary>
+        /// <returns></returns>
+        public int GetRecentMissingItemsCount() => RecentMissingItemsFile.Deserialize<List<MissingPlaylistItem>>().Count;
 
         public string Title { get; set; }
         public string Description { get; set; }
         public string Id { get; set; }
         public string ItemCount { get; set; }
         public int MissingItemsCount { get; set; }
+        public bool DisplayMissingItems { get; }
         public DisplayChannel Creator { get; set; }
-
+        public bool IsUnavailable { get; }
         public string Url { get; set; }
         public string PrivacyStatus { get; private set; }
         public BitmapImage PrivacyStatusImage => PrivacyStatus switch
@@ -58,7 +64,11 @@ namespace Archlist.PlaylistMethods.Models
         };
 
         public WriteableBitmap ThumbnailPath { get; set; }
-        public DirectoryInfo DataDirectory => new(Path.Combine(Directories.PlaylistsDirectory.FullName, Id, "data"));
-        public DirectoryInfo MissingItemsDirectory => new(Path.Combine(Directories.PlaylistsDirectory.FullName, Id, "missingItems"));
+        public DirectoryInfo PlaylistDirectory { get; set; }
+
+        public DirectoryInfo DataDirectory => new(Path.Combine(PlaylistDirectory.FullName, "data"));
+
+        public FileInfo RecentMissingItemsFile => new(Path.Combine(PlaylistDirectory.FullName, "missingItems", "recent.json"));
+        public FileInfo SeenMissingItemsFile => new(Path.Combine(PlaylistDirectory.FullName, Id, "missingItems", "seen.json"));
     }
 }

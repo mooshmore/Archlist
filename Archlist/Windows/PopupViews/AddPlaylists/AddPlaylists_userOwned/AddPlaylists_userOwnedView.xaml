@@ -52,6 +52,12 @@
                 </StackPanel>
             </Grid>
 
+            <StackPanel Grid.Row="2" Style="{StaticResource NothingHere}" Visibility="{Binding Path=DisplayNothingHere, Converter={StaticResource BoolToVisiblity}}">
+                <TextBlock Text="¯\_ ( ͡° _ʖ ͡°) _/¯ " FontSize="26" Foreground="#7e7e7e" Margin="0 0 0 20" HorizontalAlignment="Center"/>
+                <TextBlock Text="There's nothing to add!" Style="{StaticResource NothingHereText}"/>
+                <TextBlock Text="All of your playlists are already being tracked." Style="{StaticResource NothingHereExplanation}"/>
+            </StackPanel>
+            
             <!--Playlists list-->
             <Grid Grid.Row="2" Style="{StaticResource PlaylistsList}">
                 <ScrollViewer Margin="10 10">

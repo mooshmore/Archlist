@@ -19,23 +19,25 @@ namespace Archlist.PlaylistMethods
             ChannelTitle = channelData.Snippet.Title;
 
             string thumbnailPath = Path.Combine(Directories.ChannelsDirectory.FullName, ChannelId, "channelThumbnail.jpg");
-            Thumbnail = new BitmapImage(new Uri(thumbnailPath));
+            Thumbnail = DirectoryExtensions.CreateWriteableBitmap(thumbnailPath);
         }
 
-        // Web archive missing item special constructor
+        /// <summary>
+        /// Special constructor for channels recovered from a web archive that don't have thumbnails.
+        /// </summary>
         public DisplayChannel(string channelId, string channelTitle)
         {
             ChannelId = channelId;
             ChannelTitle = channelTitle;
 
             // Use a default missing thumbnail image for web archive recovered missing items
-            Thumbnail = LocalHelpers.GetResourcesBitmapImage(@"thumbnails/missingProfile.jpg");
+            Thumbnail = DirectoryExtensions.CreateWriteableBitmap(@"Resources/Images/thumbnails/missingProfile.jpg");
         }
 
 
         public string ChannelId { get; }
         public string ChannelTitle { get; }
         public string ChannelUrl => "https://www.youtube.com/channel/" + ChannelId;
-        public BitmapImage Thumbnail { get; }
+        public WriteableBitmap Thumbnail { get; }
     }
 }

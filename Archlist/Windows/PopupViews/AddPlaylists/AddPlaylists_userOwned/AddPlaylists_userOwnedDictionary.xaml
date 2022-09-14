@@ -75,10 +75,27 @@
     </Style>
     
     
+    
+    
 
-    <!--<Style x:Key="" TargetType="" BasedOn="">
-        <Setter Property="" Value=""/>
-    </Style>-->
+    <Style x:Key="NothingHere" TargetType="StackPanel">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Panel.ZIndex" Value="5"/>
+    </Style>
+
+    <Style x:Key="NothingHereText" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Foreground" Value="#7e7e7e"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0 0 0 10"/>
+    </Style>
+
+    <Style x:Key="NothingHereExplanation" TargetType="TextBlock" BasedOn="{StaticResource DefaultTextblock}">
+        <Setter Property="Foreground" Value="#6a6a6a"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
 
     <!--<Style x:Key="" TargetType="" BasedOn="">
         <Setter Property="" Value=""/>

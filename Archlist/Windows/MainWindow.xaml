@@ -98,7 +98,7 @@
                                 <MouseBinding Gesture="LeftClick" Command="{Binding DisplayUserProfileCommand}"/>
                             </Ellipse.InputBindings>
                             <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding UserProfile.PicturePath}"/>
+                                <ImageBrush ImageSource="{Binding UserProfile.Picture}"/>
                             </Ellipse.Fill>
                         </Ellipse>
                         <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/Symbols/White/info_64px.png" ToolTip="App info">
@@ -116,11 +116,11 @@
                         <StackPanel Orientation="Vertical">
                             <Ellipse Style="{StaticResource UserProfileImage}">
                                 <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding UserProfile.PicturePath}" />
+                                    <ImageBrush ImageSource="{Binding UserProfile.Picture}" />
                                 </Ellipse.Fill>
                             </Ellipse>
                             <TextBlock Text="{Binding UserProfile.Name}" Style="{StaticResource UserProfileName}"/>
-                            <TextBlock Text="{Binding UserProfile.Email}" Style="{StaticResource UserProfileMail}"/>
+                            <TextBlock Text="{Binding UserProfile.DisplayEmail}" Style="{StaticResource UserProfileMail}"/>
                         </StackPanel>
                     </Border>
                     <Border CornerRadius="0 0 7 7" Background="{StaticResource Background_topbar_light}">
@@ -189,8 +189,16 @@
             <Border Style="{StaticResource ToastBorder}" Grid.ColumnSpan="5" Grid.RowSpan="5" Visibility="{Binding Path=ToastMessage.Visibility, Converter={StaticResource BoolToVisiblity}}">
                 <StackPanel Style="{StaticResource ToastPanel}" DataContext="{Binding ToastMessage}">
                     <Image Style="{StaticResource ToastImage}" Source="{Binding Image}"/>
-                    <Image Style="{StaticResource LoadingImage}" Source="/Resources/Images/Symbols/Other/loadingImage_18px.png" Visibility="{Binding Path=ShowLoadingImage, Converter={StaticResource BoolToVisiblity}}"/>
-                    <TextBlock Style="{StaticResource ToastText}" Text="{Binding Text}"/>
+                    <Image Style="{StaticResource LoadingImage}" d:Visibility="Collapsed" Source="/Resources/Images/Symbols/Other/loadingImage_18px.png" Visibility="{Binding Path=ShowLoadingImage, Converter={StaticResource BoolToVisiblity}}"/>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource ToastText}" Text="{Binding Text}" d:Text="Toast message text"/>
+                        <TextBlock Style="{StaticResource ToastText}" Foreground="{StaticResource Text_secondary}" Text="{Binding AdditionalInfoText}" d:Text="" Visibility="{Binding Path=AdditionalInfoVisibility, Converter={StaticResource BoolToVisiblity}}"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding InformationButtonText}" Style="{StaticResource ToastTextButton}" d:Text="Ok" Visibility="{Binding Path=DisplayButton, Converter={StaticResource BoolToVisiblity}}">
+                        <TextBlock.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding Path=ButtonPressedCommand}"/>
+                        </TextBlock.InputBindings>
+                    </TextBlock>
                 </StackPanel>
             </Border>
         </Grid>

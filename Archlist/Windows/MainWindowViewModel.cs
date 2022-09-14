@@ -38,7 +38,9 @@ namespace Archlist.Windows
 
         private async Task SwitchAccount()
         {
-            ToastMessage.NotImplemented();
+            ToastMessage.Loading("Switching account");
+            await OAuthSystem.SwitchAccountAsync();
+            ToastMessage.Hide();
         }
 
         public bool OverlayVisibility => CurrentPopupViewModel != null;
