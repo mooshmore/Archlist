@@ -112,7 +112,7 @@
                             </Image.InputBindings>
                         </Image>
                         <TextBlock Style="{StaticResource LoginDisclaimer}">
-                            Information about your account and its data won’t be stored, everything is saved locally on your computer.
+                            Information about your account will only be stored locally on your computer and by Google Cloud services.
                         </TextBlock>
                         <TextBlock Style="{StaticResource LoginDisclaimer}">
                             Login is required to read your playlists and make API requests.
