@@ -34,10 +34,13 @@ namespace Archlist.PlaylistMethods.Playlists
             return (playlistsIds, deletedPlaylists, privatePlaylists);
         }
 
-        internal static async Task<PlaylistListResponse> UpdateUnavailablePlaylists()
+        internal static async Task<List<Playlist>> UpdateUnavailablePlaylists()
         {
             List<string> unavailablePlaylistIds = Directories.UnavailablePlaylistsDirectory.GetSubDirectoriesNames();
             PlaylistListResponse existingPlaylists = await PlaylistsData.RetrievePlaylistsDataAsync(unavailablePlaylistIds);
+
+            if (existingPlaylists == null)
+                return new List<Playlist>();
 
             foreach (var playlist in existingPlaylists.Items)
             {
@@ -45,7 +48,7 @@ namespace Archlist.PlaylistMethods.Playlists
                 Directory.Move(playlistPath, Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlist.Id));
             }
 
-            return existingPlaylists;
+            return existingPlaylists.Items.CreateList();
         }
 
         /// <summary>
@@ -71,7 +74,7 @@ namespace Archlist.PlaylistMethods.Playlists
         /// <summary>
         /// Moves the unavailable playlists to the "removed" folder and displays information about it to the user.
         /// </summary>
-        public static void HandleUnavailablePlaylistsAsync(List<Playlist> removedPlaylists, List<Playlist> privatePlaylists, PlaylistListResponse returnedPlaylists)
+        public static void HandleUnavailablePlaylistsAsync(List<Playlist> removedPlaylists, List<Playlist> privatePlaylists, List<Playlist> returnedPlaylists)
         {
             if (removedPlaylists.Count > 0)
             {
@@ -79,36 +82,38 @@ namespace Archlist.PlaylistMethods.Playlists
                 foreach (var playlist in removedPlaylists)
                 {
                     string playlistPath = Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlist.Id);
-                    //Directory.Move(playlistPath, Directories.RemovedPlaylistsDirectory.FullName);
+                    Directory.Move(playlistPath, Path.Combine(Directories.UnavailablePlaylistsDirectory.FullName, playlist.Id));
                     removedPlaylistsInfo += playlist.Snippet.Localized.Title + ", ";
                 }
 
                 if (removedPlaylistsInfo != "")
-                    ToastMessage.InformationDialog("Following playlists have been found removed from Youtube or set to private:\n" + removedPlaylistsInfo.TrimToLast(", "));
+                    ToastMessage.InformationDialog("Done\n\nFollowing playlists have been found removed from Youtube or set to private:\n" + removedPlaylistsInfo.TrimToLast(", "));
             }
 
             if (privatePlaylists.Count > 0)
             {
                 string privatePlaylistsInfo = "";
-                foreach (var playlist in privatePlaylists)
+                List<string> privatePlaylistsChannels = privatePlaylists.Select(playlist => playlist.Snippet.ChannelTitle).Distinct().ToList();
+
+                foreach (var channel in privatePlaylistsChannels)
                 {
-                    privatePlaylistsInfo += playlist.Snippet.Localized.Title + $" ({playlist.Snippet.ChannelTitle})" + ", ";
+                    privatePlaylistsInfo += channel + ", ";
                 }
 
                 if (privatePlaylistsInfo != "")
-                    ToastMessage.InformationDialog("Following playlists belong to your different accounts and weren't updated:\n" + privatePlaylistsInfo.TrimToLast(", ") + "\nSwitch to those accounts to update them.';'You can also can set the playlists as unlisted to allow\nupdating them from any account.");
+                    ToastMessage.InformationDialog($"Done!\n\n{privatePlaylists.Count} playlists from your other accounts weren't updates because they are set as private.\n" + "Accounts: " + privatePlaylistsInfo.TrimToLast(", ") + "';'Switch to those accounts to update them or set the playlists as public/unlisted\nto allow updating them from any account.");
             }
 
-            if (returnedPlaylists.Items.Count > 0)
+            if (returnedPlaylists.Count > 0)
             {
                 string returnedPlaylistsInfo = "";
-                foreach (var playlist in returnedPlaylists.Items)
+                foreach (var playlist in returnedPlaylists)
                 {
                     returnedPlaylistsInfo += playlist.Snippet.Localized.Title + $" ({playlist.Snippet.ChannelTitle})" + ", ";
                 }
 
                 if (returnedPlaylistsInfo != "")
-                    ToastMessage.InformationDialog("Following playlists were found available again:\n" + returnedPlaylistsInfo.TrimToLast(", "));
+                    ToastMessage.InformationDialog("Done\n\nFollowing playlists were found available again:\n" + returnedPlaylistsInfo.TrimToLast(", "));
             }
         }
 

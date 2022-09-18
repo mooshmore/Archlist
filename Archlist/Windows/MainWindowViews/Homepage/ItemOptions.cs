@@ -92,14 +92,13 @@ namespace Archlist.Windows.MainWindowViews.Homepage
         private async Task CheckPlaylistAvailability()
         {
             var readdedPlaylists = await MissingPlaylistsData.UpdateUnavailablePlaylists();
-            if (readdedPlaylists.Items.Count == 0)
-            {
+
+            if (readdedPlaylists.Count == 0)
                 ToastMessage.Information("Playlist is still unavailable :/");
-            }
             else
             {
                 string returnedPlaylistsInfo = "";
-                foreach (var playlist in readdedPlaylists.Items)
+                foreach (var playlist in readdedPlaylists)
                 {
                     returnedPlaylistsInfo += playlist.Snippet.Localized.Title + $" ({playlist.Snippet.ChannelTitle})" + ", ";
                 }

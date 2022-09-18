@@ -210,6 +210,7 @@ namespace ToastMessageService
 
             ProgressCounter++;
             ClassInstance.Text = $"{FrontText}{ProgressCounter + 1} of {TotalCount}{BackText}";
+            ClassInstance.Visibility = true;
             BlockDissapearing = true;
 
             if (ProgressCounter >= TotalCount)

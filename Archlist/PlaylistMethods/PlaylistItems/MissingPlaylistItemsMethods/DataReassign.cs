@@ -28,9 +28,9 @@ namespace Archlist.PlaylistMethods.PlaylistItems.MissingPlaylistItemsMethods
             foreach (var playlistItem in missingItems)
             {
                 if (ReassignData_local(latestPlaylistItemsData, playlistItem))
-                    return;
+                    continue;
                 else if (await ReassignData_WebArchiveAsync(playlistItem))
-                    return;
+                    continue;
                 else
                     playlistItem.RecoveryFailed = true;
             }

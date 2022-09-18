@@ -17,7 +17,7 @@ namespace Archlist.PlaylistMethods.Models
                 playlistItem.CopyProperties(this);
         }
 
-        public bool RecoveryFailed { get; set; }
+        public bool RecoveryFailed { get; set; } = true;
         public bool SourcedFromWebArchive { get; set; }
         public string WebArchiveLink { get; set; }
 

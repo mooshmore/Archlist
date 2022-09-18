@@ -20,6 +20,7 @@ namespace Archlist.PlaylistMethods
 
             string thumbnailPath = Path.Combine(Directories.ChannelsDirectory.FullName, ChannelId, "channelThumbnail.jpg");
             Thumbnail = DirectoryExtensions.CreateWriteableBitmap(thumbnailPath);
+            //Thumbnail = thumbnailPath;
         }
 
         /// <summary>
@@ -31,7 +32,8 @@ namespace Archlist.PlaylistMethods
             ChannelTitle = channelTitle;
 
             // Use a default missing thumbnail image for web archive recovered missing items
-            Thumbnail = DirectoryExtensions.CreateWriteableBitmap(@"Resources/Images/thumbnails/missingProfile.jpg");
+            Thumbnail = DirectoryExtensions.CreateWriteableBitmap(@"Resources/Images/thumbnails/missingProfile.jpg", UriKind.Relative);
+            //Thumbnail = @"Resources/Images/thumbnails/missingProfile.jpg";
         }
 
 

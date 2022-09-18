@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace Helpers
@@ -31,11 +32,23 @@ namespace Helpers
         /// <summary>
         /// Creates a WriteableBitmap image from the given path to image.
         /// </summary>
-        public static WriteableBitmap CreateWriteableBitmap(string path)
+        public static WriteableBitmap CreateWriteableBitmap(string path, UriKind uriKind = UriKind.Absolute)
         {
-            Uri imageUri = new(path);
-            BitmapImage bitmapImage = new(imageUri);
-            return new WriteableBitmap(bitmapImage);
+            if (uriKind == UriKind.Absolute)
+            {
+                Uri imageUri = new(path, UriKind.Absolute);
+                BitmapImage bitmapImage = new(imageUri);
+                return new WriteableBitmap(bitmapImage);
+            }
+            else
+            {
+                path = path.Replace("\\", "/");
+                Uri imageUri = new Uri("pack://application:,,,/" + path, UriKind.Absolute);
+                BitmapImage bitmapImage = new BitmapImage(imageUri);
+                bitmapImage.CreateOptions = BitmapCreateOptions.None;
+                return new WriteableBitmap(bitmapImage);
+
+            }
         }
 
         /// <summary>

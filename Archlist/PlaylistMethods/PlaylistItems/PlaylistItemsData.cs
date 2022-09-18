@@ -40,7 +40,7 @@ namespace Archlist.PlaylistMethods
             //playlistsIds = RemoveRecentlyUpdatedItems(playlistsIds);
 
             var returnedPlaylists = await MissingPlaylistsData.UpdateUnavailablePlaylists();
-            foreach (var playlist in returnedPlaylists.Items)
+            foreach (var playlist in returnedPlaylists)
             {
                 playlistsIds.Add(playlist.Id);
             }

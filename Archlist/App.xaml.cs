@@ -4,7 +4,11 @@ using Archlist.UserData;
 using Archlist.Windows;
 using Archlist.Windows.MainWindowViews.Homepage;
 using Archlist.Windows.PopupViews.WelcomeScreenWindow;
+using System;
+using System.IO;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace Archlist
 {

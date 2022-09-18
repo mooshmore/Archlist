@@ -10,6 +10,11 @@ namespace Helpers
     public static class ListExtensions
     {
         /// <summary>
+        /// Converts the IList to a list.
+        /// </summary>
+        public static List<T> CreateList<T>(this IList<T> list) => new List<T>(list);
+             
+        /// <summary>
         /// Adds given items to the list.
         /// </summary>
         public static List<T> Add<T>(this List<T> list, params T[] items)

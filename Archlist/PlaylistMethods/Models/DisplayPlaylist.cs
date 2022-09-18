@@ -69,6 +69,6 @@ namespace Archlist.PlaylistMethods.Models
         public DirectoryInfo DataDirectory => new(Path.Combine(PlaylistDirectory.FullName, "data"));
 
         public FileInfo RecentMissingItemsFile => new(Path.Combine(PlaylistDirectory.FullName, "missingItems", "recent.json"));
-        public FileInfo SeenMissingItemsFile => new(Path.Combine(PlaylistDirectory.FullName, Id, "missingItems", "seen.json"));
+        public FileInfo SeenMissingItemsFile => new(Path.Combine(PlaylistDirectory.FullName, "missingItems", "seen.json"));
     }
 }

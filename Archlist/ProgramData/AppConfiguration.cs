@@ -60,7 +60,7 @@ namespace Archlist.ProgramData
 
             Directories.PlaylistsDirectory = Directories.MainDirectory.CreateSubdirectory("playlists");
             Directories.AllPlaylistsDirectory = Directories.PlaylistsDirectory.CreateSubdirectory("allPlaylists");
-            Directories.UnavailablePlaylistsDirectory = Directories.PlaylistsDirectory.CreateSubdirectory("removedPlaylists");
+            Directories.UnavailablePlaylistsDirectory = Directories.PlaylistsDirectory.CreateSubdirectory("unavailablePlaylists");
             Directories.UsersDataDirectory = Directories.MainDirectory.CreateSubdirectory("userData");
         }
 
