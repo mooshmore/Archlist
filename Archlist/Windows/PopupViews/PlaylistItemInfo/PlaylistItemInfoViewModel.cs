@@ -30,8 +30,6 @@ namespace Archlist.Windows.PopupViews.PlaylistItemInfo
         public string FoundSnapshotsCountText { get; } = "";
         public string WebArchiveLink { get; } = "";
 
-        public string YoutubeSearchLink { get; } = "";
-
 
         public PlaylistItemInfoViewModel(DisplayPlaylistItem displayPlaylist)
         {
@@ -39,7 +37,6 @@ namespace Archlist.Windows.PopupViews.PlaylistItemInfo
             DisplayRemovalInfo = displayPlaylist.RemovalReasonShort != null;
             RaisePropertyChanged(nameof(DisplayRemovalInfo));
             CopyTitleCommand = new RelayCommand(CopyTitle);
-            YoutubeSearchLink = "https://www.youtube.com/results?search_query=" + System.Net.WebUtility.UrlEncode(displayPlaylist.Title);
             CopyIDCommand = new RelayCommand(CopyID);
 
             if (displayPlaylist.RecoveryFailed && displayPlaylist.FoundSnapshotsCount == 0)

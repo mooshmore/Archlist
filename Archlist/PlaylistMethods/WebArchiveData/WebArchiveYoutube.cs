@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using static System.StringFunctionsExtensions;
+using System.Xml;
 
 namespace WebArchiveData
 {
@@ -43,7 +44,7 @@ namespace WebArchiveData
             List<string> snapshots = await GetResponses();
             int maxSnapshotsCount = snapshots.Count();
 
-            // If responses are already below 10 without any collapse limits then theres
+            // If responses are already below 10 without any collapse limits then there is
             // no point in restricting them
             if (snapshots.Count == 0)
                 return (null, 0);
@@ -139,6 +140,10 @@ namespace WebArchiveData
                 if (!ScrapeDescription(pageCode, ref description))
                     return false;
 
+                string length = "";
+                if (!ScrapeLength(pageCode, ref length))
+                    return false;
+
                 string author = "";
                 if (!ScrapeAuthorName(pageCode, ref author))
                     return false;
@@ -151,6 +156,7 @@ namespace WebArchiveData
                 // Assign the values only if the converting will go without errors
                 playlistItem.Snippet.Title = title;
                 playlistItem.Snippet.Description = description;
+                playlistItem.ContentDetails.StartAt = length;
                 playlistItem.Snippet.VideoOwnerChannelTitle = author;
                 playlistItem.Snippet.VideoOwnerChannelId = authorId;
                 playlistItem.ContentDetails.VideoPublishedAt = publishDate;
@@ -160,6 +166,34 @@ namespace WebArchiveData
             {
                 return false;
             }
+        }
+
+        private static bool ScrapeLength(string pageCode, ref string length)
+        {
+            // Video length isn't all that important, so if it hasn't been 
+            // found then just go further regardless. The user can look up 
+            // the web archive page if he really wants to know it.
+
+            string ISOlength;
+            if (pageCode.Contains("<meta itemprop=\"duration\" content=\""))
+                ISOlength = pageCode.TrimFromTo("<meta itemprop=\"duration\" content=\"", "\">");
+            else
+                return true;
+
+            TimeSpan timespanLength;
+            try
+            {
+                timespanLength = XmlConvert.ToTimeSpan(ISOlength);
+                length = timespanLength.ToColonFormat();
+            }
+            catch (Exception)
+            {
+                length = "";
+                return true;
+            }
+
+
+            return true;
         }
 
         private static bool ScrapeAuthorId(string pageCode, ref string authorId)

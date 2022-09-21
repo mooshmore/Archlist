@@ -9,6 +9,27 @@ namespace Helpers
     /// </summary>
     public static class ListExtensions
     {
+        public static List<T> Move<T>(this List<T> list, int itemsCount)
+        {
+            var movedItems = list.Take(itemsCount).ToList();
+            if (list.Count < itemsCount)
+                list.Clear();
+            else
+                list.RemoveRange(0, itemsCount);
+            return movedItems;
+        }
+
+        /// <summary>
+        /// Adds a range to the collection.
+        /// </summary>
+        public static void AddRange<T>(this ICollection<T> destination, IEnumerable<T> source)
+        {
+            foreach (T item in source)
+            {
+                destination.Add(item);
+            }
+        }
+
         /// <summary>
         /// Converts the IList to a list.
         /// </summary>

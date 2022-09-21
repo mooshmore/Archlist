@@ -54,6 +54,7 @@
     <None Remove="Resources\Images\Symbols\Other\loadingImage_18px.png" />
     <None Remove="Resources\Images\Symbols\Other\loadingImage_64px.png" />
     <None Remove="Resources\Images\Symbols\Other\positiveGreen_ok_32px.png" />
+    <None Remove="Resources\Images\Symbols\Other\user_64px.png" />
     <None Remove="Resources\Images\Symbols\PastelRed\cancel_64px.png" />
     <None Remove="Resources\Images\Symbols\PastelRed\ok_64px.png" />
     <None Remove="Resources\Images\Symbols\PastelRed\video_playlist_32px.png" />
@@ -81,6 +82,7 @@
     <None Remove="Resources\Images\Symbols\White\left_64px.png" />
     <None Remove="Resources\Images\Symbols\White\left_right_arrows_64px.png" />
     <None Remove="Resources\Images\Symbols\White\lock_64px.png" />
+    <None Remove="Resources\Images\Symbols\White\login_64px.png" />
     <None Remove="Resources\Images\Symbols\White\logout_64px.png" />
     <None Remove="Resources\Images\Symbols\White\mail_64px.png" />
     <None Remove="Resources\Images\Symbols\White\more_64px.png" />
@@ -123,6 +125,7 @@
     <Resource Include="Resources\Images\Symbols\Other\loadingImage_18px.png" />
     <Resource Include="Resources\Images\Symbols\Other\loadingImage_64px.png" />
     <Resource Include="Resources\Images\Symbols\Other\positiveGreen_ok_32px.png" />
+    <Resource Include="Resources\Images\Symbols\Other\user_64px.png" />
     <Resource Include="Resources\Images\Symbols\PastelRed\cancel_64px.png" />
   </ItemGroup>
 
@@ -165,6 +168,7 @@
     <Resource Include="Resources\Images\Symbols\White\left_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\left_right_arrows_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\lock_64px.png" />
+    <Resource Include="Resources\Images\Symbols\White\login_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\logout_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\mail_64px.png" />
     <Resource Include="Resources\Images\Symbols\White\more_64px.png" />

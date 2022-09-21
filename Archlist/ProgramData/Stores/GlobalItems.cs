@@ -15,7 +15,7 @@ namespace Archlist.ProgramData.Stores
     {
         public static HttpClient HttpClient { get; } = new HttpClient();
 
-        public static string AppVersion { get; set; } = "v 0.8.5";
+        public static string AppVersion { get; set; } = "v 0.8.6";
 
         public static event Action UserProfileChanged;
 

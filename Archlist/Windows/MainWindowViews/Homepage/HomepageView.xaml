@@ -51,11 +51,23 @@
                 <Grid Height="190" Margin="0 0 0 20" Background="{StaticResource Background_default_light}">
                     <StackPanel Margin="60 30 0 0" Orientation="Vertical">
                         <StackPanel Orientation="Horizontal">
-                            <Ellipse Height="70" Width="70">
-                                <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding UserProfile.Picture}"/>
-                                </Ellipse.Fill>
-                            </Ellipse>
+                            <Grid Height="70" Width="70">
+                                <Ellipse Panel.ZIndex="5">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding UserProfile.Picture}"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <Ellipse>
+                                    <Ellipse.Fill>
+                                        <SolidColorBrush Color="#1d1d1d"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <Ellipse>
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="/Resources/Images/Symbols/Other/user_64px.png" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Grid>
                             <TextBlock Foreground="White" Margin="15 0 0 0" FontSize="45" Text="{Binding UserProfile.WelcomeGreeting}" VerticalAlignment="Center"/>
                         </StackPanel>
                         <DockPanel Margin="0 20 0 0">

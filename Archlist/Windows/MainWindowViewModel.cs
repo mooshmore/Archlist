@@ -1,4 +1,5 @@
-﻿using Archlist.ProgramData.Bases;
+﻿using Archlist.Helpers;
+using Archlist.ProgramData.Bases;
 using Archlist.ProgramData.Commands;
 using Archlist.ProgramData.Stores;
 using Archlist.UserData;
@@ -6,6 +7,8 @@ using Archlist.Windows.MainWindowViews.AboutApp;
 using Archlist.Windows.ViewModels;
 using System;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media.Imaging;
 using ToastMessageService;
 
 namespace Archlist.Windows
@@ -22,25 +25,57 @@ namespace Archlist.Windows
 
         public MainWindowViewModel()
         {
-            GlobalItems.UserProfileChanged += () => RaisePropertyChanged(nameof(UserProfile));
+            GlobalItems.UserProfileChanged += UserProfileChanged;
             NavigationStores.MainNavigationStore.CurrentVievModelChanged += () => RaisePropertyChanged(nameof(CurrentMainViewModel));
             NavigationStores.PopupNavigationStore.CurrentVievModelChanged += OnCurrentPopupViewModelChanged;
 
-            SwitchAccountCommand = new AsyncRelayCommand(SwitchAccount);
+            SwitchAccountCommand = new RelayCommand(() => OAuthSystem.LogInAsync(true));
             DisplayUserProfileCommand = new RelayCommand(DisplayUserProfileMethod);
+            LogInCommand = new RelayCommand(LogIn);
+
+            UserProfileChanged();
         }
+
+
+        public string LogInText { get; set; }
+        public BitmapImage LogInImage { get; set; } 
+
+        private void UserProfileChanged()
+        {
+            if (UserProfile == null)
+            {
+                LogInText = "Log in";
+                LogInImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/login_64px.png");
+                DisplayUserProfile = true;
+            }
+            else
+            {
+                LogInText = "Log out";
+                LogInImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/logout_64px.png");
+                DisplayUserProfile = false;
+                ToastMessage.Hide(true);
+            }
+
+
+            RaisePropertyChanged(nameof(DisplayUserProfile));
+            RaisePropertyChanged(nameof(LogInText));
+            RaisePropertyChanged(nameof(LogInImage));
+            RaisePropertyChanged(nameof(UserProfile));
+        }
+
+        private void LogIn()
+        {
+            if (UserProfile == null)
+                OAuthSystem.LogInAsync();
+            else
+                OAuthSystem.LogOutAsync();
+        }
+
 
         private void DisplayUserProfileMethod()
         {
             DisplayUserProfile = !DisplayUserProfile;
             RaisePropertyChanged(nameof(DisplayUserProfile));
-        }
-
-        private async Task SwitchAccount()
-        {
-            ToastMessage.Loading("Switching account");
-            await OAuthSystem.SwitchAccountAsync();
-            ToastMessage.Hide();
         }
 
         public bool OverlayVisibility => CurrentPopupViewModel != null;
@@ -54,8 +89,9 @@ namespace Archlist.Windows
         public RelayCommand HidePopupViewCommand { get; } = NavigationStores.HidePopupViewCommand;
         public NavigateCommand GoToHomePageCommand { get; } = NavigationStores.GoToHomePageCommand;
         public NavigateCommand OpenAboutPageCommand { get; } = new NavigateCommand(NavigationStores.MainNavigationStore, () => new AboutAppViewModel());
-        public AsyncRelayCommand LogOutCommand { get; } = new AsyncRelayCommand(OAuthSystem.LogOutAsync);
-        public AsyncRelayCommand SwitchAccountCommand { get; }
+        public RelayCommand LogInCommand { get; }
+
+        public RelayCommand SwitchAccountCommand { get; }
         public RelayCommand DisplayUserProfileCommand { get; }
     }
 }

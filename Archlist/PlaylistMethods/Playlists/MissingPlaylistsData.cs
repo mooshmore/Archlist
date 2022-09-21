@@ -127,7 +127,7 @@ namespace Archlist.PlaylistMethods.Playlists
             List<Playlist> privatePlaylists = new();
 
             List<UserProfile> existingUserProfiles = OAuthSystem.ReadSavedUserProfiles();
-            List<string> existingUsersChannelIds = existingUserProfiles.Select(user => user.ChannelID).ToList();
+            List<string> existingUsersChannelIds = existingUserProfiles.Select(user => user.ChannelId).ToList();
 
             foreach (var playlistId in nonExistentPlaylists)
             {
@@ -141,7 +141,7 @@ namespace Archlist.PlaylistMethods.Playlists
                 if (existingUsersChannelIds.Contains(playlistChannelId))
                 {
                     // If the playlist belongs to the current user and it wasn't retrieved - playlist has been deleted
-                    if (GlobalItems.UserProfile.ChannelID == playlistChannelId)
+                    if (GlobalItems.UserProfile.ChannelId == playlistChannelId)
                         deletedPlaylists.Add(playlist);
                     // Playlist is unavailable because it belongs to a different user on the app
                     // and is set to private (it has to be updated from that account)

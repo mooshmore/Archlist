@@ -457,18 +457,41 @@ namespace Helpers
         public static int? ToMinutes(this TimeSpan? timeSpan) => timeSpan == null ? null : (timeSpan.Days() * 24 * 60) + (timeSpan.Hours() * 60) + timeSpan.Minutes();
 
         /// <summary>
-        /// Converts the timeSpan value to a HH:mm format without a leading zero. 
-        /// This does not display days, miliseconds and the negative sign (if the value is negative).
+        /// Convets the given timespan to a string format with colons, without leading zeros.
         /// </summary>
-        /// <returns>A string created from the given timeSpan.</returns>
-        public static string ToTimeFormat(this TimeSpan timeSpan) => $"{timeSpan.Hours}:{timeSpan.Minutes.AddLeadingZero()}";
+        /// <example>
+        /// (days/hours/minutes/seconds)
+        /// 
+        /// 342/15/31/12
+        /// 342 days, 15:31:12
+        /// 
+        /// 0/0/5/13
+        /// 5:12
+        /// 
+        /// 0/0/0/4
+        /// 0:04
+        /// </example>
+        /// <param name="timespan"></param>
+        /// <returns></returns>
+        public static string ToColonFormat(this TimeSpan timespan)
+        {
+            string stringLength;
 
-        /// <summary>
-        /// Converts the timeSpan value to a HH:mm format without a leading zero. If the the value is null it returns an empty string.
-        /// This does not display days, miliseconds and the negative sign (if the value is negative).
-        /// </summary>
-        /// <returns>A string created from the given timeSpan.</returns>
-        public static string ToTimeFormat(this TimeSpan? timeSpan) => timeSpan == null ? "" : $"{timeSpan.Hours()}:{timeSpan.Minutes().AddLeadingZero()}";
+            if (timespan.Days != 0)
+            {
+                string sEnding = timespan.Days == 1 ? "" : "s";
+                stringLength = $"{timespan.Days} day{sEnding}, {timespan.ToString($@"hh\:mm\:ss")}";
+            }
+            else if (timespan.Hours != 0)
+                stringLength = $"{timespan.Hours}:{timespan.ToString($@"mm\:ss")}";
+            else
+                stringLength = timespan.ToString(@"mm\:ss");
+
+            if (stringLength[0] == '0')
+                stringLength = stringLength.Substring(1);
+
+            return stringLength;
+        }
 
         /// <summary>
         /// Returns the timeSpan of the two difference between timeSpanTo - timeSpanFrom. 
@@ -491,13 +514,13 @@ namespace Helpers
         }
 
         /// <summary>
-        /// Checks if the given timeSpan equals 0; that is 0 day, hours and minutes.
+        /// Checks if the given timeSpan equals 0; that is 0 days, hours, minutes, seconds and miliseconds.
         /// </summary>
         /// <returns>True if the timeSpan equals 0; False if not.</returns>
-        public static bool IsEmpty(this TimeSpan timeSpan) => timeSpan.Days == 0 && timeSpan.Hours == 0 && timeSpan.Minutes == 0;
+        public static bool IsEmpty(this TimeSpan timeSpan) => timeSpan.Days == 0 && timeSpan.Hours == 0 && timeSpan.Minutes == 0 && timeSpan.Seconds == 0 && timeSpan.Milliseconds == 0;
 
         /// <summary>
-        /// Checks if the given timeSpan equals null or 0; that is 0 day, hours and minutes.
+        /// Checks if the given timeSpan equals null or 0; that is 0 days, hours, minutes, seconds and miliseconds.
         /// </summary>
         /// <returns>True if the timeSpan equals 0 or null; False if not.</returns>
         public static bool IsEmpty(this TimeSpan? timeSpan) => timeSpan == null || ((TimeSpan)timeSpan).IsEmpty();
@@ -514,11 +537,6 @@ namespace Helpers
         /// </summary>
         /// <returns>True if any of the timeSpan components are negative; False if not or if the timeSpan is null.</returns>
         public static bool IsNegative(this TimeSpan? timeSpan) => timeSpan != null && ((TimeSpan)timeSpan).IsNegative();
-
-        /// <summary>
-        /// Removes all of the data from the given TimeSpan? but the hours and minutes.
-        /// </summary>
-        public static TimeSpan? Flatten(this TimeSpan? timeSpan) => timeSpan == null ? null : (TimeSpan?)$"{timeSpan.ToTimeFormat()}".ToTimeSpan();
 
         #endregion
 

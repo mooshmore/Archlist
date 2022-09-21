@@ -17,6 +17,8 @@ using System.Diagnostics;
 using Helpers;
 using Archlist.PlaylistMethods;
 using System.Collections.Generic;
+using Google.Apis.YouTube.v3.Data;
+using System.Windows;
 
 namespace Archlist.UserData
 {
@@ -30,9 +32,15 @@ namespace Archlist.UserData
         private static UserCredential credentials;
         public static YouTubeService YoutubeService { get; set; }
 
-        public static async Task LogInAsync()
+        public static async Task LogInAsync(bool swtichAccounts = false)
         {
-            ToastMessage.Loading("Logging in");
+            if (swtichAccounts && credentials != null)
+            {
+                ToastMessage.Loading("Switching account");
+                await GoogleWebAuthorizationBroker.ReauthorizeAsync(credentials, CancellationToken.None);
+            }
+            else
+                ToastMessage.Loading("Logging in");
 
             // Log in the user
             // This for some reason throws exception System.ObjectDisposedException.
@@ -49,7 +57,6 @@ namespace Archlist.UserData
 
             // Refresh the token if it has expired
             if (credentials.Token.IsExpired(SystemClock.Default))
-                // GoogleWebAuthorizationBroker.ReauthorizeAsync ?
                 await credentials.RefreshTokenAsync(CancellationToken.None);
 
             // Create youtube service instance with retrieved user cridentials & data
@@ -58,32 +65,71 @@ namespace Archlist.UserData
                 HttpClientInitializer = credentials
             });
 
-            // ! Check if the user has given all privelages to read data
-
             await CreateUserProfileAsync();
             await ToastMessage.Hide();
+
             Settings.WasPreviouslyLoggedIn = true;
             Settings.SettingsInstance.Save();
+            Application.Current.MainWindow.Activate();
         }
-        
+
+        public static async Task LogOutAsync()
+        {
+            // If credentials are null then the user wasn't logged in in the first place.
+            if (credentials != null)
+            {
+                try
+                {
+                    await credentials.RevokeTokenAsync(CancellationToken.None);
+                }
+                catch (Exception)
+                {
+                    // Token has been revoked or it has expired
+                    GlobalItems.UserProfile = null;
+                    return;
+                }
+                GlobalItems.UserProfile = null;
+                ToastMessage.Display("Logged out!");
+                return;
+            }
+        }
+
         private async static Task CreateUserProfileAsync()
         {
             string userProfileString = await GetUserProfileDataAsync();
-            string currentUserChannelId = (await ChannelsData.GetCurrentUserChannelAsync()).Id;
+
+            // Check if the user has granted the acces to youtube data
+            if (!credentials.Token.Scope.Contains("https://www.googleapis.com/auth/youtube.readonly"))
+            {
+                ToastMessage.InformationDialog("Log in failed: you need to grant acces to your Youtube account data for this app to work.\nTry logging in again.");
+                await credentials.RevokeTokenAsync(CancellationToken.None);
+                GlobalItems.UserProfile = null;
+                return;
+            }
+
+            Channel userChannel = await ChannelsData.GetCurrentUserChannelAsync();
+
+            string userChannelId;
+            if (userChannel == null)
+                userChannelId = "";
+            else
+                userChannelId = userChannel.Id;
+
 
             // Add a channelId to the user profile data
             JObject userProfileData = JObject.Parse(userProfileString);
-            userProfileData["channelId"] = currentUserChannelId;
+            userProfileData["channelId"] = userChannelId;
 
-            UserProfile currentUserProfile = new(userProfileData, currentUserChannelId);
+            UserProfile currentUserProfile = new(userProfileData, userChannelId);
 
             // Save the data into the file
-            DirectoryInfo userDataDirectory = Directories.UsersDataDirectory.CreateSubdirectory(currentUserProfile.ID);
+            DirectoryInfo userDataDirectory = Directories.UsersDataDirectory.CreateSubdirectory(currentUserProfile.Id);
             FileInfo userDataFile = userDataDirectory.CreateSubfile("userProfile.json");
             userDataFile.WriteAllText(userProfileData.ToString());
 
             await LocalHelpers.DownloadImageAsync(currentUserProfile.PictureURL, Path.Combine(userDataDirectory.FullName, "userPicture.jpg"));
             GlobalItems.UserProfile = currentUserProfile;
+            UserProfile.CheckUserProfile();
         }
 
         private static async Task<string> GetUserProfileDataAsync()
@@ -112,29 +158,6 @@ namespace Archlist.UserData
                 userProfiles.Add(new UserProfile(userData));
             }
             return userProfiles;
-        }
-
-        private static string ReadSavedUserProfileData()
-        {
-            return File.ReadAllText(Path.Combine(Directories.UsersDataDirectory.FullName, "userProfile.json"));
-        }
-
-        private static bool SavedUserProfileExists()
-        {
-            return File.Exists(Path.Combine(Directories.UsersDataDirectory.FullName, "userProfile.json"));
-        }
-
-        public static async Task SwitchAccountAsync()
-        {
-            await GoogleWebAuthorizationBroker.ReauthorizeAsync(credentials, CancellationToken.None);
-            await CreateUserProfileAsync();
-        }
-
-        public static async Task LogOutAsync()
-        {
-            await credentials.RevokeTokenAsync(CancellationToken.None);
-            ToastMessage.Display("Logged out!");
-            return;
         }
 
         public static void LoadSecretData()

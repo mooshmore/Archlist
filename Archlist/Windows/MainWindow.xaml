@@ -42,7 +42,7 @@
         <CommandBinding Command="{x:Static SystemCommands.RestoreWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Restore" />
     </Window.CommandBindings>
     
-    <Border x:Name="MainWindowBorder" BorderThickness="0">
+    <Border x:Name="MainWindowBorder" BorderThickness="0" KeyboardNavigation.TabNavigation="None">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
@@ -93,14 +93,26 @@
                         </Image>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Margin="0 10" Width="35">
-                        <Ellipse Margin="0 8" Cursor="Hand" Height="35" Width="35" ToolTip="Your account">
-                            <Ellipse.InputBindings>
+                        <Grid Margin="0 8" Cursor="Hand" Height="35" Width="35" ToolTip="Your account">
+                            <Grid.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding DisplayUserProfileCommand}"/>
-                            </Ellipse.InputBindings>
-                            <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding UserProfile.Picture}"/>
-                            </Ellipse.Fill>
-                        </Ellipse>
+                            </Grid.InputBindings>
+                            <Ellipse Panel.ZIndex="5">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{Binding UserProfile.Picture}"/>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Ellipse>
+                                <Ellipse.Fill>
+                                    <SolidColorBrush Color="#1d1d1d"/>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Ellipse>
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="/Resources/Images/Symbols/Other/user_64px.png" />
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Grid>
                         <Image Margin="0 8" Cursor="Hand" Source="/Resources/Images/Symbols/White/info_64px.png" ToolTip="App info">
                             <Image.InputBindings>
                                 <MouseBinding Gesture="LeftClick" Command="{Binding OpenAboutPageCommand}"/>
@@ -114,17 +126,37 @@
                 <StackPanel Style="{StaticResource UserProfilePanel}" Grid.RowSpan="5" Grid.Column="5" Visibility="{Binding Path=DisplayUserProfile, Converter={StaticResource BoolToVisiblity}}">
                     <Border CornerRadius="7 7 0 0" Background="{StaticResource Background_topbar}">
                         <StackPanel Orientation="Vertical">
-                            <Ellipse Style="{StaticResource UserProfileImage}">
-                                <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding UserProfile.Picture}" />
-                                </Ellipse.Fill>
-                            </Ellipse>
+                            <Grid>
+                                <Ellipse Style="{StaticResource UserProfileImage}" Panel.ZIndex="5">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding UserProfile.Picture}" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <Ellipse Style="{StaticResource UserProfileImage}">
+                                    <Ellipse.Fill>
+                                        <SolidColorBrush Color="#1d1d1d"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <Ellipse Style="{StaticResource UserProfileImage}">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="/Resources/Images/Symbols/Other/user_64px.png" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Grid>
                             <TextBlock Text="{Binding UserProfile.Name}" Style="{StaticResource UserProfileName}"/>
                             <TextBlock Text="{Binding UserProfile.DisplayEmail}" Style="{StaticResource UserProfileMail}"/>
                         </StackPanel>
                     </Border>
                     <Border CornerRadius="0 0 7 7" Background="{StaticResource Background_topbar_light}">
                         <StackPanel Orientation="Vertical">
+                            <StackPanel  Style="{StaticResource UserProfileButton}">
+                                <StackPanel.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding LogInCommand}"/>
+                                </StackPanel.InputBindings>
+
+                                <Image Style="{StaticResource UserProfileButtonImage}" Source="{Binding LogInImage}"/>
+                                <TextBlock Style="{StaticResource UserProfileButtonText}" Text="{Binding LogInText}"/>
+                            </StackPanel>
                             <StackPanel Style="{StaticResource UserProfileButton}">
                                 <StackPanel.InputBindings>
                                     <MouseBinding Gesture="LeftClick" Command="{Binding SwitchAccountCommand}"/>
@@ -132,14 +164,6 @@
 
                                 <Image Style="{StaticResource UserProfileButtonImage}" Source="/Resources/Images/Symbols/White/left_right_arrows_64px.png"/>
                                 <TextBlock Style="{StaticResource UserProfileButtonText}" Text="Switch accounts"/>
-                            </StackPanel>
-                            <StackPanel  Style="{StaticResource UserProfileButton}">
-                                <StackPanel.InputBindings>
-                                    <MouseBinding Gesture="LeftClick" Command="{Binding LogOutCommand}"/>
-                                </StackPanel.InputBindings>
-
-                                <Image Style="{StaticResource UserProfileButtonImage}" Source="/Resources/Images/Symbols/White/logout_64px.png"/>
-                                <TextBlock Style="{StaticResource UserProfileButtonText}" Text="Log out"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>

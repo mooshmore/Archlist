@@ -20,6 +20,7 @@ using WebArchiveData;
 using System.Diagnostics;
 using Archlist.PlaylistMethods.Playlists;
 using Archlist.PlaylistMethods.PlaylistItems.MissingPlaylistItemsMethods;
+using System.Xml;
 
 namespace Archlist.PlaylistMethods
 {
@@ -36,8 +37,8 @@ namespace Archlist.PlaylistMethods
         /// <param name="playlistsIds">The playlists to retrieve data for.</param>
         public static async Task PullPlaylistsItemsDataAsync(List<string> playlistsIds)
         {
-            // Don't pull playlist items if they have already been pulled in the last minute
-            //playlistsIds = RemoveRecentlyUpdatedItems(playlistsIds);
+            if (!UserProfile.CheckUserProfile())
+                return;
 
             var returnedPlaylists = await MissingPlaylistsData.UpdateUnavailablePlaylists();
             foreach (var playlist in returnedPlaylists)
@@ -59,6 +60,7 @@ namespace Archlist.PlaylistMethods
 
             // Stores playlists and their data
             Dictionary<string, PlaylistItemListResponse> playlistResponses = await DownloadPlaylistsItemsData(playlistsIds);
+
             // Stores information about time when each playlist has been saved
             Dictionary<string, DateTime> playlistTimestampData = new();
 
@@ -160,25 +162,6 @@ namespace Archlist.PlaylistMethods
             }
         }
 
-        private static List<string> RemoveRecentlyUpdatedItems(List<string> playlistsIds)
-        {
-            int totalCount = playlistsIds.Count;
-            for (int i = 0; i < playlistsIds.Count; i++)
-            {
-                //!uncheck this later
-                if (File.Exists(Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlistsIds[i], "data", DateTime.Now.ToString("yyyy-MM-dd"), $"{DateTime.Now:HH-mm}.json")))
-                {
-                    // playlist already up to date!
-                    playlistsIds.Remove(playlistsIds[i]);
-                }
-            }
-
-            if (totalCount == 1 && playlistsIds.Count == 0)
-                ToastMessage.Succes("Playlist is already up to date!");
-
-            return playlistsIds;
-        }
-
         private static async Task<Dictionary<string, PlaylistItemListResponse>> DownloadPlaylistsItemsData(List<string> playlistsIds)
         {
             await ToastMessage.ProgressToast(playlistsIds.Count, "Downloading data", "playlists");
@@ -188,11 +171,102 @@ namespace Archlist.PlaylistMethods
             //Download playlist items info for every playlist
             foreach (var playlistId in playlistsIds)
             {
-                playlistResponses.Add(playlistId, await RetrievePlaylistItemsAsync(playlistId));
+                var playlistResponse = await RetrievePlaylistItemsAsync(playlistId);
+                playlistResponse = await FillPlaylistItemsDurations(playlistResponse);
+                playlistResponses.Add(playlistId, playlistResponse);
                 ToastMessage.IncrementProgress();
             }
 
             return playlistResponses;
+        }
+
+        /// <summary>
+        /// Retrieves information about items in the playlist from youtube with the given Id.
+        /// </summary>
+        /// <param name="playlistId">The Id of the playlist to retrieve.</param>
+        /// <returns>The playlist in </returns>
+        public static async Task<PlaylistItemListResponse> RetrievePlaylistItemsAsync(string playlistId)
+        {
+            PlaylistItemListResponse playlist = await GetPlaylistItemsAsync(playlistId);
+
+            string nextPageToken = playlist.NextPageToken;
+            // Only 50 items can be retrieved with a single api call per page- 
+            // repeat the method until the last page is returned
+            while (nextPageToken != null)
+            {
+                PlaylistItemListResponse nextPage = await GetPlaylistItemsAsync(playlistId, nextPageToken);
+                nextPageToken = nextPage.NextPageToken;
+
+                // Add the items from the new page to the main object
+                foreach (PlaylistItem item in nextPage.Items)
+                {
+                    playlist.Items.Add(item);
+                }
+            }
+
+            return playlist;
+        }
+
+        /// <summary>
+        /// Sends a api request to retrieve the information about items in the playlist.
+        /// </summary>
+        /// <param name="playlistId">The Id of the playlist to retrieve.</param>
+        /// <param name="nextPageToken">The next page token. If not passed the method will send a request without one.</param>
+        public static async Task<PlaylistItemListResponse> GetPlaylistItemsAsync(string playlistId, string nextPageToken = null)
+        {
+            YouTubeService youtubeService = OAuthSystem.YoutubeService;
+
+            PlaylistItemsResource.ListRequest request = youtubeService.PlaylistItems.List(part: "contentDetails,id,snippet,status");
+            request.PlaylistId = playlistId;
+            request.MaxResults = 50;
+            request.PageToken = nextPageToken;
+
+            return await request.ExecuteAsync();
+        }
+
+        private static async Task<PlaylistItemListResponse> FillPlaylistItemsDurations(PlaylistItemListResponse playlistResponse)
+        {
+            List<string> videoIds = playlistResponse.Items.Select(item => item.ContentDetails.VideoId).ToList();
+
+            string nextPageToken = null;
+            VideoListResponse videosData = null;
+
+            do
+            {
+                List<string> requestVideoIds = videoIds.Move(50);
+
+                YouTubeService youtubeService = OAuthSystem.YoutubeService;
+                VideosResource.ListRequest request = youtubeService.Videos.List(part: "contentDetails");
+                request.Fields = "items(id,contentDetails(duration))";
+                request.MaxResults = 50;
+                request.Id = requestVideoIds;
+                request.PageToken = nextPageToken;
+
+
+                var response = await request.ExecuteAsync();
+                if (videosData == null)
+                    videosData = response;
+                else
+                    videosData.Items.AddRange(response.Items);
+
+                nextPageToken = response.NextPageToken;
+                
+            } while (videoIds.Count != 0);
+
+            foreach (var videoData in videosData.Items)
+            {
+                var matchingVideo = playlistResponse.Items.Where(items => items.ContentDetails.VideoId == videoData.Id).First();
+
+                // The time is formatted as an ISO 8601 string.
+                // Time example: PT4M13S
+                // PT stands for Time Duration, 4M is 4 minutes, and 13S is 13 seconds.
+                TimeSpan videoLength = XmlConvert.ToTimeSpan(videoData.ContentDetails.Duration);
+                if (videoLength.IsEmpty())
+                    continue;
+
+                matchingVideo.ContentDetails.StartAt = videoLength.ToColonFormat();
+            }
+            return playlistResponse;
         }
 
         /// <summary>
@@ -295,52 +369,6 @@ namespace Archlist.PlaylistMethods
         {
             return playlistItem.ContentDetails.VideoPublishedAt != null;
         }
-
-        /// <summary>
-        /// Retrieves information about items in the playlist from youtube with the given Id.
-        /// </summary>
-        /// <param name="playlistId">The Id of the playlist to retrieve.</param>
-        /// <returns>The playlist in </returns>
-        public static async Task<PlaylistItemListResponse> RetrievePlaylistItemsAsync(string playlistId)
-        {
-            PlaylistItemListResponse playlist = await GetPlaylistItemsAsync(playlistId);
-
-            string nextPageToken = playlist.NextPageToken;
-            // Only 50 items can be retrieved with a single api call per page- 
-            // repeat the method until the last page is returned
-            while (nextPageToken != null)
-            {
-                PlaylistItemListResponse nextPage = await GetPlaylistItemsAsync(playlistId, nextPageToken);
-                nextPageToken = nextPage.NextPageToken;
-
-                // Add the items from the new page to the main object
-                foreach (PlaylistItem item in nextPage.Items)
-                {
-                    playlist.Items.Add(item);
-                }
-            }
-
-            return playlist;
-        }
-
-
-        /// <summary>
-        /// Sends a api request to retrieve the information about items in the playlist.
-        /// </summary>
-        /// <param name="playlistId">The Id of the playlist to retrieve.</param>
-        /// <param name="nextPageToken">The next page token. If not passed the method will send a request without one.</param>
-        public static async Task<PlaylistItemListResponse> GetPlaylistItemsAsync(string playlistId, string nextPageToken = null)
-        {
-            YouTubeService youtubeService = OAuthSystem.YoutubeService;
-
-            PlaylistItemsResource.ListRequest request = youtubeService.PlaylistItems.List(part: "contentDetails,id,snippet,status");
-            request.PlaylistId = playlistId;
-            request.MaxResults = 50;
-            request.PageToken = nextPageToken;
-
-            return await request.ExecuteAsync();
-        }
-
 
         /// <summary>
         /// Returns a thumbnail from the given playlistId directory with the given url.

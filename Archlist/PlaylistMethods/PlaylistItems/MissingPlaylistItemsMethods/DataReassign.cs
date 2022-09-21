@@ -24,7 +24,7 @@ namespace Archlist.PlaylistMethods.PlaylistItems.MissingPlaylistItemsMethods
             // Create latest playlist item data once and pass it as argument to save processing time
             var latestPlaylistItemsData = PlaylistItemsData.GetLatestPlaylistItemsData(playlist.Key);
 
-            // Override missing item data with its old data if theres one found
+            // Override missing item data with its old data if there is one found
             foreach (var playlistItem in missingItems)
             {
                 if (ReassignData_local(latestPlaylistItemsData, playlistItem))

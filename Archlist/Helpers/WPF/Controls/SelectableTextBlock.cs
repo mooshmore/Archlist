@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace Archlist.Resources.Controls
 {
@@ -20,12 +21,30 @@ namespace Archlist.Resources.Controls
             FocusVisualStyleProperty.OverrideMetadata(typeof(SelectableTextBlock), new FrameworkPropertyMetadata((object)null));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "I haven't wrote this so lets better not touch anything")]
         private readonly TextEditorWrapper _editor;
 
         public SelectableTextBlock()
         {
             _editor = TextEditorWrapper.CreateFor(this);
+
+            this.Loaded += (sender, args) => {
+                this.Dispatcher.UnhandledException -= Dispatcher_UnhandledException;
+                this.Dispatcher.UnhandledException += Dispatcher_UnhandledException;
+            };
+            this.Unloaded += (sender, args) => {
+                this.Dispatcher.UnhandledException -= Dispatcher_UnhandledException;
+            };
+        }
+
+        private void Dispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(e?.Exception?.StackTrace))
+            {
+                if (e.Exception.StackTrace.Contains("System.Windows.Controls.TextBlock.GetTextPositionFromDistance"))
+                {
+                    e.Handled = true;
+                }
+            }
         }
     }
 

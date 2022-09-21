@@ -11,15 +11,25 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Archlist.Helpers;
 using Archlist.PlaylistMethods;
+using ToastMessageService;
 
 namespace Archlist.UserData
 {
     public class UserProfile
     {
-        public UserProfile(JObject userProfileData, string channelID)
+        /// <summary>
+        /// Constructor used for creating a new user profile.
+        /// </summary>
+        public UserProfile(JObject userProfileData, string channelId = "")
         {
-            ID = userProfileData.SelectToken("sub").ToString();
-            ChannelID = channelID;
+            // One constructor is used when creating the channel when the channelId is given,
+            // the other one is used when reading the locally saved user profiles data
+            if (channelId == "")
+                ChannelId = userProfileData.SelectToken("channelId").ToString();
+            else
+                ChannelId = channelId;
+
+            Id = userProfileData.SelectToken("sub").ToString();
 
             Name = userProfileData.SelectToken("name").ToString();
 
@@ -33,7 +43,12 @@ namespace Archlist.UserData
 
             PictureURL = userProfileData.SelectToken("picture").ToString();
 
-            List<string> greetings = new()
+            WelcomeGreeting = GenerateWelcomeMessage();
+        }
+
+        private string GenerateWelcomeMessage()
+        {
+            return new List<string>()
             {
                 $"Hiya, {Name}",
                 $"Hey there, {Name}",
@@ -52,54 +67,46 @@ namespace Archlist.UserData
                 $"I thought I would never see you again, {Name}",
                 $"Howdy-doody, {Name}",
                 $"Konnichiwa, {Name} - San (◕‿◕✿)"
-            };
-
-            WelcomeGreeting = greetings.Random();
+            }.Random();
         }
 
-        public UserProfile(JObject userProfileData)
+        /// <summary>
+        /// Checks if the user is logged in and if he has a associated Youtube channel.
+        /// </summary>
+        /// <returns>True if the user is logged in; False if not.</returns>
+        public static bool CheckUserLoggedIn()
         {
-            ID = userProfileData.SelectToken("sub").ToString();
-            ChannelID = userProfileData.SelectToken("channelId").ToString();
-
-            Name = userProfileData.SelectToken("name").ToString();
-
-            Email = userProfileData.SelectToken("email").ToString();
-            // If user has a different channel on a single youtube account his email will be
-            // auto generated and not worth displaying, so a "Youtube channel" is displayed instead
-            if (Email.EndsWith("@pages.plusgoogle.com"))
-                DisplayEmail = "Youtube channel";
-            else
-                DisplayEmail = userProfileData.SelectToken("email").ToString();
-
-            PictureURL = userProfileData.SelectToken("picture").ToString();
-
-            List<string> greetings = new()
+            if (GlobalItems.UserProfile == null)
             {
-                $"Hiya, {Name}",
-                $"Hey there, {Name}",
-                $"Sup, {Name}",
-                $"Hello there, general {Name}",
-                $"Hi there, {Name}",
-                $"Howdy, {Name}",
-                $"Ahoy, {Name}",
-                "What’s cookin’, good lookin’?",
-                "Hey there, hot stuff",
-                $"So… we meet at last, {Name}",
-                $"Greetings, {Name}.",
-                $"What does a horse eat? Hayyyyyyy.",
-                $"Ello, matey.",
-                $"Ghostbusters, watccha want?",
-                $"I thought I would never see you again, {Name}",
-                $"Howdy-doody, {Name}",
-                $"Konnichiwa, {Name} - San (◕‿◕✿)"
-            };
-
-            WelcomeGreeting = greetings.Random();
+                ToastMessage.InformationDialog("You are not logged in.", IconType.Error);
+                return false;
+            }
+                return true;
         }
 
-        public string ID { get; }
-        public string ChannelID { get; }
+
+        /// <summary>
+        /// Checks if the user is logged in and if he has a associated Youtube channel.
+        /// </summary>
+        /// <returns>True if the user is logged in and has a channel; False if any not.</returns>
+        public static bool CheckUserProfile()
+        {
+            if (GlobalItems.UserProfile == null)
+            {
+                ToastMessage.InformationDialog("You are not logged in.", IconType.Error);
+                return false;
+            }
+            else if (GlobalItems.UserProfile.ChannelId == "")
+            {
+                ToastMessage.InformationDialog("Your Google account doesn't have a associated Youtube channel.\nChoose a different account.", IconType.Error);
+                return false;
+            }
+            else
+                return true;
+        }
+
+        public string Id { get; }
+        public string ChannelId { get; }
         public string Name { get; }
         public string Email { get; }
         public string DisplayEmail { get; }
@@ -107,6 +114,6 @@ namespace Archlist.UserData
         public WriteableBitmap Picture => DirectoryExtensions.CreateWriteableBitmap(Path.Combine(UserProfileDirectory.FullName, "userPicture.jpg"));
         public string WelcomeGreeting { get; }
 
-        public DirectoryInfo UserProfileDirectory => new DirectoryInfo(Path.Combine(Directories.UsersDataDirectory.FullName, ID));
+        public DirectoryInfo UserProfileDirectory => new DirectoryInfo(Path.Combine(Directories.UsersDataDirectory.FullName, Id));
     }
 }

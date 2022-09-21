@@ -18,24 +18,58 @@ namespace Helpers
     /// </summary>
     public static class MethodsCluster
     {
-        public static async Task DownloadImageAsync(this HttpClient client, string uri, string filePath)
+        /// <summary>
+        /// Compares the two values, if the <paramref name="value"/> is bigger than the <paramref name="maxValue"/> then the <paramref name="maxValue"/> is returned;<br/>
+        /// Otherwise returns <paramref name="value"/>
+        /// </summary>
+        public static T GetValueMax<T>(T value, T maxValue) where T : IComparable<T>
         {
-            byte[] fileBytes = await client.GetByteArrayAsync(uri);
-            File.WriteAllBytes(filePath, fileBytes);
-
+            if (value.CompareTo(maxValue) > 0)
+                return maxValue;
+            else
+                return value;
         }
 
-        public static async Task DownloadFileTaskAsync(this HttpClient client, string uri, string filePath)
+        /// <summary>
+        /// Compares the two values, if the <paramref name="value"/> is smaller than the <paramref name="minValue"/> then the <paramref name="minValue"/> is returned;<br/>
+        /// Otherwise returns <paramref name="value"/>
+        /// </summary>
+        public static T GetValueMin<T>(T value, T minValue) where T : IComparable<T>
         {
-            string data = await client.DownloadStringTaskAsync(uri);
-            File.WriteAllText(filePath, data);
+            if (value.CompareTo(minValue) < 0)
+                return minValue;
+            else
+                return value;
         }
 
-        public static async Task<byte[]> DownloadBytesTaskAsync(this HttpClient client, string uri)
+        /// <summary>
+        /// Downloads the image asynchrounsly.</br>
+        /// The image is first saved to the memory, and only when the image has been fully downloaded it is saved to a file.
+        /// </summary>
+        /// <param name="uri">The url of the image.</param>
+        /// <param name="filePath">The path where the image will be saved to.</param>
+        public static async Task DownloadImageAsync(this HttpClient client, string url, string path)
         {
-            return await client.GetByteArrayAsync(uri);
+            byte[] fileBytes = await client.GetByteArrayAsync(url);
+            File.WriteAllBytes(path, fileBytes);
         }
 
+        /// <summary>
+        /// Downloads the file asynchrounsly.</br>
+        /// The file is first saved to the memory, and only when the file has been fully downloaded it is saved to a file.
+        /// </summary>
+        /// <param name="uri">The url of the file.</param>
+        /// <param name="filePath">The path where the file will be saved to.</param>
+        public static async Task DownloadFileTaskAsync(this HttpClient client, string url, string path)
+        {
+            string data = await client.DownloadStringTaskAsync(url);
+            File.WriteAllText(path, data);
+        }
+
+        /// <summary>
+        /// Downloads the text asynchrounsly.</br>
+        /// </summary>
+        /// <param name="uri">The url of the file.</param>
         public static async Task<string> DownloadStringTaskAsync(this HttpClient client, string uri)
         {
             string text;
@@ -114,15 +148,5 @@ namespace Helpers
         /// If the value is null it returns 0; Otherwise the normal value;
         /// </summary>
         public static int? IsNull_Zero(this int? value) => value == null ? 0 : value;
-
-        /// <summary>
-        /// Checks if the given decimal string matches the regex format.
-        /// Examples: 2:35 - true, 06:52 - true 15:9 - false, 20:60 - false
-        /// </summary>
-        /// <param name="value">The value string.</param>
-        /// <returns>A true if the string matches the format, false if it doesn't.</returns>
-        public static bool Check_DecimalFormat(string value) => new Regex("^[0-9]+(.[0-9]{1,2})?$").IsMatch(value);
-
-        public static bool ControlIsPressed => System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control;
     }
 }

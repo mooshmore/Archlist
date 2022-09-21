@@ -21,6 +21,7 @@ namespace Archlist.PlaylistMethods.Models
             Title = playlistItem.Snippet.Title;
             Description = playlistItem.Snippet.Description;
             PublishDate = ((DateTime)playlistItem.ContentDetails.VideoPublishedAt).ToString("dd MMM yyyy", new CultureInfo("en-GB"));
+            Length = playlistItem.ContentDetails.StartAt;
             Id = playlistItem.ContentDetails.VideoId;
             PlaylistId = playlistId;
 
@@ -43,6 +44,8 @@ namespace Archlist.PlaylistMethods.Models
 
             if (playlistItem.Snippet.VideoOwnerChannelId != null)
                 Creator = new DisplayChannel(playlistItem.Snippet.VideoOwnerChannelId);
+
+            YoutubeSearchLink = "https://www.youtube.com/results?search_query=" + System.Net.WebUtility.UrlEncode(this.Title);
         }
 
         public DisplayPlaylistItem(MissingPlaylistItem playlistItem, string playlistId, bool playlistIsUnavailable)
@@ -53,6 +56,8 @@ namespace Archlist.PlaylistMethods.Models
                 PublishDate = ((DateTime)playlistItem.ContentDetails.VideoPublishedAt).ToString("dd MMM yyyy", new CultureInfo("en-GB"));
             Id = playlistItem.ContentDetails.VideoId;
             PlaylistId = playlistId;
+            Length = playlistItem.ContentDetails.StartAt;
+
 
             if (playlistItem.Snippet.Thumbnails.Medium != null)
                 ThumbnailPath = new BitmapImage(new Uri(PlaylistItemsData.GetPlaylistItemThumbnailPath(PlaylistId, playlistItem.Snippet.Thumbnails.Medium.Url, playlistIsUnavailable)));
@@ -82,6 +87,7 @@ namespace Archlist.PlaylistMethods.Models
             RemovalReasonShort = playlistItem.RemovalReasonShort;
             RemovalReasonFull = playlistItem.RemovalReasonFull;
             RemovalThumbnail = LocalHelpers.GetResourcesBitmapImage("Symbols/RemovalRed/box_important_64px.png");
+            YoutubeSearchLink = "https://www.youtube.com/results?search_query=" + System.Net.WebUtility.UrlEncode(this.Title);
         }
 
         public string Title { get; }
@@ -98,6 +104,7 @@ namespace Archlist.PlaylistMethods.Models
             }
         }
         public string PublishDate { get; }
+        public string Length { get; }
         public string Id { get; }
 
         public DisplayChannel Creator { get; set; }
@@ -108,6 +115,9 @@ namespace Archlist.PlaylistMethods.Models
         public BitmapImage ThumbnailPath { get; set; }
 
         // Missing items data
+
+        public string YoutubeSearchLink { get; }
+
 
         public bool RecoveryFailed { get; set; } = false;
 

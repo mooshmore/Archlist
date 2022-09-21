@@ -56,9 +56,35 @@ namespace Archlist.Windows.MainWindowViews.Homepage
             RemoveAllPlaylistsCommand = new RelayCommand(RemoveAllPlaylists);
             CheckPlaylistAvailabilityCommand = new AsyncRelayCommand(CheckPlaylistAvailability);
 
+            OpenAddPlaylist_userOwnedViewCommand = new RelayCommand(OpenAddPlaylists_userOwned);
+            OpenAddPlaylist_linkCommand = new RelayCommand(OpenAddPlaylists_link);
+
             GlobalItems.UserProfileChanged += OnUserProfileChanged;
 
+            //if (!userChannelExists)
+            //{
+            //    ToastMessage.InformationDialog("Your Google account doesn't have a associated Youtube channel.\nChoose a different account.", IconType.Error);
+            //}
+
             Instance = this;
+        }
+
+        private void OpenAddPlaylists_userOwned()
+        {
+            if (UserProfile.CheckUserProfile())
+            {
+                var navigateCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_userOwnedViewModel());
+                navigateCommand.Execute(navigateCommand);
+            }
+        }
+
+        private void OpenAddPlaylists_link()
+        {
+            if (UserProfile.CheckUserProfile())
+            { 
+                var navigateCommand = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_linkViewModel());
+                navigateCommand.Execute(navigateCommand);
+            }
         }
 
         private void SetMissingItemsText()
@@ -113,8 +139,8 @@ namespace Archlist.Windows.MainWindowViews.Homepage
             navigateCommand.Execute(displayPlaylist);
         }
 
-        public NavigateCommand OpenAddPlaylist_userOwnedViewCommand { get; } = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_userOwnedViewModel());
-        public NavigateCommand OpenAddPlaylist_linkCommand { get; } = new NavigateCommand(NavigationStores.PopupNavigationStore, () => new AddPlaylists_linkViewModel());
+        public RelayCommand OpenAddPlaylist_userOwnedViewCommand { get; }
+        public RelayCommand OpenAddPlaylist_linkCommand { get; }
 
         public void RefreshDisplayedPlaylistsData()
         {

@@ -37,7 +37,7 @@
         <CommandBinding Command="{x:Static SystemCommands.CloseWindowCommand}" CanExecute="CommandBinding_CanExecute" Executed="CommandBinding_Executed_Close" />
     </Window.CommandBindings>
 
-    <Border x:Name="ChromeBorder">
+    <Border x:Name="ChromeBorder" KeyboardNavigation.TabNavigation="None">
         <StackPanel Orientation="Horizontal">
             <Border Height="500" Width="555" Background="#1f1f1f"  BorderThickness="0" CornerRadius="16 0 0 16">
                 <Grid>
@@ -111,11 +111,9 @@
                                 <MouseBinding Gesture="LeftClick" Command="{Binding LogInCommand}" CommandParameter="ok"/>
                             </Image.InputBindings>
                         </Image>
+                        <TextBlock Style="{StaticResource LoginDisclaimer}"><Run Text="Granting "/><Run Text="acces "/><Run Text="to "/><Run Text="your Youtube data is required for this app to work."/></TextBlock>
                         <TextBlock Style="{StaticResource LoginDisclaimer}">
                             Information about your account will only be stored locally on your computer and by Google Cloud services.
-                        </TextBlock>
-                        <TextBlock Style="{StaticResource LoginDisclaimer}">
-                            Login is required to read your playlists and make API requests.
                         </TextBlock>
                     </StackPanel>
                 </Grid>

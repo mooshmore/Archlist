@@ -231,11 +231,18 @@
                                         </StackPanel>
                                         
                                         <!--Browser icon-->
-                                        <TextBlock Grid.Column="5" Grid.Row="1" Grid.RowSpan="3" Style="{StaticResource PlaylistItem_browser}" ToolTip="Open video in a browser" >
-                                            <Hyperlink NavigateUri="{Binding Url}">
-                                                <Image Style="{StaticResource BrowserImage_dark}"/>
-                                            </Hyperlink>
-                                        </TextBlock>
+                                        <StackPanel Grid.Column="5" Grid.Row="1" Grid.RowSpan="3" Margin="0 0 5 0">
+                                            <TextBlock Style="{StaticResource PlaylistItem_browser}" ToolTip="Open video in a browser" >
+                                                <Hyperlink NavigateUri="{Binding Url}">
+                                                    <Image Style="{StaticResource BrowserImage_dark}"/>
+                                                </Hyperlink>
+                                            </TextBlock>
+                                            <TextBlock Style="{StaticResource PlaylistBrowser}" ToolTip="Search title in Youtube" HorizontalAlignment="Center" Margin="0 8 0 0">
+                                                <Hyperlink NavigateUri="{Binding YoutubeSearchLink}">
+                                                    <Image Height="20" Source="/Resources/Images/Symbols/White/search_youtube_64px.png" Style="{StaticResource BrowserImage_dark}"/>
+                                                </Hyperlink>
+                                            </TextBlock>
+                                        </StackPanel>
                                         <!--Separator-->
                                         <Border Grid.Row="3" Grid.ColumnSpan="5" Style="{StaticResource PlaylistItem_separator}" />
 
@@ -248,7 +255,7 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <TextBlock Text="Theres nothing here :/" Visibility="{Binding Path=DisplayNothingHere, Converter={StaticResource BoolToVisiblity}}" Style="{StaticResource NothingHere}"/>
+                        <TextBlock Text="There's nothing here :/" Visibility="{Binding Path=DisplayNothingHere, Converter={StaticResource BoolToVisiblity}}" Style="{StaticResource NothingHere}"/>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

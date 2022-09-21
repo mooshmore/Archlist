@@ -30,19 +30,11 @@ namespace Archlist.Windows.PopupViews.WelcomeScreenWindow
         {
             await OAuthSystem.LogInAsync();
 
-            // And yeah, I know that this isn't mvvm and I'm kinda cheating here,
-            // but I just wanna finish this app and I have no clue and time to figure out
-            // how to handle two separate windows with mvvm. Fix it if you got nothing to do.
-
-
-            var mainWindow = new MainWindow()
-            {
-                DataContext = new MainWindowViewModel()
-            };
-
+            var mainWindow = new MainWindow();
             mainWindow.Show();
             mainWindow.Activate();
 
+            // Shhh this isn't here
             Window.Close();
         }
     }

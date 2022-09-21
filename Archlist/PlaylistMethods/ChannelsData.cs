@@ -78,7 +78,7 @@ namespace Archlist.PlaylistMethods
             {
                 // Downloading the image data first, and only then when it is fully downloaded
                 // saving it to the file
-                var thumbnailData = await GlobalItems.HttpClient.DownloadBytesTaskAsync(channel.Snippet.Thumbnails.Default__.Url);
+                var thumbnailData = await GlobalItems.HttpClient.GetByteArrayAsync(channel.Snippet.Thumbnails.Default__.Url);
 
                 var channelDirectory = Directories.ChannelsDirectory.CreateSubdirectory(channel.Id);
                 File.WriteAllBytes(Path.Combine(channelDirectory.FullName, "channelThumbnail.jpg"), thumbnailData);
@@ -172,7 +172,13 @@ namespace Archlist.PlaylistMethods
         {
             ChannelsResource.ListRequest channelListRequest = OAuthSystem.YoutubeService.Channels.List(part: "snippet");
             channelListRequest.Mine = true;
-            return (await channelListRequest.ExecuteAsync()).Items[0];
+            var response = await channelListRequest.ExecuteAsync();
+
+            if (response.Items == null)
+                // User doesn't have a youtube channel
+                return null;
+            else
+                return response.Items[0];
         }
     }
 }

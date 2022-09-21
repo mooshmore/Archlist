@@ -9,6 +9,13 @@ using System.Windows.Media.Imaging;
 
 namespace ToastMessageService
 {
+    public enum IconType
+    {
+        None,
+        Error,
+        Warning
+    }
+
     public class ToastMessage : ViewModelBase
     {
         public static ToastMessage ClassInstance { get; set; } = new ToastMessage();
@@ -56,7 +63,7 @@ namespace ToastMessageService
 
         public RelayCommand ButtonPressedCommand { get; }
 
-        public static void InformationDialog(string text)
+        public static void InformationDialog(string text, IconType iconType = IconType.None)
         {
             InformationMessagesQueue.Add(text);
             // If there is nothing in the queue display the item straight away
@@ -117,9 +124,9 @@ namespace ToastMessageService
         }
 
 
-        public static async Task Hide()
+        public static async Task Hide(bool forceHide = false)
         {
-            if (InformationMessagesQueue.Count != 0)
+            if (InformationMessagesQueue.Count != 0 && !forceHide)
                 return;
 
             ClassInstance.Text = "";

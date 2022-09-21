@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Archlist.Helpers.Systems;
 
 namespace Archlist.ProgramData
 {
@@ -19,7 +20,7 @@ namespace Archlist.ProgramData
         {
             // Retrieve clientID and clientSecret from Json file
             OAuthSystem.LoadSecretData();
-
+            
             SetDefaultJsonSettings();
             CreateFileStructure();
             Settings.SettingsInstance.Read();
@@ -55,13 +56,29 @@ namespace Archlist.ProgramData
         public static void CreateFileStructure()
         {
             string roamingPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            //  AppData
+            //  ├─ Roaming
+            //  │  ├─ Archlist_ms
+            //  │  │  ├─ channels
+            //  │  │  ├─ playlists
+            //  │  │  │  ├─ allPlaylists
+            //  │  │  │  ├─ unavailablePlaylists
+            //  │  │  ├─ userData
+            //  │  │  ├─ logs
+
+
             Directories.MainDirectory = Directory.CreateDirectory(Path.Combine(roamingPath, "Archlist_ms"));
+
+
+
             Directories.ChannelsDirectory = Directories.MainDirectory.CreateSubdirectory("channels");
 
             Directories.PlaylistsDirectory = Directories.MainDirectory.CreateSubdirectory("playlists");
             Directories.AllPlaylistsDirectory = Directories.PlaylistsDirectory.CreateSubdirectory("allPlaylists");
             Directories.UnavailablePlaylistsDirectory = Directories.PlaylistsDirectory.CreateSubdirectory("unavailablePlaylists");
             Directories.UsersDataDirectory = Directories.MainDirectory.CreateSubdirectory("userData");
+            Directories.MainDirectory.CreateSubdirectory("logs");
         }
 
     }
