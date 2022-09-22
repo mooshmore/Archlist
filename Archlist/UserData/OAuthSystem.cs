@@ -84,7 +84,8 @@ namespace Archlist.UserData
                 }
                 catch (Exception)
                 {
-                    // Token has been revoked or it has expired
+                    // User wasn't already logged in because
+                    // token has been revoked or it has expired
                     GlobalItems.UserProfile = null;
                     return;
                 }
