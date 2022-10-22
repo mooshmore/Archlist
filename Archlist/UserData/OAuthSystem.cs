@@ -154,7 +154,7 @@ namespace Archlist.UserData
             List<UserProfile> userProfiles = new();
             foreach (var userDirectory in Directories.UsersDataDirectory.GetDirectories())
             {
-                FileInfo userDataFile = new FileInfo(Path.Combine(userDirectory.FullName, "userProfile.json"));
+                FileInfo userDataFile = new(Path.Combine(userDirectory.FullName, "userProfile.json"));
                 JObject userData = JObject.Parse(userDataFile.ReadAllText());
                 userProfiles.Add(new UserProfile(userData));
             }

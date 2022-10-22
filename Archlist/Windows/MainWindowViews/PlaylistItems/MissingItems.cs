@@ -38,7 +38,7 @@ namespace Archlist.Windows.MainWindowViews.PlaylistItems
                 missingItems = DisplayedPlaylist.SeenMissingItemsFile.Deserialize<List<MissingPlaylistItem>>();
 
             MissingItemsList = new();
-            missingItems.ForEach(item => MissingItemsList.Add(new DisplayPlaylistItem(item, DisplayedPlaylist.Id, DisplayedPlaylist.IsUnavailable)));
+            missingItems.ForEach(item => MissingItemsList.Add(new DisplayPlaylistItem(item, DisplayedPlaylist.IsUnavailable, true)));
 
             DisplayNothingHere = MissingItemsList.Count == 0;
             RaisePropertyChanged(nameof(MissingItemsList));

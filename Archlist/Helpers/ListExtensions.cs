@@ -33,7 +33,7 @@ namespace Helpers
         /// <summary>
         /// Converts the IList to a list.
         /// </summary>
-        public static List<T> CreateList<T>(this IList<T> list) => new List<T>(list);
+        public static List<T> CreateList<T>(this IList<T> list) => new(list);
              
         /// <summary>
         /// Adds given items to the list.

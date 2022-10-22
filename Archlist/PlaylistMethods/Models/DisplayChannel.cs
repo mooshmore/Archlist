@@ -24,7 +24,9 @@ namespace Archlist.PlaylistMethods
         }
 
         /// <summary>
-        /// Special constructor for channels recovered from a web archive that don't have thumbnails.
+        /// Special constructor for channels that don't have a locally data saved, 
+        /// and the data for them is sourced from the playlistitem.
+        /// Only used for channels that have been recovered from a web archive.
         /// </summary>
         public DisplayChannel(string channelId, string channelTitle)
         {

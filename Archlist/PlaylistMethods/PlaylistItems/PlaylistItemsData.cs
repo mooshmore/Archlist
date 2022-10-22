@@ -40,18 +40,18 @@ namespace Archlist.PlaylistMethods
             if (!UserProfile.CheckUserProfile())
                 return;
 
+            // Check if any of playlists that were previously unavailable are available again
             var returnedPlaylists = await MissingPlaylistsData.UpdateUnavailablePlaylists();
-            foreach (var playlist in returnedPlaylists)
-            {
-                playlistsIds.Add(playlist.Id);
-            }
+            returnedPlaylists.ForEach(playlist => playlistsIds.Add(playlist.Id));
 
-            var result = await MissingPlaylistsData.GetUnavailablePlaylistsAsync(playlistsIds);
-            playlistsIds = result.playlistsIds;
-            List<Playlist> deletedPlaylists = result.deletedPlaylists;
-            List<Playlist> privatePlaylists = result.privatePlaylists;
+            // Check the playlist ids for avaialability, and split those unavailable between 
+            // deleted and switched to private playlists
+            var unavailablePlaylists = await MissingPlaylistsData.GetUnavailablePlaylistsAsync(playlistsIds);
+            playlistsIds = unavailablePlaylists.playlistsIds;
+            List<Playlist> deletedPlaylists = unavailablePlaylists.deletedPlaylists;
+            List<Playlist> privatePlaylists = unavailablePlaylists.privatePlaylists;
 
-            // Return if there are no playlists after filtering recently updated
+            // Return if there are no playlists after removing unavailable playlists
             if (playlistsIds.Count == 0)
             {
                 MissingPlaylistsData.HandleUnavailablePlaylistsAsync(deletedPlaylists, privatePlaylists, returnedPlaylists);
@@ -322,6 +322,7 @@ namespace Archlist.PlaylistMethods
             var missingItemsDirectory = new FileInfo(Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlistId, "missingItems", $"{itemsType}.json"));
             return missingItemsDirectory.Deserialize<List<MissingPlaylistItem>>();
         }
+
         public static void UpdateLatestPlaylistItemsData(Dictionary<string, PlaylistItemListResponse> playlistResponses)
         {
             foreach (var (playlistId, response) in playlistResponses)
@@ -344,7 +345,7 @@ namespace Archlist.PlaylistMethods
                 }
 
                 // Save the data
-                PlaylistItemsData.SaveLatestPlaylistItemsData(playlistId, newItemsData);
+                SaveLatestPlaylistItemsData(playlistId, newItemsData);
             }
         }
 

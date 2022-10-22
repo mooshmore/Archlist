@@ -480,9 +480,9 @@ namespace System
         /// </summary>
         public static string Replace(this string text, params (string oldValue, string newValue)[] replacements)
         {
-            foreach (var replacement in replacements)
+            foreach (var (oldValue, newValue) in replacements)
             {
-                text = text.Replace(replacement.oldValue, replacement.newValue);
+                text = text.Replace(oldValue, newValue);
             }
             return text;
         }

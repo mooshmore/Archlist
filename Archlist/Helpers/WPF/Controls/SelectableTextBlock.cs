@@ -21,7 +21,9 @@ namespace Archlist.Resources.Controls
             FocusVisualStyleProperty.OverrideMetadata(typeof(SelectableTextBlock), new FrameworkPropertyMetadata((object)null));
         }
 
+#pragma warning disable IDE0052 // Better not touch this
         private readonly TextEditorWrapper _editor;
+#pragma warning restore IDE0052 // Remove unread private members
 
         public SelectableTextBlock()
         {

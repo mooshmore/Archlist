@@ -52,18 +52,6 @@ namespace Archlist.Helpers
         }
 
         /// <summary>
-        /// Synchronously downloads the image to the given directory with the given name.
-        /// </summary>
-        /// <param name="thumbnailUrl">The directory where the image will be downloaded to.</param>
-        /// <param name="thumbnailPath">The path where the thumbnail will be saved.</param>
-        public static void DownloadImage(string thumbnailUrl, string thumbnailPath)
-        {
-            // Image is first downloaded to a memory, and only then when it has been fully downloaded
-            // it is saved to a file.
-            var temp = GlobalItems.HttpClient.DownloadImageAsync(thumbnailUrl, thumbnailPath);
-        }
-
-        /// <summary>
         /// Asynchronously downloads the image to the given directory with the given name.
         /// </summary>
         /// <param name="thumbnailUrl">The directory where the image will be downloaded to.</param>

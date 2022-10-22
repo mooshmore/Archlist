@@ -42,7 +42,7 @@ namespace WebArchiveData
             string fieldFilter = "&fl=timestamp";
 
             List<string> snapshots = await GetResponses();
-            int maxSnapshotsCount = snapshots.Count();
+            int maxSnapshotsCount = snapshots.Count;
 
             // If responses are already below 10 without any collapse limits then there is
             // no point in restricting them
@@ -68,7 +68,7 @@ namespace WebArchiveData
             List<string> snapshotTimestamps = previousSnapshots;
 
             // Limit to 50 results
-            snapshotTimestamps.ReduceTo(50);
+            snapshotTimestamps = snapshotTimestamps.ReduceTo(50);
 
             // Also add one snapshot per for each year even further increase the chances
             // of finding the valid one
@@ -76,7 +76,7 @@ namespace WebArchiveData
             var yearResponses = await GetResponses();
 
             snapshotTimestamps.AddRange(yearResponses);
-            snapshotTimestamps.Distinct().ToList();
+            snapshotTimestamps = snapshotTimestamps.Distinct().ToList();
 
             return (snapshotTimestamps, maxSnapshotsCount);
 
@@ -229,7 +229,7 @@ namespace WebArchiveData
             // Because snapshots may be in different languages, just using pattern "Published on" would be wrong,
             // so instead the text is just trimmed to the first digit which is a day
             if (publishDateString.FirstIndexOfDigit() > 7)
-                publishDateString = publishDateString.Substring(publishDateString.FirstIndexOfDigit());
+                publishDateString = publishDateString[publishDateString.FirstIndexOfDigit()..];
 
             // Dates in older versions in for example russian language have a "г." ending after the year,
             // like: "15 авг. 2019 г.", so this thing here is just gonna trim the text to the end of the year
@@ -254,15 +254,12 @@ namespace WebArchiveData
             // most common languages from what I've seen), and if that fails then the forbidden "parse from any"
             // method will run and lag the app for a few seconds.
 
-
-            DateTime publishDateEnglish;
-            DateTime publishDateRussian;
             DateTime? publishDateAny;
 
             // Parse english
-            if (DateTime.TryParseExact(publishDateString, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out publishDateEnglish))
+            if (DateTime.TryParseExact(publishDateString, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime publishDateEnglish))
                 publishDate = publishDateEnglish;
-            else if (DateTime.TryParseExact(publishDateString, dateFormats, CultureInfo.GetCultureInfo("ru-RU"), DateTimeStyles.None, out publishDateRussian))
+            else if (DateTime.TryParseExact(publishDateString, dateFormats, CultureInfo.GetCultureInfo("ru-RU"), DateTimeStyles.None, out DateTime publishDateRussian))
             {
                 publishDate = publishDateRussian;
             }

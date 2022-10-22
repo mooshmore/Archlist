@@ -61,17 +61,17 @@ namespace Archlist.PlaylistMethods.PlaylistItems.MissingPlaylistItemsMethods
         {
 
             string playlistItemUrl = "https://www.youtube.com/watch?v=" + playlistItem.ContentDetails.VideoId;
-            var existingSnapshotsTimestamps = await WebArchiveYoutube.GetExistingSnapshots(playlistItemUrl);
+            var (snapshotsList, maxSnapshotsCount) = await WebArchiveYoutube.GetExistingSnapshots(playlistItemUrl);
 
-            if (existingSnapshotsTimestamps.snapshotsList != null)
+            if (snapshotsList != null)
             {
-                playlistItem.ExistingSnapshotsCount = existingSnapshotsTimestamps.maxSnapshotsCount;
+                playlistItem.ExistingSnapshotsCount = maxSnapshotsCount;
                 // Set a webarchive link to the first snapshot in case that all links fail at parsing
                 // and don't set the link
-                playlistItem.WebArchiveLink = "http://web.archive.org/web/" + existingSnapshotsTimestamps.snapshotsList[0] + "/" + playlistItemUrl;
+                playlistItem.WebArchiveLink = "http://web.archive.org/web/" + snapshotsList[0] + "/" + playlistItemUrl;
                 playlistItem.RecoveryFailed = true;
 
-                foreach (var snapshotTimestamp in existingSnapshotsTimestamps.snapshotsList)
+                foreach (var snapshotTimestamp in snapshotsList)
                 {
                     string snapshotRequestUrl = "http://web.archive.org/web/" + snapshotTimestamp + "/" + playlistItemUrl;
                     Debug.WriteLine($"Attempting snapshot: {snapshotRequestUrl}");

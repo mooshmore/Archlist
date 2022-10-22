@@ -51,7 +51,7 @@ namespace Archlist.PlaylistMethods
         public static Playlist ReadPlaylistData(string playlistId)
         {
             string playlistFilePath = Path.Combine(Directories.AllPlaylistsDirectory.FullName, playlistId, "playlistInfo.json");
-            FileInfo playlistFile = new FileInfo(playlistFilePath);
+            FileInfo playlistFile = new(playlistFilePath);
 
             if (playlistFile.Exists)
                 return new FileInfo(playlistFilePath).Deserialize<Playlist>();

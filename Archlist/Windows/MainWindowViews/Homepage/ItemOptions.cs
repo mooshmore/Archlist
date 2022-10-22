@@ -20,7 +20,7 @@ namespace Archlist.Windows.MainWindowViews.Homepage
         public AsyncRelayCommand PullPlaylistDataCommand { get; }
         public RelayCommand RemovePlaylistCommand { get; }
 
-        public DisplayPlaylist _currentDisplayPlaylist { get; set; }
+        private DisplayPlaylist _currentDisplayPlaylist;
         public DisplayPlaylist CurrentDisplayPlaylist
         {
             get

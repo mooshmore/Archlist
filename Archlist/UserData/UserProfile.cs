@@ -114,6 +114,6 @@ namespace Archlist.UserData
         public WriteableBitmap Picture => DirectoryExtensions.CreateWriteableBitmap(Path.Combine(UserProfileDirectory.FullName, "userPicture.jpg"));
         public string WelcomeGreeting { get; }
 
-        public DirectoryInfo UserProfileDirectory => new DirectoryInfo(Path.Combine(Directories.UsersDataDirectory.FullName, Id));
+        public DirectoryInfo UserProfileDirectory => new(Path.Combine(Directories.UsersDataDirectory.FullName, Id));
     }
 }

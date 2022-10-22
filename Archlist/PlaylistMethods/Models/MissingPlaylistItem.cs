@@ -12,7 +12,7 @@ namespace Archlist.PlaylistMethods.Models
     {
         public MissingPlaylistItem(PlaylistItem playlistItem)
         {
-            /// Skip on deserializing
+            // Skip on deserializing
             if (playlistItem != null)
                 playlistItem.CopyProperties(this);
         }

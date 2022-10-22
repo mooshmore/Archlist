@@ -10,7 +10,7 @@
         xmlns:AddPlaylists_userOwned="clr-namespace:Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned" 
         xmlns:PlaylistItemInfo="clr-namespace:Archlist.Windows.PopupViews.PlaylistItemInfo" 
         xmlns:AboutApp="clr-namespace:Archlist.Windows.MainWindowViews.AboutApp" 
-        xmlns:converters="clr-namespace:Archlist.Helpers.BindingConverters" xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:converters="clr-namespace:Archlist.Helpers.BindingConverters" 
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
         Background="{StaticResource Background_default_dark}"

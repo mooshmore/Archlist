@@ -14,13 +14,13 @@ namespace Archlist.Helpers.Systems
         // Place this in app.xaml.cs
         //this.Dispatcher.UnhandledException += Logger.ExceptionLogger;
 
-        public static DirectoryInfo LoggerDirectory = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Archlist_ms", "logs"));
+        private static readonly DirectoryInfo loggerDirectory = new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Archlist_ms", "logs"));
 
         public static void ExceptionLogger(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             string currentDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
             string currentTime = DateTime.Now.ToString("HH:mm:ss:fff", CultureInfo.InvariantCulture);
-            FileInfo logFile = new FileInfo(Path.Combine(LoggerDirectory.FullName, $"{currentDate}.txt"));
+            FileInfo logFile = new(Path.Combine(loggerDirectory.FullName, $"{currentDate}.txt"));
 
             // Create error text
             string exceptionText = $"----------------{currentTime}----------------\n";
@@ -40,7 +40,7 @@ namespace Archlist.Helpers.Systems
         internal static void Create(App app)
         {
             app.Dispatcher.UnhandledException += ExceptionLogger;
-            LoggerDirectory.Create();
+            loggerDirectory.Create();
         }
     }
 }

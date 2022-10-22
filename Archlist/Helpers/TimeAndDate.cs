@@ -488,7 +488,7 @@ namespace Helpers
                 stringLength = timespan.ToString(@"mm\:ss");
 
             if (stringLength[0] == '0')
-                stringLength = stringLength.Substring(1);
+                stringLength = stringLength[1..];
 
             return stringLength;
         }
@@ -558,19 +558,18 @@ namespace Helpers
 
                 var results = allCultures.Select(culture =>
                 {
-                    DateTime result;
                     return DateTime.TryParseExact(
                         dateString,
                         patterns,
                         culture,
                         DateTimeStyles.None,
-                        out result
+                        out DateTime result
                     ) ? result : default(DateTime?);
                 })
                 .Where(d => d != null)
                 .GroupBy(d => d)
                 .OrderByDescending(g => g.Count());
-                if (results.Count() == 0)
+                if (!results.Any())
                     return null;
                 else
                     return results.FirstOrDefault().Key;

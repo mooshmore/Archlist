@@ -16,56 +16,51 @@ namespace Archlist.PlaylistMethods.Models
 {
     public class DisplayPlaylistItem : ViewModelBase
     {
-        public DisplayPlaylistItem(PlaylistItem playlistItem, string playlistId, bool playlistIsUnavailable)
-        {
-            Title = playlistItem.Snippet.Title;
-            Description = playlistItem.Snippet.Description;
-            PublishDate = ((DateTime)playlistItem.ContentDetails.VideoPublishedAt).ToString("dd MMM yyyy", new CultureInfo("en-GB"));
-            Length = playlistItem.ContentDetails.StartAt;
-            Id = playlistItem.ContentDetails.VideoId;
-            PlaylistId = playlistId;
-
-            if (playlistItem.Snippet.Thumbnails.Medium != null)
-            {
-                // Check if thumbnail exists and if not redownload it, this can happen when for example
-                // program will be shut down when downloading playlist items thumbnails
-                var thumbnailFile = new FileInfo(PlaylistItemsData.GetPlaylistItemThumbnailPath(PlaylistId, playlistItem.Snippet.Thumbnails.Medium.Url, playlistIsUnavailable));
-                if (!thumbnailFile.Exists)
-                    // This is synchronous downloading, but the thing is it shouldn't happen in the first place,
-                    // so the user can wait in a few seconds in this situation.
-                    LocalHelpers.DownloadImage(playlistItem.Snippet.Thumbnails.Medium.Url, thumbnailFile.FullName);
-
-               ThumbnailPath = new BitmapImage(new Uri(thumbnailFile.FullName));
-            }
-            else
-                ThumbnailPath = LocalHelpers.GetResourcesBitmapImage(@"thumbnails/missingThumbnail.jpg");
-            
-            Index = (playlistItem.Snippet.Position + 1).ToString();
-
-            if (playlistItem.Snippet.VideoOwnerChannelId != null)
-                Creator = new DisplayChannel(playlistItem.Snippet.VideoOwnerChannelId);
-
-            YoutubeSearchLink = "https://www.youtube.com/results?search_query=" + System.Net.WebUtility.UrlEncode(this.Title);
-        }
-
-        public DisplayPlaylistItem(MissingPlaylistItem playlistItem, string playlistId, bool playlistIsUnavailable)
+        /// <summary>
+        /// Creates a display playlist item from the given missing playlist item.</br>
+        /// </summary>
+        /// <param name="playlistItem">The playlist item to create the object for.</param>
+        /// <param name="playlistIsUnavailable">True if the playlist is unavailable; False if not.</param>
+        public DisplayPlaylistItem(PlaylistItem playlistItem, bool playlistIsUnavailable)
         {
             Title = playlistItem.Snippet.Title;
             Description = playlistItem.Snippet.Description;
             if (playlistItem.ContentDetails.VideoPublishedAt != null)
                 PublishDate = ((DateTime)playlistItem.ContentDetails.VideoPublishedAt).ToString("dd MMM yyyy", new CultureInfo("en-GB"));
+
             Id = playlistItem.ContentDetails.VideoId;
-            PlaylistId = playlistId;
+            PlaylistId = playlistItem.Snippet.PlaylistId;
+
+            // Because the StartAt property is deprecated and no longer used,
+            // the length property is stored there for the sake of simplicity
+            // (the length property isn't available in the playlist item info by default)
             Length = playlistItem.ContentDetails.StartAt;
+            Index = (playlistItem.Snippet.Position + 1).ToString();
 
-
+            // Assign the thumbnail
+            // If the thumbnail doesn't exist then just set it to a missing thumbnail image
             if (playlistItem.Snippet.Thumbnails.Medium != null)
-                ThumbnailPath = new BitmapImage(new Uri(PlaylistItemsData.GetPlaylistItemThumbnailPath(PlaylistId, playlistItem.Snippet.Thumbnails.Medium.Url, playlistIsUnavailable)));
+            {
+                var thumbnailFile = new FileInfo(PlaylistItemsData.GetPlaylistItemThumbnailPath(PlaylistId, playlistItem.Snippet.Thumbnails.Medium.Url, playlistIsUnavailable));
+                if (thumbnailFile.Exists)
+                    ThumbnailPath = new BitmapImage(new Uri(thumbnailFile.FullName));
+            }
             else
                 ThumbnailPath = LocalHelpers.GetResourcesBitmapImage(@"thumbnails/missingThumbnail.jpg");
 
-            Index = (playlistItem.Snippet.Position + 1).ToString();
+            // Missing playlist item has its own creator assign.
+            if (playlistItem is not MissingPlaylistItem)
+                Creator = new DisplayChannel(playlistItem.Snippet.VideoOwnerChannelId);
+        }
 
+        /// <summary>
+        /// Creates a display playlist item from the given missing playlist item.</br>
+        /// </summary>
+        /// <param name="playlistItem">The playlist item to create the object for.</param>
+        /// <param name="playlistIsUnavailable">True if the playlist is unavailable; False if not.</param>
+        /// <param name="isMissingItem">Used only as a signature for the missing playlist item constructor. Pass true.</param>
+        public DisplayPlaylistItem(MissingPlaylistItem playlistItem, bool playlistIsUnavailable, bool isMissingItem) : this(playlistItem, playlistIsUnavailable)
+        {
             // Create channel only if there is a channel Id available
             if (playlistItem.Snippet.VideoOwnerChannelId != null)
             {
@@ -87,7 +82,6 @@ namespace Archlist.PlaylistMethods.Models
             RemovalReasonShort = playlistItem.RemovalReasonShort;
             RemovalReasonFull = playlistItem.RemovalReasonFull;
             RemovalThumbnail = LocalHelpers.GetResourcesBitmapImage("Symbols/RemovalRed/box_important_64px.png");
-            YoutubeSearchLink = "https://www.youtube.com/results?search_query=" + System.Net.WebUtility.UrlEncode(this.Title);
         }
 
         public string Title { get; }
@@ -116,7 +110,7 @@ namespace Archlist.PlaylistMethods.Models
 
         // Missing items data
 
-        public string YoutubeSearchLink { get; }
+        public string YoutubeSearchLink => "https://www.youtube.com/results?search_query=" + System.Net.WebUtility.UrlEncode(this.Title);
 
 
         public bool RecoveryFailed { get; set; } = false;

@@ -35,8 +35,13 @@ namespace Archlist.PlaylistMethods.Models
             MissingItemsCount = GetRecentMissingItemsCount();
             DisplayMissingItems = MissingItemsCount > 0;
 
+            var thumbnailFile = new FileInfo(Path.Combine(PlaylistDirectory.FullName, "playlistThumbnail.jpg"));
+            if (thumbnailFile.Exists)
+                ThumbnailPath = DirectoryExtensions.CreateWriteableBitmap(thumbnailFile.FullName);
+            else
+                ThumbnailPath = DirectoryExtensions.CreateWriteableBitmap(@"Resources/Images/thumbnails/missingThumbnail.jpg", UriKind.Relative);
+
             // Convert to a WriteableBitmap so that the image won't be locked by a process
-            ThumbnailPath = DirectoryExtensions.CreateWriteableBitmap(Path.Combine(PlaylistDirectory.FullName, "playlistThumbnail.jpg"));
         }
 
         /// <summary>
@@ -46,12 +51,12 @@ namespace Archlist.PlaylistMethods.Models
         public int GetRecentMissingItemsCount() => RecentMissingItemsFile.Deserialize<List<MissingPlaylistItem>>().Count;
 
         public string Title { get; set; }
-        public string Description { get; set; }
+        public string Description { get; }
         public string Id { get; set; }
-        public string ItemCount { get; set; }
-        public int MissingItemsCount { get; set; }
+        public string ItemCount { get; }
+        public int MissingItemsCount { get; }
         public bool DisplayMissingItems { get; }
-        public DisplayChannel Creator { get; set; }
+        public DisplayChannel Creator { get; }
         public bool IsUnavailable { get; }
         public string Url { get; set; }
         public string PrivacyStatus { get; private set; }
@@ -63,8 +68,8 @@ namespace Archlist.PlaylistMethods.Models
             _ => null,
         };
 
-        public WriteableBitmap ThumbnailPath { get; set; }
-        public DirectoryInfo PlaylistDirectory { get; set; }
+        public WriteableBitmap ThumbnailPath { get; }
+        public DirectoryInfo PlaylistDirectory { get; }
 
         public DirectoryInfo DataDirectory => new(Path.Combine(PlaylistDirectory.FullName, "data"));
 

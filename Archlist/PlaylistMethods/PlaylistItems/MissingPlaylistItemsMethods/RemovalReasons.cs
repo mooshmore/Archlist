@@ -46,16 +46,14 @@ namespace Archlist.PlaylistMethods.PlaylistItems.MissingPlaylistItemsMethods
         /// </summary>
         private static async Task<string> GetVideoPageCode(MissingPlaylistItem playlistItem)
         {
-            using (var handler = new HttpClientHandler { UseCookies = false })
-            {
-                var baseAddress = new Uri("https://www.youtube.com/watch?v=" + playlistItem.ContentDetails.VideoId);
-                var message = new HttpRequestMessage(HttpMethod.Get, baseAddress);
-                //// Always get removal reasons in english
-                message.Headers.Add("Cookie", "PREF=hl=en");
+            using var handler = new HttpClientHandler { UseCookies = false };
+            var baseAddress = new Uri("https://www.youtube.com/watch?v=" + playlistItem.ContentDetails.VideoId);
+            var message = new HttpRequestMessage(HttpMethod.Get, baseAddress);
+            //// Always get removal reasons in english
+            message.Headers.Add("Cookie", "PREF=hl=en");
 
-                var result = await GlobalItems.HttpClient.SendAsync(message);
-                return await result.Content.ReadAsStringAsync();
-            }
+            var result = await GlobalItems.HttpClient.SendAsync(message);
+            return await result.Content.ReadAsStringAsync();
         }
 
         /// <summary>

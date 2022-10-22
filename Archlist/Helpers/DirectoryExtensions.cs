@@ -43,9 +43,11 @@ namespace Helpers
             else
             {
                 path = path.Replace("\\", "/");
-                Uri imageUri = new Uri("pack://application:,,,/" + path, UriKind.Absolute);
-                BitmapImage bitmapImage = new BitmapImage(imageUri);
-                bitmapImage.CreateOptions = BitmapCreateOptions.None;
+                Uri imageUri = new("pack://application:,,,/" + path, UriKind.Absolute);
+                BitmapImage bitmapImage = new(imageUri)
+                {
+                    CreateOptions = BitmapCreateOptions.None
+                };
                 return new WriteableBitmap(bitmapImage);
 
             }

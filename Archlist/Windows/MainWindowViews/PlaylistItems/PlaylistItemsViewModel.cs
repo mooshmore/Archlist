@@ -112,7 +112,7 @@ namespace Archlist.Windows.MainWindowViews.PlaylistItems
             {
                 // ! Don't add videos that are unavailable
                 if (PlaylistItemsData.IsAvailable(playlistItem))
-                    PlaylistsItemsList.Add(new DisplayPlaylistItem(playlistItem, DisplayedPlaylist.Id, DisplayedPlaylist.IsUnavailable));
+                    PlaylistsItemsList.Add(new DisplayPlaylistItem(playlistItem, DisplayedPlaylist.IsUnavailable));
             }
         }
     }
