@@ -3,12 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Archlist.Windows.ViewModels;
 using Google.Apis.YouTube.v3;
 using Google;
 using Archlist.PlaylistMethods;
 using Google.Apis.YouTube.v3.Data;
-using Helpers;
+using Utilities;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
@@ -166,7 +165,7 @@ namespace Archlist.PlaylistMethods
 
                 // Update the thumbnail if it has changed
                 if (previousPlaylistData.Snippet.Thumbnails.Medium.Url != playlist.Snippet.Thumbnails.Medium.Url)
-                    thumbnailDownloads.Add(LocalHelpers.DownloadImageAsync(playlist.Snippet.Thumbnails.Medium.Url, playlistDirectory, "playlistThumbnail.jpg"));
+                    thumbnailDownloads.Add(LocalUtilities.DownloadImageAsync(playlist.Snippet.Thumbnails.Medium.Url, playlistDirectory, "playlistThumbnail.jpg"));
 
             }
 
@@ -210,7 +209,7 @@ namespace Archlist.PlaylistMethods
                 // So, medium quality is chosen since it actualy fits required resolution and maxres 
                 // would've been taking (unnecessarily) too much space.
                 string thumbnailUrl = playlist.Snippet.Thumbnails.Medium.Url;
-                thumbnailDownloads.Add(LocalHelpers.DownloadImageAsync(thumbnailUrl, playlistDirectory, "playlistThumbnail.jpg"));
+                thumbnailDownloads.Add(LocalUtilities.DownloadImageAsync(thumbnailUrl, playlistDirectory, "playlistThumbnail.jpg"));
             }
 
             // Download all thumbnails pararelly

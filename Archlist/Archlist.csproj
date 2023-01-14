@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <None Remove="clientSecret.json" />
+    <None Remove="\WPF\MsServices\DialogService\Images\close_64px.png" />
     <None Remove="Resources\Fonts\Caveat-VariableFont_wght.ttf" />
     <None Remove="Resources\Images\btn_google_signin_light_normal_web%402x.png" />
     <None Remove="Resources\Images\Logos\AppLogo\appLogo.png" />

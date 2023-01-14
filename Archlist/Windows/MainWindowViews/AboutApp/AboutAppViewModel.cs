@@ -1,12 +1,6 @@
-﻿using Archlist.ProgramData.Bases;
+﻿using Utilities.WPF.Bases;
 using Archlist.ProgramData.Stores;
-using Archlist.Windows.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ToastMessageService;
+using MsServices.ToastMessageService;
 
 namespace Archlist.Windows.MainWindowViews.AboutApp
 {

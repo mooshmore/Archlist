@@ -1,10 +1,8 @@
 ﻿using Google.Apis.YouTube.v3.Data;
 using Archlist.PlaylistMethods;
-using Archlist.ProgramData.Bases;
-using Archlist.ProgramData.Commands;
+using Utilities.WPF.Bases;
 using Archlist.ProgramData.Stores;
 using Archlist.Windows.MainWindowViews.Homepage;
-using Archlist.Windows.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,9 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Helpers;
+using Utilities;
 using System.Diagnostics;
-using ToastMessageService;
+using MsServices.ToastMessageService;
 
 namespace Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned
 {

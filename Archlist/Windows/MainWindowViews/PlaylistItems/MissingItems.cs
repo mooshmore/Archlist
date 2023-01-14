@@ -2,7 +2,7 @@
 using Archlist.Helpers;
 using Archlist.PlaylistMethods;
 using Archlist.PlaylistMethods.Models;
-using Archlist.ProgramData.Bases;
+using Utilities.WPF.Bases;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Utilities;
 
 namespace Archlist.Windows.MainWindowViews.PlaylistItems
 {
@@ -89,13 +90,13 @@ namespace Archlist.Windows.MainWindowViews.PlaylistItems
             if (MissingItemsList.Count == 0)
             {
                 MarkAllAsSeenVisibility = false;
-                MissingItemsImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/Other/positiveGreen_ok_32px.png");
+                MissingItemsImage = LocalUtilities.GetResourcesBitmapImage(@"Symbols/Other/positiveGreen_ok_32px.png");
                 MissingItemsText = "No recent missing videos have been found";
             }
             else
             {
                 MarkAllAsSeenVisibility = true;
-                MissingItemsImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/RemovalRed/box_important_64px.png");
+                MissingItemsImage = LocalUtilities.GetResourcesBitmapImage(@"Symbols/RemovalRed/box_important_64px.png");
 
                 if (MissingItemsList.Count == 1)
                     MissingItemsText = "1 missing video has been found";

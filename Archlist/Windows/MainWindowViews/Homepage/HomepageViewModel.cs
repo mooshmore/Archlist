@@ -1,20 +1,18 @@
-﻿using Helpers;
+﻿using Utilities;
 using Archlist.Helpers;
 using Archlist.PlaylistMethods;
 using Archlist.PlaylistMethods.Models;
-using Archlist.ProgramData.Bases;
-using Archlist.ProgramData.Commands;
+using Utilities.WPF.Bases;
 using Archlist.ProgramData.Stores;
 using Archlist.UserData;
 using Archlist.Windows.MainWindowViews.PlaylistItems;
 using Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_link;
 using Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned;
-using Archlist.Windows.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media.Imaging;
-using ToastMessageService;
+using MsServices.ToastMessageService;
 using System.Threading.Tasks;
 using System;
 
@@ -106,11 +104,11 @@ namespace Archlist.Windows.MainWindowViews.Homepage
             if (missingItemsTotal == 0)
             {
                 MissingItemsText = "No missing videos have been found.";
-                MissingItemsImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/Other/positiveGreen_ok_32px.png");
+                MissingItemsImage = LocalUtilities.GetResourcesBitmapImage(@"Symbols/Other/positiveGreen_ok_32px.png");
             }
             else
             {
-                MissingItemsImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/RemovalRed/box_important_64px.png");
+                MissingItemsImage = LocalUtilities.GetResourcesBitmapImage(@"Symbols/RemovalRed/box_important_64px.png");
 
                 if (missingItemsTotal == 1)
                     MissingItemsText = "1 video is missing from your 1 playlist.";

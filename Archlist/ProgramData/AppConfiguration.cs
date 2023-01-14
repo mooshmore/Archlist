@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Archlist.Helpers.Systems;
+
 
 namespace Archlist.ProgramData
 {
@@ -69,8 +69,6 @@ namespace Archlist.ProgramData
 
 
             Directories.MainDirectory = Directory.CreateDirectory(Path.Combine(roamingPath, "Archlist_ms"));
-
-
 
             Directories.ChannelsDirectory = Directories.MainDirectory.CreateSubdirectory("channels");
 

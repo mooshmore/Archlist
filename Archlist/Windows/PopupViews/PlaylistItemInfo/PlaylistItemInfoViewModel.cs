@@ -1,17 +1,16 @@
-﻿using Helpers;
+﻿using Utilities;
 using Archlist.Helpers;
 using Archlist.PlaylistMethods.Models;
-using Archlist.ProgramData.Bases;
-using Archlist.ProgramData.Commands;
+using Utilities.WPF.Bases;
 using Archlist.ProgramData.Stores;
-using Archlist.Windows.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using ToastMessageService;
+using MsServices.ToastMessageService;
+using Utilities;
 
 namespace Archlist.Windows.PopupViews.PlaylistItemInfo
 {
@@ -43,14 +42,14 @@ namespace Archlist.Windows.PopupViews.PlaylistItemInfo
             {
                 DisplayInfoPanel = true;
                 InfoText = "Program couldn't recover any data for this item, neither by checking locally saved data or a web archive.";
-                InfoImage = LocalHelpers.GetResourcesBitmapImage("Symbols/RemovalRed/database_fail_32px.png");
+                InfoImage = LocalUtilities.GetResourcesBitmapImage("Symbols/RemovalRed/database_fail_32px.png");
             }
             // Item was recovered using web archive
             else if (displayPlaylist.FoundSnapshotsCount > 0)
             {
                 DisplayInfoPanel = true;
                 DisplayFoundSnaphots = true;
-                FoundSnapshotsText = $" Snapshot{LocalHelpers.SEnding(displayPlaylist.FoundSnapshotsCount)}";
+                FoundSnapshotsText = $" Snapshot{LocalUtilities.SEnding(displayPlaylist.FoundSnapshotsCount)}";
                 FoundSnapshotsCountText = displayPlaylist.FoundSnapshotsCount.ToString();
                 if (displayPlaylist.FoundSnapshotsCount == 99)
                     FoundSnapshotsCountText = "99+";
@@ -62,19 +61,19 @@ namespace Archlist.Windows.PopupViews.PlaylistItemInfo
                 if (displayPlaylist.SourcedFromWebArchive)
                 {
                     InfoText = "This data was recovered from a web archive, and it might be incomplete and glitchy (please report if it is).\nYou can check the web archive page by yourself by clicking this text.";
-                    InfoImage = LocalHelpers.GetResourcesBitmapImage("Logos/WebArchive/webArchiveLogo_32px.png");
+                    InfoImage = LocalUtilities.GetResourcesBitmapImage("Logos/WebArchive/webArchiveLogo_32px.png");
                 }
                 else
                 {
                     InfoText = "Web archive snapshot of this video was found, but program was unable to parse it.\nYou can check the web archive page by yourself by clicking this text. \nIf the web archive page looks valid, please report this issue.";
-                    InfoImage = LocalHelpers.GetResourcesBitmapImage("Logos/WebArchive/webArchiveLogo_removalRed_32px.png");
+                    InfoImage = LocalUtilities.GetResourcesBitmapImage("Logos/WebArchive/webArchiveLogo_removalRed_32px.png");
                 }
             }
             else if (!displayPlaylist.RemovalReasonShort.IsNullOrEmpty())
             {
                 DisplayInfoPanel = true;
                 InfoText = "This data was recovered from the local archive. It should be fully correct (please report if it isn't).";
-                InfoImage = LocalHelpers.GetResourcesBitmapImage("Symbols/White/database_import_64px.png");
+                InfoImage = LocalUtilities.GetResourcesBitmapImage("Symbols/White/database_import_64px.png");
             }
         }
 

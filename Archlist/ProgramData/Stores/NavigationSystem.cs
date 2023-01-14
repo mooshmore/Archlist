@@ -1,6 +1,6 @@
 ﻿using Archlist.Windows.MainWindowViews.Homepage;
-using Archlist.Windows.ViewModels;
 using System;
+using Utilities.WPF.Bases;
 
 namespace Archlist.ProgramData.Stores
 {

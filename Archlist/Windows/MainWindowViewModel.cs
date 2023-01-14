@@ -1,15 +1,14 @@
 ﻿using Archlist.Helpers;
-using Archlist.ProgramData.Bases;
-using Archlist.ProgramData.Commands;
+using Utilities.WPF.Bases;
 using Archlist.ProgramData.Stores;
 using Archlist.UserData;
 using Archlist.Windows.MainWindowViews.AboutApp;
-using Archlist.Windows.ViewModels;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using ToastMessageService;
+using MsServices.ToastMessageService;
+using Utilities;
 
 namespace Archlist.Windows
 {
@@ -45,13 +44,13 @@ namespace Archlist.Windows
             if (UserProfile == null)
             {
                 LogInText = "Log in";
-                LogInImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/login_64px.png");
+                LogInImage = LocalUtilities.GetResourcesBitmapImage(@"Symbols/White/login_64px.png");
                 DisplayUserProfile = true;
             }
             else
             {
                 LogInText = "Log out";
-                LogInImage = LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/logout_64px.png");
+                LogInImage = LocalUtilities.GetResourcesBitmapImage(@"Symbols/White/logout_64px.png");
                 DisplayUserProfile = false;
                 ToastMessage.Hide(true);
             }

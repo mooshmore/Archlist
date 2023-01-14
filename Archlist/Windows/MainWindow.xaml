@@ -10,7 +10,7 @@
         xmlns:AddPlaylists_userOwned="clr-namespace:Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned" 
         xmlns:PlaylistItemInfo="clr-namespace:Archlist.Windows.PopupViews.PlaylistItemInfo" 
         xmlns:AboutApp="clr-namespace:Archlist.Windows.MainWindowViews.AboutApp" 
-        xmlns:converters="clr-namespace:Archlist.Helpers.BindingConverters" 
+        xmlns:converters="clr-namespace:Utilities.WPF.BindingConverters" 
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
         Background="{StaticResource Background_default_dark}"
@@ -20,7 +20,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Helpers/WPF/Systems/ToastMessage/ToastMessageStyle.xaml"/>
+                <ResourceDictionary Source="/Utilities/WPF/MsServices/ToastMessage/ToastMessageStyle.xaml"/>
                 <ResourceDictionary Source="MainWindowDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisiblity"/>

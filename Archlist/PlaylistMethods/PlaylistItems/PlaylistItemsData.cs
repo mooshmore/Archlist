@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Archlist.Windows.ViewModels;
 using Google.Apis.YouTube.v3;
 using Google;
 using Google.Apis.YouTube.v3.Data;
@@ -8,13 +7,13 @@ using Archlist.UserData;
 using System;
 using Archlist.ProgramData.Stores;
 using System.IO;
-using Helpers;
+using Utilities;
 using Newtonsoft.Json;
 using Archlist.Helpers;
 using System.Linq;
 using System.Net;
 using Archlist.PlaylistMethods.Models;
-using ToastMessageService;
+using MsServices.ToastMessageService;
 using System.Net.Http;
 using WebArchiveData;
 using System.Diagnostics;
@@ -143,7 +142,7 @@ namespace Archlist.PlaylistMethods
                     // Medium quality is always available, no matter the uploaded image resolution,
                     // as it is upscaled to the medium quality
                     {
-                        thumbnailDownloads.Add(LocalHelpers.DownloadImageAsync(playlistItem.Snippet.Thumbnails.Medium.Url, imagePath));
+                        thumbnailDownloads.Add(LocalUtilities.DownloadImageAsync(playlistItem.Snippet.Thumbnails.Medium.Url, imagePath));
 
                         // Downloading large quantities at once appears to throw errors, so
                         // the max simultaneous count is capped at 300
@@ -250,7 +249,7 @@ namespace Archlist.PlaylistMethods
                     videosData.Items.AddRange(response.Items);
 
                 nextPageToken = response.NextPageToken;
-                
+
             } while (videoIds.Count != 0);
 
             foreach (var videoData in videosData.Items)

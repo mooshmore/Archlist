@@ -1,4 +1,4 @@
-﻿using Helpers;
+﻿using Utilities;
 using Newtonsoft.Json.Linq;
 using Archlist.ProgramData.Stores;
 using System;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Archlist.Helpers;
 using Archlist.PlaylistMethods;
-using ToastMessageService;
+using MsServices.ToastMessageService;
 
 namespace Archlist.UserData
 {

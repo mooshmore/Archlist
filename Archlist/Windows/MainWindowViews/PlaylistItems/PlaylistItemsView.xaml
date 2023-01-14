@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Archlist.Windows.MainWindowViews.PlaylistItems"
              xmlns:viewmodels="clr-namespace:Archlist.Windows.MainWindowViews.PlaylistItems"
-             xmlns:converters="clr-namespace:Archlist.Helpers.BindingConverters"
+             xmlns:converters="clr-namespace:Utilities.WPF.BindingConverters"
              d:DataContext="{d:DesignInstance Type=viewmodels:PlaylistItemsViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="1200">

@@ -3,18 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Archlist.Windows.ViewModels;
 using Google.Apis.YouTube.v3;
 using Google;
 using Archlist.PlaylistMethods;
 using Google.Apis.YouTube.v3.Data;
-using Helpers;
 using System.Linq;
 using Archlist.UserData;
 using Archlist.ProgramData.Stores;
-using Archlist.Helpers;
-using ToastMessageService;
+using MsServices.ToastMessageService;
 using System.Net;
+using Utilities;
 
 namespace Archlist.PlaylistMethods
 {

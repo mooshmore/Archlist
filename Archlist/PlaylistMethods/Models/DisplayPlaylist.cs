@@ -1,7 +1,5 @@
 ﻿using Google.Apis.YouTube.v3.Data;
-using Helpers;
-using Archlist.Helpers;
-using Archlist.ProgramData.Bases;
+using Utilities.WPF.Bases;
 using Archlist.ProgramData.Stores;
 using System;
 using System.Collections.Generic;
@@ -11,6 +9,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Archlist.Helpers;
+using Utilities;
+using Utilities;
 
 namespace Archlist.PlaylistMethods.Models
 {
@@ -62,9 +63,9 @@ namespace Archlist.PlaylistMethods.Models
         public string PrivacyStatus { get; private set; }
         public BitmapImage PrivacyStatusImage => PrivacyStatus switch
         {
-            "Private" => LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/lock_64px.png"),
-            "Unlisted" => LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/chain_64px.png"),
-            "Public" => LocalHelpers.GetResourcesBitmapImage(@"Symbols/White/earth_64px.png"),
+            "Private" => LocalUtilities.GetResourcesBitmapImage(@"Symbols/White/lock_64px.png"),
+            "Unlisted" => LocalUtilities.GetResourcesBitmapImage(@"Symbols/White/chain_64px.png"),
+            "Public" => LocalUtilities.GetResourcesBitmapImage(@"Symbols/White/earth_64px.png"),
             _ => null,
         };
 

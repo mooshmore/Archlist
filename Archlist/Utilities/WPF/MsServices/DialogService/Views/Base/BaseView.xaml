@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="MsServices.DialogService.Views.Base.BaseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MsServices.DialogService.Views.Base"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary Source="/Helpers/WPF/MsServices/DialogService/DialogViewsDictionary.xaml"/>
+    </UserControl.Resources>
+
+    <Border Style="{StaticResource WindowBorder}">
+        <Grid Width="Auto">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="65"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <DockPanel Grid.Row="0" Style="{StaticResource Topbar}" VerticalAlignment="Center">
+                <Image Style="{StaticResource DialogIcon}"/>
+                <TextBlock Style="{StaticResource DialogTitle}" d:Text="Dialog title"/>
+                <Image Style="{StaticResource CloseDialogIcon}"/>
+            </DockPanel>
+            <Border Grid.Row="1" Style="{StaticResource Content}">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="30 0">
+                    <TextBlock Style="{StaticResource PrimaryText}" d:Text="Primary text that is lt that is t that is t that is t that is t that is t that is t that is t that is onger"/>
+                    <TextBlock Style="{StaticResource SecondaryText}" d:Text="Secondary text"/>
+                </StackPanel>
+            </Border>
+            <DockPanel Grid.Row="2" Style="{StaticResource Bottombar}" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <Button d:Content="Okay" Style="{StaticResource PrimaryButton}">
+                    
+                </Button>
+                <Button Width="Auto" d:Content="Cancel">
+
+                </Button>
+            </DockPanel>
+        </Grid>
+    </Border>
+</UserControl>

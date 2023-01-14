@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Archlist.Windows.PopupViews.AddPlaylists.AddPlaylists_userOwned"
-             xmlns:converters="clr-namespace:Archlist.Helpers.BindingConverters"
+             xmlns:converters="clr-namespace:Utilities.WPF.BindingConverters"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=local:AddPlaylists_userOwnedViewModel}"
                 d:DesignHeight="650" d:DesignWidth="900">

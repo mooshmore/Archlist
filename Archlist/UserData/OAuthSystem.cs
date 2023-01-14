@@ -11,10 +11,10 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Archlist.Helpers;
-using ToastMessageService;
+using MsServices.ToastMessageService;
 using System.Reflection;
 using System.Diagnostics;
-using Helpers;
+using Utilities;
 using Archlist.PlaylistMethods;
 using System.Collections.Generic;
 using Google.Apis.YouTube.v3.Data;
@@ -128,7 +128,7 @@ namespace Archlist.UserData
             FileInfo userDataFile = userDataDirectory.CreateSubfile("userProfile.json");
             userDataFile.WriteAllText(userProfileData.ToString());
 
-            await LocalHelpers.DownloadImageAsync(currentUserProfile.PictureURL, Path.Combine(userDataDirectory.FullName, "userPicture.jpg"));
+            await LocalUtilities.DownloadImageAsync(currentUserProfile.PictureURL, Path.Combine(userDataDirectory.FullName, "userPicture.jpg"));
             GlobalItems.UserProfile = currentUserProfile;
             UserProfile.CheckUserProfile();
         }

@@ -1,10 +1,10 @@
-﻿using Archlist.Helpers.Systems;
-using Archlist.ProgramData;
+﻿using Archlist.ProgramData;
 using Archlist.ProgramData.Stores;
 using Archlist.UserData;
 using Archlist.Windows;
 using Archlist.Windows.MainWindowViews.Homepage;
 using Archlist.Windows.PopupViews.WelcomeScreenWindow;
+using MsServices.DialogService;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Utilities.Systems;
 
 namespace Archlist
 {
@@ -49,8 +50,15 @@ namespace Archlist
                 welcomeScreen.Activate();
             }
 
+            //_dialogService.ShowDialog("Notification", result =>
+            //{
+            //    var test = result;
+            //});
+
             base.OnStartup(e);
         }
+
+        IDialogService _dialogService = new DialogService();
     }
 
 }

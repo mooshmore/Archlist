@@ -1,6 +1,6 @@
-﻿using Helpers;
+﻿using Utilities;
 using Archlist.PlaylistMethods.Models;
-using Archlist.ProgramData.Bases;
+using Utilities.WPF.Bases;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

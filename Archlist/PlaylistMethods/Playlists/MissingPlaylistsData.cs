@@ -7,8 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ToastMessageService;
-using Helpers;
+using MsServices.ToastMessageService;
+using Utilities;
 
 namespace Archlist.PlaylistMethods.Playlists
 {

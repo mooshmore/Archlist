@@ -1,8 +1,6 @@
 ﻿using Google.Apis.YouTube.v3.Data;
 using Archlist.Helpers;
-using Archlist.ProgramData.Bases;
 using Archlist.ProgramData.Stores;
-using Archlist.Windows.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Utilities;
+using Utilities.WPF.Bases;
 
 namespace Archlist.PlaylistMethods.Models
 {
@@ -46,7 +46,7 @@ namespace Archlist.PlaylistMethods.Models
                     ThumbnailPath = new BitmapImage(new Uri(thumbnailFile.FullName));
             }
             else
-                ThumbnailPath = LocalHelpers.GetResourcesBitmapImage(@"thumbnails/missingThumbnail.jpg");
+                ThumbnailPath = LocalUtilities.GetResourcesBitmapImage(@"thumbnails/missingThumbnail.jpg");
 
             // Missing playlist item has its own creator assign.
             if (playlistItem is not MissingPlaylistItem)
@@ -81,7 +81,7 @@ namespace Archlist.PlaylistMethods.Models
 
             RemovalReasonShort = playlistItem.RemovalReasonShort;
             RemovalReasonFull = playlistItem.RemovalReasonFull;
-            RemovalThumbnail = LocalHelpers.GetResourcesBitmapImage("Symbols/RemovalRed/box_important_64px.png");
+            RemovalThumbnail = LocalUtilities.GetResourcesBitmapImage("Symbols/RemovalRed/box_important_64px.png");
         }
 
         public string Title { get; }

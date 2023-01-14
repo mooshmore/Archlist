@@ -1,5 +1,4 @@
-﻿using Archlist.ProgramData.Bases;
-using Archlist.ProgramData.Commands;
+﻿using Utilities.WPF.Bases;
 using Archlist.Windows.MainWindowViews.Homepage;
 using System;
 using System.Collections.Generic;

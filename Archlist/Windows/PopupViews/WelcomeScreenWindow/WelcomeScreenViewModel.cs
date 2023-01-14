@@ -1,9 +1,8 @@
 ﻿using Archlist.PlaylistMethods;
 using Archlist.ProgramData;
-using Archlist.ProgramData.Bases;
+using Utilities.WPF.Bases;
 using Archlist.ProgramData.Stores;
 using Archlist.UserData;
-using Archlist.Windows.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,5 @@
 ﻿using Google.Apis.YouTube.v3.Data;
-using Helpers;
+using Utilities;
 using Archlist.Helpers;
 using Archlist.PlaylistMethods.Models;
 using Archlist.ProgramData.Stores;
@@ -104,6 +104,11 @@ namespace Archlist.PlaylistMethods.PlaylistItems.MissingPlaylistItemsMethods
             {
                 playlistItem.RemovalReasonShort = "Guidelines strike";
                 playlistItem.RemovalReasonFull = "This video has been removed for violating YouTube's Community Guidelines";
+            }
+            else if (removalReasonsPart.Contains("This video has been removed for violating YouTube's policy on violent or graphic content"))
+            {
+                playlistItem.RemovalReasonShort = "Graphic content";
+                playlistItem.RemovalReasonFull = "This video has been removed for violating YouTube's policy on violent or graphic content";
             }
             else
             // Unhandeled reason

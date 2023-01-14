@@ -1,11 +1,10 @@
 ﻿using Google.Apis.YouTube.v3.Data;
-using Helpers;
-using Archlist.Helpers;
 using Archlist.ProgramData.Stores;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Windows.Media.Imaging;
+using Utilities;
 
 namespace Archlist.PlaylistMethods
 {
@@ -20,7 +19,6 @@ namespace Archlist.PlaylistMethods
 
             string thumbnailPath = Path.Combine(Directories.ChannelsDirectory.FullName, ChannelId, "channelThumbnail.jpg");
             Thumbnail = DirectoryExtensions.CreateWriteableBitmap(thumbnailPath);
-            //Thumbnail = thumbnailPath;
         }
 
         /// <summary>
@@ -35,7 +33,6 @@ namespace Archlist.PlaylistMethods
 
             // Use a default missing thumbnail image for web archive recovered missing items
             Thumbnail = DirectoryExtensions.CreateWriteableBitmap(@"Resources/Images/thumbnails/missingProfile.jpg", UriKind.Relative);
-            //Thumbnail = @"Resources/Images/thumbnails/missingProfile.jpg";
         }
 
 
