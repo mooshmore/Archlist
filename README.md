@@ -1,7 +1,7 @@
 <img src="https://i.imgur.com/OhCV5Rg.png" width=100>
 
 # Archlist
-A playlist archiver for youtube
+A user-friendly desktop app designed for easy archivization of Youtube playlists! 
 
 ### ! This app hasn't been fully published on Google Cloud yet, if you want to use it send me your email so that I'll add it to the whitelist !
 
